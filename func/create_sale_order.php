@@ -11,9 +11,11 @@
     $sucursal = $_POST['suc'. $_POST['id']];
     $iva = $_POST['iva'. $_POST['id']];
     $t_pago = $_POST['t_pago'];
+    $titulo = $_POST['t_job'];
+    $f_entrega = $_POST['f_entrega'];
 
     $con = db_conectar();  
-    mysqli_query($con,"INSERT INTO `folio_venta` (`folio`,`vendedor`, `client`, `descuento`, `fecha`, `open`, `sucursal`, `iva`, `t_pago`, `pedido`,`folio_venta_ini`,`cobrado`) VALUES ('$folio', '$vendedor', '$client', '$descuento', '$fecha', '1', '$sucursal','$iva', '$t_pago', '1','$folio','0');");
+    mysqli_query($con,"INSERT INTO `folio_venta` (`folio`,`vendedor`, `client`, `descuento`, `fecha`, `open`, `sucursal`, `iva`, `t_pago`, `pedido`,`folio_venta_ini`,`cobrado`,`titulo`,`f_entrega`) VALUES ('$folio', '$vendedor', '$client', '$descuento', '$fecha', '1', '$sucursal','$iva', '$t_pago', '1','$folio','0','$titulo','$f_entrega');");
 
     if (!mysqli_error($con))
     {

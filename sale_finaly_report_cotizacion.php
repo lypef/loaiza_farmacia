@@ -1,4 +1,4 @@
-<?php
+ <?php
     require_once 'func/db.php';
     // Dompdf php 7
     //require_once 'dompdf_php7.1/autoload.inc.php';
@@ -13,7 +13,7 @@
     session_start();
     $usd = GetUsd();
     $con = db_conectar();  
-    $venta = mysqli_query($con,"SELECT u.nombre, c.nombre, v.descuento, v.fecha, v.cobrado, v.fecha_venta, s.nombre, s.direccion, s.telefono, v.iva, c.razon_social, c.direccion, v.t_pago FROM folio_venta v, users u, clients c, sucursales s WHERE v.vendedor = u.id and v.client = c.id and v.sucursal = s.id and v.folio = '$folio'");
+    $venta = mysqli_query($con,"SELECT u.nombre, c.nombre, v.descuento, v.fecha, v.cobrado, v.fecha_venta, s.nombre, s.direccion, s.telefono, v.iva, c.razon_social, c.direccion, v.t_pago, c.correo FROM folio_venta v, users u, clients c, sucursales s WHERE v.vendedor = u.id and v.client = c.id and v.sucursal = s.id and v.folio = '$folio'");
     
     $genericos = mysqli_query($con,"SELECT unidades, p_generico, precio, id FROM product_venta v WHERE p_generico != '' and folio_venta = '$folio'");
 
@@ -32,8 +32,10 @@
         $bodysucursal = $row[7] . '
         <br><span style="font-size: 14px;">RESPONSABLE: ' . $vendedor . '</span>';
         $r_social = $row[10];
+        $r_social_contrato = $row[10];
         $cliente_direccion = $row[11];
         $t_pago = $row[12];
+        $correo = $row[13];
     }
     
     if (!empty($r_social))
@@ -41,7 +43,7 @@
         $r_social = ' | ' . $r_social;
     }
     
-    $products = mysqli_query($con,"SELECT p.nombre, p.`no. De parte`, v.unidades, v.precio , a.nombre, p.loc_almacen, v.product_sub, p.stock FROM product_venta v, productos p, almacen a WHERE v.product = p.id and p.almacen = a.id and v.folio_venta = '$folio'");
+    $products = mysqli_query($con,"SELECT if (v.ancho > 0,CONCAT(p.nombre,': ', v.ancho, ' X ', v.alto, ' X ', v.largo,' | ', v.peso,' KGs'),p.nombre) as nombre, p.`no. De parte`, v.unidades, v.precio , a.nombre, p.loc_almacen, v.product_sub, p.stock FROM product_venta v, productos p, almacen a WHERE v.product = p.id and p.almacen = a.id and v.folio_venta = '$folio'");
     
     $body_products = '';
     $cont = 0; $first = true;
@@ -367,7 +369,7 @@
     <tr>
      
     <td style="border-right: 1px solid black;border-left:1px solid black;border-bottom: 1px solid black;border-top: 1px solid black" align="center"><b>FECHA:</b> '.GetFechaText($fecha_ini).'</td>
-    <td style="border-right: 1px solid black;border-left:1px solid black;border-bottom: 1px solid black;border-top: 1px solid black" align="center"><b>FOLIO COTIZACION:</b> '.$folio.'</td>
+    <td style="border-right: 1px solid black;border-left:1px solid black;border-bottom: 1px solid black;border-top: 1px solid black" align="center"><b>NO. DE ORDEN: </b> '.$folio.'</td>
     </tr>
     </tbody>
     </table>
@@ -411,32 +413,16 @@
     </tbody>
     </table>
     '.$body_products.'';
-    
-    
-    if (strtolower(str_replace(" ","",$t_pago)) == "transferencia")
-    {
-        $codigoHTML .= ReportCotTranfers();
-    }
+  
+    $codigoHTML .= FooterPageReport();
 
-    if (strtolower(str_replace(" ","",$t_pago)) == "oxxo")
-    {
-        $codigoHTML .= '
-        <center><strong style="font-size: 14px;"><span style="vertical-align: super;"><img src="images/OXXO-PAY.jpg" width="700"  height="218" /></span></strong></center>
-        <p style="text-align: center;"><em>REFERECIA<br /></em><span style="font-size: 60px;"><strong>'.GenRefOxxo($total_pagar_, $folio).'</strong></span></p>
-        <h3 style="text-align: center;"><strong>PAGA:&nbsp;</strong><strong>$ '.$total_pagar.' MXN</strong></h3>
-        <p style="text-align: center;"><em>OXXO cobrar&aacute; una comisi&oacute;n adicional al momento de realizar el pago.</em></p>
-        ';
-    }
-    
     $codigoHTML = mb_convert_encoding($codigoHTML, 'HTML-ENTITIES', 'UTF-8');
-    //echo $codigoHTML;
-
+  
     $dompdf=new DOMPDF();
     $dompdf->set_paper('letter');
     $dompdf->load_html($codigoHTML);
     ini_set("memory_limit","128M");
     $dompdf->render();
-    $dompdf->stream("cotizacion".$_GET["folio_sale"].".pdf");
+    $dompdf->stream("orden".$_GET["folio_sale"].".pdf");
     // instantiate and use the dompdf class
-    
 ?>

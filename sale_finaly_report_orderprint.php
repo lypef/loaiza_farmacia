@@ -36,7 +36,7 @@
         $cliente_direccion = $row[11];
     }
 
-    $products = mysqli_query($con,"SELECT p.nombre, p.`no. De parte`, v.unidades, v.precio , a.nombre, p.loc_almacen, p.stock FROM product_pedido v, productos p, almacen a WHERE v.product = p.id and p.almacen = a.id and v.folio_venta = '$folio'");
+    $products = mysqli_query($con,"SELECT if (v.ancho > 0,CONCAT(p.nombre,': ', v.ancho, ' X ', v.alto, ' X ', v.largo,' | ', v.peso,' KGs'),p.nombre) as nombre, p.`no. De parte`, v.unidades, v.precio , a.nombre, p.loc_almacen, p.stock FROM product_pedido v, productos p, almacen a WHERE v.product = p.id and p.almacen = a.id and v.folio_venta = '$folio'");
     $body_products = '';
     while($row = mysqli_fetch_array($products))
     {
@@ -299,6 +299,7 @@
     
     
     $codigoHTML .= FooterPageReport();
+
     $codigoHTML = mb_convert_encoding($codigoHTML, 'HTML-ENTITIES', 'UTF-8');
     $dompdf=new DOMPDF();
     $dompdf->set_paper('letter');

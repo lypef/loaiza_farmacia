@@ -1,3 +1,95 @@
+<style>
+    @import url(https://fonts.googleapis.com/css?family=Lato:400,300,900,700);
+
+html {
+  font-size: 16px;
+}
+
+h3 {
+  font-family: 'Lato', sans-serif;
+  font-size: 2.125rem;
+  font-weight: 700;
+  color: #444;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin: 55px 0 35px;
+}
+
+.carousel-inner { margin: auto; width: 90%; }
+.carousel-control 			 { width:  4%; }
+.carousel-control.left,
+.carousel-control.right {
+  background-image:none;
+}
+ 
+.glyphicon-chevron-left, .carousel-control .glyphicon-chevron-right {
+  margin-top:-10px;
+  margin-left: -10px;
+  color: #444;
+}
+
+.carousel-inner {
+  a {
+    display:table-cell;
+    height: 180px;
+    width: 200px;
+    vertical-align: middle;
+  }
+  img {
+    max-height: 150px;
+    margin: auto auto;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 767px) {
+  .carousel-inner > .item.next,
+  .carousel-inner > .item.active.right {
+      left: 0;
+      -webkit-transform: translate3d(100%, 0, 0);
+      transform: translate3d(100%, 0, 0);
+  }
+  .carousel-inner > .item.prev,
+  .carousel-inner > .item.active.left {
+      left: 0;
+      -webkit-transform: translate3d(-100%, 0, 0);
+      transform: translate3d(-100%, 0, 0);
+  }
+
+}
+@media (min-width: 767px) and (max-width: 992px ) {
+  .carousel-inner > .item.next,
+  .carousel-inner > .item.active.right {
+      left: 0;
+      -webkit-transform: translate3d(50%, 0, 0);
+      transform: translate3d(50%, 0, 0);
+  }
+  .carousel-inner > .item.prev,
+  .carousel-inner > .item.active.left {
+      left: 0;
+      -webkit-transform: translate3d(-50%, 0, 0);
+      transform: translate3d(-50%, 0, 0);
+  }
+}
+@media (min-width: 992px ) {
+  
+  .carousel-inner > .item.next,
+  .carousel-inner > .item.active.right {
+      left: 0;
+      -webkit-transform: translate3d(16.7%, 0, 0);
+      transform: translate3d(16.7%, 0, 0);
+  }
+  .carousel-inner > .item.prev,
+  .carousel-inner > .item.active.left {
+      left: 0;
+      -webkit-transform: translate3d(-16.7%, 0, 0);
+      transform: translate3d(-16.7%, 0, 0);
+  }
+  
+}
+
+</style>
+
 <?php
     include 'func/header.php';
     validateFolioVenta($_GET["folio"]);
@@ -38,7 +130,6 @@
 <div class="col-lg-12 col-md-6 text-center">
     <a class="button small button-black mb-20" href="#" data-toggle="modal" data-target="#delete"><span>Eliminar</span> </a>
     <a class="button small button-black mb-20" href="#" data-toggle="modal" data-target="#success_sale"><span>Remisionar</span> </a>
-    <a class="button small button-black mb-20" href="/facturar.php?folio=<?php echo $_GET["folio"] ?>&stocck=1"><span>Facturar</span> </a>
     <a class="button small button-black mb-20" href="/sale_finaly_report_cotizacion.php?folio_sale=<?php echo $_GET["folio"] ?>"><span>Imprimir</span> </a>
     <a class="button small button-black mb-20" href="#" data-toggle="modal" data-target="#credit<?php echo $_GET["folio"] ?>"><span>Credito</span> </a>
     <a class="button small button-black mb-20" href="#" data-toggle="modal" data-target="#mail<?php echo $_GET["folio"] ?>"><span>Enviar</span> </a>
@@ -49,6 +140,7 @@
     <!-- Start Product List -->
     <div class="product-list-tab">
         <div class="container">
+            <?php echo GetProductsOfetsGalery(); ?>
             <div class="row">
                 <div class="product-list tab-content">
                     <div role="tabpanel" class="tab-pane fade in active" id="home">
@@ -116,6 +208,9 @@
     {
         echo table_SalesModal($_GET["folio"]);
     }
+
+    echo GetProductsOfetsGalery_modal ($_GET["folio"]);
+
     echo table_cotizacion_modal();
 ?>
         
@@ -212,11 +307,20 @@
       </div>
       <div class="modal-body">
         <p>Al REMISIONAR la cotizacion, el sistema disminuira las existencias de cada producto agregado y posteriomente tomara la sumatoria como un ingreso.</p>
-
+        <form action="func/product_sale_finaly.php" method="post">
         
+        <?php echo Select_estrategias(); ?>
+        <br><br>
+        <div class="col-md-12">
+            <label class="containeruser">Solicitar Factura
+                <input type="checkbox" id="facturar" name="facturar">
+                <span class="checkmark"></span>
+            </label>
+        </div>
+        <br><br>
       </div>
       <div class="modal-footer">
-        <form action="func/product_sale_finaly.php" method="post">
+        
             <input type="hidden" id="folio" name="folio" value="<?php echo $_GET["folio"]; ?>">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">NO</button>
             <button type="submit" class="btn btn-warning">CONFIRMAR</button>
@@ -225,3 +329,22 @@
     </div>
   </div>
 </div>
+
+<script>
+    $('.carousel[data-type="multi"] .item').each(function(){
+  var next = $(this).next();
+  if (!next.length) {
+    next = $(this).siblings(':first');
+  }
+  next.children(':first-child').clone().appendTo($(this));
+
+  for (var i=0;i<4;i++) {
+    next=next.next();
+    if (!next.length) {
+    	next = $(this).siblings(':first');
+  	}
+    
+    next.children(':first-child').clone().appendTo($(this));
+  }
+});
+</script>

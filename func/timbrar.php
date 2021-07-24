@@ -386,6 +386,7 @@ if (ExistFact($_POST['folio']) == false)
                 }
             }
         }
+        ProspectToClient($folio);
         echo '<script>location.href = "SDK2/timbrados/'.$folio.'.pdf"</script>';
         SendMailLog($folio, false);
     }

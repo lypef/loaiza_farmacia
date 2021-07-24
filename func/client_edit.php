@@ -11,9 +11,10 @@
     $rfc = $_POST['rfc'];
     $r_social = $_POST['r_social'];
     $correo = $_POST['correo'];
+    $clasificacion = $_POST['clasificacion'];
     
     $con = db_conectar();  
-    mysqli_query($con,"UPDATE `clients` SET `nombre` = '$nombre', `direccion` = '$direccion', `telefono` = '$telefono', `descuento` = '$p_descuento', `rfc` = '$rfc', `razon_social` = '$r_social', `correo` = '$correo' WHERE id = '$id';");
+    mysqli_query($con,"UPDATE `clients` SET `nombre` = '$nombre', `direccion` = '$direccion', `telefono` = '$telefono', `descuento` = '$p_descuento', `rfc` = '$rfc', `razon_social` = '$r_social', `correo` = '$correo', `clasificacion` = '$clasificacion' WHERE id = '$id';");
 
     if (!mysqli_error($con))
     {

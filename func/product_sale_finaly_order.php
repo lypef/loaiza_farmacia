@@ -4,6 +4,17 @@
     $con = db_conectar();  
     
     $folio = $_POST['folio'];
+    $estrategia = $_POST['estrategia'];
+    $fecha_venta = date("Y-m-d H:i:s");
+
+    if ($_POST['facturar'])
+    {
+        $facturar = 1;
+    }else
+    {
+        $facturar = 0;
+    }
+    
     $total = 0;
     $descuento = Sale_Descuento($folio);
     
@@ -37,10 +48,21 @@
     
     if ($adeudo <= 0)
     {
-        mysqli_query($con,"UPDATE `folio_venta` SET `open` = '0' WHERE folio = $folio;");
+        mysqli_query($con,"UPDATE `folio_venta` SET `open` = '0', `facturar` = '$facturar', `estrategia` = '$estrategia', `fecha_venta` = '$fecha_venta' WHERE folio = $folio;");
         if (!mysqli_error($con))
         {
-            echo '<script>location.href = "/orders.php?folio='.$folio.'&sale_finaly=true"</script>';
+            // Agendar instalacion
+
+            if ($_POST['agendar_instalacion']) {  if ($_SESSION['install'] == 1) { $agendar_instalacion = 1;  } }
+            else { $agendar_instalacion = 0; }
+
+            if ($agendar_instalacion == 1)
+            {
+                echo '<script>location.href = "/schedule.php?folio='.$folio.'&folio_edit=0"</script>';
+            }else
+            {
+                echo '<script>location.href = "/orders.php?folio='.$folio.'&sale_finaly=true"</script>';
+            }
         }else
         {
             echo '<script>location.href = "/sale_order.php?folio='.$folio.'&nosale_finaly=true"</script>';

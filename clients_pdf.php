@@ -37,7 +37,7 @@
     <h1><center>'.$_SESSION['empresa_nombre'].'</center></h1>
     <h4><center>LISTA DE CLIENTES</center></h4>
     <hr width="50%">
-    <table border="1">
+    <table border="1" width="100%">
         <tr>
         <th>NOMBRE</th>
         <th>DIRECCION</th>

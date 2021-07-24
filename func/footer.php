@@ -82,19 +82,6 @@
     </div>
     <!-- Body main wrapper end -->
 
-    <!-- Placed js at the end of the document so the pages load faster -->
-
-    <!-- jquery latest version -->
-    <script src="js/vendor/jquery-3.1.1.min.js"></script>
-    <!-- Bootstrap framework js -->
-    <script src="js/bootstrap.min.js"></script>
-    <!-- Particles js -->
-    <script src="js/particles.js"></script>
-    <!-- All js plugins included in this file. -->
-    <script src="js/plugins.js"></script>
-    <!-- Main js file that contents all jQuery plugins activation. -->
-    <script src="js/main.js"></script>
-    
     <!-- Ventanas modal-->
     <div class="modal fade" id="Empresa_datos" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -709,6 +696,41 @@
 						<span class="checkmark"></span>
 					</label>
 				</div>
+
+                <div class="col-md-4">
+				<label class="containeruser">VTD Personalizadas
+						<input type="checkbox" id="vtd_pg" name="vtd_pg">
+						<span class="checkmark"></span>
+					</label>
+				</div>
+                
+                <div class="col-md-4">
+					<label class="containeruser">TODAS LAS ESTADISTICAS
+						<input type="checkbox" id="full_graficas" name="full_graficas">
+						<span class="checkmark"></span>
+					</label>
+				</div>
+
+                <div class="col-md-4">
+					<label class="containeruser">TRASPASOS
+						<input type="checkbox" id="traspasos" name="traspasos">
+						<span class="checkmark"></span>
+					</label>
+				</div>
+
+                <div class="col-md-4">
+					<label class="containeruser">FACTURAR
+						<input type="checkbox" id="facturar" name="facturar">
+						<span class="checkmark"></span>
+					</label>
+				</div>
+
+                <div class="col-md-4">
+					<label class="containeruser">SALIDAS
+						<input type="checkbox" id="install" name="install">
+						<span class="checkmark"></span>
+					</label>
+				</div>
         </div>
 
             </div>
@@ -886,6 +908,17 @@
                               
                               <div class="col-md-12">
                                 <br>
+                                <label>Seleccione una clasificacion</label>
+                                <select id="clasificacion" name="clasificacion">
+                                    <option value='A'>A</option>
+                                    <option value='B' selected>B</option>
+                                    <option value='C'>C</option>
+                                    <option value='D'>D</option>
+                                </select>
+                              </div>
+                              
+                              <div class="col-md-12">
+                                <br>
                                 <label>Ingrese direccion de cliente</label>
                                 <input type="text" name="direccion" id="direccion" placeholder="Direccion fisica de cliente">
                               </div>
@@ -931,6 +964,79 @@
 			</div>
 			</div>
     <!-- Finaliza agregar cliente-->
+
+    <!-- Inicia Agregar prospecto -->
+    <div class="modal fade" id="addprospecto" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel"><center>AGREGAR PROSPECTO</center></center></h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						
+						<form id="contact-form" action="func/prospect_add.php" method="post" autocomplete="off">
+                              
+                            <div class="col-md-12">
+                                <label>Interes<span class="required">*</span></label>
+                                <input type="text" name="interes" id="interes" placeholder="Ingrese el interes" required>
+                              </div>
+                              
+                              <div class="col-md-12">
+                                <br>
+                                <label>Ingrese nombre<span class="required">*</span></label>
+                                <input type="text" name="nombre" id="nombre" placeholder="Nombre o razon social" required>
+                              </div>
+                              
+                              <div class="col-md-12">
+                                <br>
+                                <label>Seleccione una clasificacion</label>
+                                <select id="clasificacion" name="clasificacion">
+                                    <option value='A'>A</option>
+                                    <option value='B' selected>B</option>
+                                    <option value='C'>C</option>
+                                    <option value='D'>D</option>
+                                </select>
+                              </div>
+                              
+                              <div class="col-md-12">
+                                <br>
+                                <label>Ingrese telefono</label>
+                                <input type="number" name="telefono" id="telefono" placeholder="Telefono de contacto">
+                            </div>
+                
+                            <div class="col-md-12">
+                                <br>
+                                <label>Ingrese correo electronico</label>
+                                <input type="text" name="correo" id="correo" placeholder="Email de cliente o empresa">
+                            </div>
+
+                            <div class="col-md-12">
+                                <br>
+                                <label>Como se entero de nosotros</label>
+                                <select id="c_entero_nosotros" name="c_entero_nosotros">
+                                    <option value="Facebook">Facebook</option>
+                                    <option value="Whatsapp">Whatsapp</option>
+                                    <option value="Google">Google</option>
+                                    <option value="Tienda">Tienda</option>
+                                    <option value="Recomendacion">Recomendacion</option>
+                                </select>
+                            </div>
+					</div>
+				</div>
+				<div class="modal-footer">
+						<input type="hidden" id="url" name="url" value="<?php echo $_SERVER['REQUEST_URI'] ?>">
+						<input type="hidden" id="url_web" name="url_web" value="<?php echo $_SERVER['HTTP_HOST'] ?>">
+						<button type="sumbit" class="btn btn-success"  onclick="javascript:this.form.submit(); this.disabled= true;" >Enviar</button>
+					</form>
+				</div>
+				</div>
+			</div>
+			</div>
+    <!-- Finaliza agregar prospecto-->
 
     <!-- Inicia Agregar credito -->
     <div class="modal fade" id="addcredit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -997,33 +1103,143 @@
     <!-- Finaliza agregar credito-->
 
 
-<!-- Inicia Generar ticket soporte tecnico -->
-<div class="modal fade" id="addsoportetecnico" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-			<div class="modal-dialog" role="document">
-				<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalLabel"><center>Ingrese folio de venta o licencia</center></center></h5>
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="modal-body">
-					<div class="row">
-						
-                    <form id="contact-form" action="func/create_sale_soporte.php" method="post" autocomplete="off">
-                              <div class="col-md-12">
-                                <input type="tel" name="folio" id="folio" placeholder="Folio venta, Licencia de usuario" required>
-                              </div>
-					</div>
-				</div>
-				<div class="modal-footer">
-						<button type="sumbit" class="btn btn-success"  onclick="javascript:this.form.submit(); this.disabled= true;" >Solicitar</button>
-					</form>
-				</div>
-				</div>
-			</div>
-			</div>
-    <!-- Finaliza Generar ticket soporte tecnico -->
+<!-- Inicia Generar codebar-->
+<div class="modal fade" id="GenOneCodeBar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"><center>Escanee el codigo de barra</center></center></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    
+                <form id="contact-form" action="func/gen_one_codebar.php" method="post" autocomplete="off">
+                            <div class="col-md-12">
+                            <input type="text" name="code" id="code" placeholder="Escribe o escanee el codigo de barras aqui" required>
+                            </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                    <button type="sumbit" class="btn btn-success"  onclick="javascript:this.form.submit(); document.getElementById('code').value= ''; " >Generar</button>
+                </form>
+            </div>
+            </div>
+        </div>
+        </div>
+
+<!-- Inicia nueva salida-->
+<div class="modal fade" id="NewExit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"><center>Ingrese concepto de la salida</center></center></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            
+        <form id="contact-form" action="func/create_exit.php" method="post" autocomplete="off">
+                    <div class="col-md-12">
+                    <input type="text" name="concepto" id="concepto" placeholder="Concepto o motivo" required>
+                    </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+            <button type="sumbit" class="btn btn-success"  onclick="javascript:this.form.submit(); document.getElementById('concepto').value= ''; " >Crear</button>
+        </form>
+    </div>
+    </div>
+</div>
+</div>
+
+<!-- Inicia Abrir encuesta-->
+<div class="modal fade" id="OpenSuervey" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"><center>Ingrese numero de encuesta</center></center></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    
+                <form class="header-search-box" action="survey_add.php" method="get">
+                    <div class="col-md-12">
+                    <input type="text" name="folio" id="folio" placeholder="Ingrese un folio de venta" required>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                    <button type="sumbit" class="btn btn-success"  onclick="javascript:this.form.submit(); document.getElementById('code').value= ''; " >Abrir</button>
+                </form>
+            </div>
+            </div>
+        </div>
+        </div>
+
+
+<!-- Inicia Generar codebar-->
+<div class="modal fade" id="GenMulCodeBar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"><center>Ingrese el numero de codigos que desea generar</center></center></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            
+        <form id="contact-form" action="gen_codebar_mult.php" method="post" autocomplete="off">
+                    <div class="col-md-12">
+                    <input type="number" min= "1" name="number" id="number" placeholder="0" required value="1">
+                    </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+            <button type="sumbit" class="btn btn-success"  onclick="javascript:this.form.submit();" >Generar</button>
+        </form>
+    </div>
+    </div>
+</div>
+</div>
+
+<!-- Inicia Generar Full codebar-->
+<div class="modal fade" id="GenFullCodeBar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">GERERAR TODOS LOS CODIGOS ?</h5>
+        <button type="button" id="cut_z_yes_global_close" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <p>Este procedimiento genera cada uno de los codigos de barra por cada producto. Es un procedimiento pesado de acuerdo al numero de productos que tenga. Quiere generarlos ahora ?</p>
+    </div>
+    <div class="modal-footer">
+        <form action="/func/gen_full_codebar.php" method="post">
+            
+            <input type="hidden" id="usuario" name="usuario" value="<?php echo $_GET["usuario"]; ?>">
+            <input type="hidden" id="sucursal" name="sucursal" value="<?php echo $_GET["sucursal"]; ?>">
+            
+            <button type="button" name="no" id="no" class="btn btn-secondary" data-dismiss="modal">NO</button>
+            <button type="submit" class="btn btn-danger" onclick='document.getElementById("cut_z_yes_global_close").click();'>SI</button>
+        </form>
+    </div>
+    </div>
+</div>
+</div>
+<!-- Finaliza Generar ticket soporte tecnico -->
+
 
     <script>
     if (getUrlVars()["error_update_empresa"])
@@ -1177,7 +1393,7 @@
         body +="<button type='button' class='close' data-dismiss='alert' aria-label='Close'>";
         body +="<span aria-hidden='true'>&times;</span>";
         body +="</button>";
-        body +="<strong>AGREGADO!</strong> Cliente agregado con exito.";
+        body +="<strong>AGREGADO!</strong> Contacto agregado con exito.";
         body +="</div>";
         document.getElementById("message").innerHTML = body;
     }
@@ -1187,7 +1403,7 @@
         body +="<button type='button' class='close' data-dismiss='alert' aria-label='Close'>";
         body +="<span aria-hidden='true'>&times;</span>";
         body +="</button>";
-        body +="<strong>ERROR!</strong> Verifique informacion de cliente";
+        body +="<strong>ERROR!</strong> Verifique informacion de contacto";
         body +="</div>";
         document.getElementById("message").innerHTML = body;
     }
@@ -1265,6 +1481,17 @@
         document.getElementById("message").innerHTML = body;
     }
 
+    if (getUrlVars()["max_ventas"])
+    {
+        var body = "<div class='alert alert-danger alert-dismissible show' role='alert'>";
+        body +="<button type='button' class='close' data-dismiss='alert' aria-label='Close'>";
+        body +="<span aria-hidden='true'>&times;</span>";
+        body +="</button>";
+        body +="<strong>ERROR!</strong> No se permiten mas de 5 ventas abiertas";
+        body +="</div>";
+        document.getElementById("message").innerHTML = body;
+    }
+
     function hideMenuVarMobile() 
     {
         jQuery('.mean-nav ul:first').slideUp();
@@ -1275,13 +1502,24 @@
     </script>
 </body>
 
-</html>
+<!-- Placed js at the end of the document so the pages load faster -->
+
+<!-- Bootstrap framework js -->
+<script src="js/bootstrap.min.js"></script>
+<!-- Particles js -->
+<script src="js/particles.js"></script>
+<!-- All js plugins included in this file. -->
+<script src="js/plugins.js"></script>
+<!-- Main js file that contents all jQuery plugins activation. -->
+<script src="js/main.js"></script>
+
 </div>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<script type="text/javascript">
-$(window).load(function() {
-	$('#preloader').fadeOut('slow');
-	$('body').css({'overflow':'visible'});
-})
+<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>-->
+<script>
+    $(window).on('load', function () {
+        $('#preloader').fadeOut('slow');
+        $('body').css({'overflow':'visible'});
+    })
 </script>
-<div id="fb-root"></div>
+
+</html>

@@ -581,4 +581,37 @@ function hideMenuVarMobile()
     jQuery(".meanmenu-reveal.meanclose").toggleClass("meanclose").html("<span /><span /><span />");
     this.menuOn = false;
 }
+
+    if (getUrlVars()["no_exist"])
+    {
+        var body = "<div class='alert alert-danger alert-dismissible show' role='alert'>";
+        body +="<button type='button' class='close' data-dismiss='alert' aria-label='Close'>";
+        body +="<span aria-hidden='true'>&times;</span>";
+        body +="</button>";
+        body +="<strong>Error!</strong> Esta venta no existe.";
+        body +="</div>";
+        document.getElementById("message").innerHTML = body;
+    }
+
+    if (getUrlVars()["no_process"])
+    {
+        var body = "<div class='alert alert-danger alert-dismissible show' role='alert'>";
+        body +="<button type='button' class='close' data-dismiss='alert' aria-label='Close'>";
+        body +="<span aria-hidden='true'>&times;</span>";
+        body +="</button>";
+        body +="<strong>Error!</strong> Esta encuesta ya fue respondida";
+        body +="</div>";
+        document.getElementById("message").innerHTML = body;
+    }
+
+    if (getUrlVars()["yes_process"])
+    {
+        var body = "<div class='alert alert-success alert-dismissible show' role='alert'>";
+        body +="<button type='button' class='close' data-dismiss='alert' aria-label='Close'>";
+        body +="<span aria-hidden='true'>&times;</span>";
+        body +="</button>";
+        body +="<strong>Gracias!</strong> La encuesta se realizo con exito. <b>Gracias</b>.";
+        body +="</div>";
+        document.getElementById("message").innerHTML = body;
+    }
 </script>

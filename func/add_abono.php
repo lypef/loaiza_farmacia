@@ -34,6 +34,7 @@
     
         if (!mysqli_error($con))
         {
+            ProspectToClient($folio_a);
             echo '<script>location.href = "/sale_order.php?folio='.$folio_a.'&abono=true&pay='.$folio.'"</script>';
         }else
         {

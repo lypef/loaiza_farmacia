@@ -18,10 +18,17 @@
         $iva = 16;
         $t_pago = 'oxxo';
         
-        mysqli_query($con,"INSERT INTO `folio_venta` (`folio`,`vendedor`, `client`, `descuento`, `fecha`, `open`, `sucursal`, `iva`, `t_pago`, `pedido`,`folio_venta_ini`,`cobrado`,`cotizacion`) VALUES ('$folio', '$vendedor', '$client', '$descuento', '$fecha', '1', '$sucursal','$iva', '$t_pago', '0','$folio','0','1');");
-        $r = 1;
-
-        echo '<script>location.href = "/soporte_asistencia_tecnico.php?pagina=1&folio='.$folio.'"</script>';
+        if (!CheckCreditExistClient($client))
+        {
+            mysqli_query($con,"INSERT INTO `folio_venta` (`folio`,`vendedor`, `client`, `descuento`, `fecha`, `open`, `sucursal`, `iva`, `t_pago`, `pedido`,`folio_venta_ini`,`cobrado`,`cotizacion`) VALUES ('$folio', '$vendedor', '$client', '$descuento', '$fecha', '1', '$sucursal','$iva', '$t_pago', '0','$folio','0','1');");
+            $r = 1;
+    
+            echo '<script>location.href = "/soporte_asistencia_tecnico.php?pagina=1&folio='.$folio.'"</script>';    
+        }else
+        {
+            echo '<script>location.href = "/credits.php?client='.$client.'&sucursal=0&adeudo=true"</script>';
+        }
+        
     }else
     {
         echo 'El folio no existe, consulte nuevamente.';

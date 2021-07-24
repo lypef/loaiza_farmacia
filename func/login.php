@@ -45,6 +45,10 @@ else
               $_SESSION['caja'] = $row[21];
               $_SESSION['super_pedidos'] = $row[22];
               $_SESSION['vtd_pg'] = $row[25];
+              $_SESSION['full_graficas'] = $row[26];
+              $_SESSION['traspasos'] = $row[27];
+              $_SESSION['facturar'] = $row[28];
+              $_SESSION['install'] = $row[29];
             }
              
             $tmp = mysqli_query($con, "SELECT * FROM empresa");
@@ -74,7 +78,7 @@ else
             setcookie('clta_session', 'yes', time() + (86400 * 30), "/"); // 86400 = 1 day
             setcookie('clta_session_user', $user, time() + (86400 * 30), "/"); // 86400 = 1 day
             setcookie('clta_session_pass', $pass, time() + (86400 * 30), "/"); // 86400 = 1 day
-            echo '<script>location.href = "products.php?pagina=1"</script>';
+            echo '<script>location.href = "/dashboard.php?desde='.date("Y-m-d").'&hasta='.date("Y-m-d").'&user='.$_SESSION["users_id"].'"</script>';
     }
     else
     {

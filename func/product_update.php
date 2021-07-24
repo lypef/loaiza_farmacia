@@ -74,6 +74,7 @@
         $cv = $_POST['cv'];
         $um = $_POST['um'];
         $um_des = $_POST['um_des'];
+
         
         $name_img = date("YmdHis").".jpg";
 

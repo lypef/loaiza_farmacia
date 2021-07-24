@@ -4,6 +4,10 @@
     
     if ($_SESSION['token'] == GetToken())
     {
+        session_start();
+        $user = $_SESSION['users_id'];
+        $creado = date("Y-m-d");
+
         $url = 'http://' .$_POST['url_web'] . $_POST['url'];
         $url = remove_url_query_args($url,array("client_add_noadd","client_add_noadd"));
         
@@ -14,10 +18,11 @@
         $rfc = strtoupper($_POST['rfc']);
         $r_social = strtoupper($_POST['r_social']);
         $correo = $_POST['correo'];
+        $clasificacion = $_POST['clasificacion'];
         
         
         $con = db_conectar();  
-        mysqli_query($con,"INSERT INTO `clients` (`nombre`, `direccion`, `telefono`, `descuento`, `rfc`, `razon_social`, `correo`) VALUES ('$nombre', '$direccion', '$telefono', '$p_descuento', '$rfc', '$r_social', '$correo');");
+        mysqli_query($con,"INSERT INTO `clients` (`nombre`, `direccion`, `telefono`, `descuento`, `rfc`, `razon_social`, `correo`, `user`, `creado`, `clasificacion`) VALUES ('$nombre', '$direccion', '$telefono', '$p_descuento', '$rfc', '$r_social', '$correo', '$user', '$creado', '$clasificacion');");
     
         $addpregunta = false;
     

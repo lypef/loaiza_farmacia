@@ -3,7 +3,7 @@
 ?>
 <div class="col-md-12">
     <div class="section-title-2 text-uppercase mb-40 text-center">
-            <h4>SELECCIONE CLIENTE PARA CREAR VENTA</h4>
+            <h4>SELECCIONE CONTACTO PARA CREAR VENTA</h4>
     </div>
     <?php 
 

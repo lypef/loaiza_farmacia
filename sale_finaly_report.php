@@ -51,7 +51,7 @@
             $r_social = ' | ' . $r_social;
         }
         
-        $products = mysqli_query($con,"SELECT p.nombre, p.`no. De parte`, v.unidades, v.precio , a.nombre, p.loc_almacen, v.product_sub FROM product_venta v, productos p, almacen a WHERE v.product = p.id and p.almacen = a.id and v.folio_venta = '$folio'");
+        $products = mysqli_query($con,"SELECT if (v.ancho > 0,CONCAT(p.nombre,': ', v.ancho, ' X ', v.alto, '<br> X ', v.largo,' | ', v.peso,' KGs'),p.nombre) as nombre, p.`no. De parte`, v.unidades, v.precio , a.nombre, p.loc_almacen, v.product_sub FROM product_venta v, productos p, almacen a WHERE v.product = p.id and p.almacen = a.id and v.folio_venta = '$folio'");
         $body_products = '';
         while($row = mysqli_fetch_array($products))
         {
@@ -144,7 +144,7 @@
         
         
         @page {
-            size: 5cm 40cm;
+            size: 8cm 40cm;
             font-size: 12px;
             margin-top: 0.1em;
             margin-left: 0.1em;
@@ -170,7 +170,7 @@
         ';
         
         $codigoHTML .= FooterPageReport();
-        
+
         $codigoHTML = mb_convert_encoding($codigoHTML, 'HTML-ENTITIES', 'UTF-8');
         $dompdf=new DOMPDF();
         $dompdf->set_paper('letter');
@@ -209,7 +209,7 @@
             $r_social = ' | ' . $r_social;
         }
         
-        $products = mysqli_query($con,"SELECT p.nombre, p.`no. De parte`, v.unidades, v.precio , a.nombre, p.loc_almacen, v.product_sub FROM product_venta v, productos p, almacen a WHERE v.product = p.id and p.almacen = a.id and v.folio_venta = '$folio'");
+        $products = mysqli_query($con,"SELECT if (v.ancho > 0,CONCAT(p.nombre,': ', v.ancho, ' X ', v.alto, ' X ', v.largo,' | ', v.peso,' KGs'),p.nombre) as nombre, p.`no. De parte`, v.unidades, v.precio , a.nombre, p.loc_almacen, v.product_sub FROM product_venta v, productos p, almacen a WHERE v.product = p.id and p.almacen = a.id and v.folio_venta = '$folio'");
         $body_products = '';
 
         while($row = mysqli_fetch_array($products))
@@ -577,7 +577,6 @@
         
         $codigoHTML .= FooterPageReport();
         
-
         $codigoHTML = mb_convert_encoding($codigoHTML, 'HTML-ENTITIES', 'UTF-8');
         $dompdf=new DOMPDF();
         $dompdf->set_paper('letter');

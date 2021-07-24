@@ -142,7 +142,46 @@
         {
             $super_pedidos = 0;
         }
+
+        if ($_POST['vtd_pg'])
+        {
+            $vtd_pg = 1;
+        }else
+        {
+            $vtd_pg = 0;
+        }
+
+        if ($_POST['full_graficas'])
+        {
+            $full_graficas = 1;
+        }else
+        {
+            $full_graficas = 0;
+        }
+
+        if ($_POST['traspasos'])
+        {
+            $traspasos = 1;
+        }else
+        {
+            $traspasos = 0;
+        }
         
+        if ($_POST['facturar'])
+        {
+            $facturar = 1;
+        }else
+        {
+            $facturar = 0;
+        }
+
+        if ($_POST['install'])
+        {
+            $install = 1;
+        }else
+        {
+            $install = 0;
+        }
         
         
         $name_img = date("YmdHis").".jpg";
@@ -160,7 +199,7 @@
             }
         }
     
-        mysqli_query($con,"INSERT INTO `users` (`username`, `password`, `nombre`, `imagen`, `product_add`, `product_gest`, `gen_orden_compra`, `client_add`, `client_guest`, `almacen_add`, `almacen_guest`, `depa_add`, `depa_guest`, `propiedades`, `usuarios`, `finanzas`, `descripcion`, `sucursal`, `change_suc`, `sucursal_gest`, `caja`, `super_pedidos`) VALUES ('$username', '$pass', '$nombre','$img', '$product_add', '$product_gest', '$gen_orden_compra', '$client_add', '$client_guest', '$almacen_add', '$almacen_guest', '$depa_add', '$depa_guest', '$propiedades', '$usuarios', '$finanzas', '$descripcion', '$sucursal', '$change_suc', '$sucursal_gest', '$caja', '$super_pedidos');");
+        mysqli_query($con,"INSERT INTO `users` (`username`, `password`, `nombre`, `imagen`, `product_add`, `product_gest`, `gen_orden_compra`, `client_add`, `client_guest`, `almacen_add`, `almacen_guest`, `depa_add`, `depa_guest`, `propiedades`, `usuarios`, `finanzas`, `descripcion`, `sucursal`, `change_suc`, `sucursal_gest`, `caja`, `super_pedidos`, `full_graficas`, `vtd_pg`, `traspasos`, `facturar`, `install`) VALUES ('$username', '$pass', '$nombre','$img', '$product_add', '$product_gest', '$gen_orden_compra', '$client_add', '$client_guest', '$almacen_add', '$almacen_guest', '$depa_add', '$depa_guest', '$propiedades', '$usuarios', '$finanzas', '$descripcion', '$sucursal', '$change_suc', '$sucursal_gest', '$caja', '$super_pedidos', '$full_graficas', '$vtd_pg', '$traspasos', '$facturar', '$install');");
     
         if (!mysqli_error($con))
         {
