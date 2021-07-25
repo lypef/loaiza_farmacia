@@ -13617,7 +13617,7 @@
 	{
 		$con = db_conectar();
 		
-		$data = mysqli_query($con,"SELECT p.id, p.`no. De parte`, p.nombre, p.stock_min, p.stock_max, p.stock, p.proveedor, p.marca, a.nombre ,p.loc_almacen FROM productos p, almacen a where p.stock_min >= p.stock  and p.stock_max > p.stock and p.almacen = a.id  ORDER by p.nombre asc");
+		$data = mysqli_query($con,"SELECT p.id, p.`no. De parte`, p.nombre, p.stock_min, p.stock_max, p.stock, p.proveedor, p.marca, a.nombre ,p.loc_almacen, a.id FROM productos p, almacen a where p.stock_min >= p.stock  and p.stock_max > p.stock and p.almacen = a.id  ORDER by p.nombre asc");
 		
 		if (!$marca)
 		{
@@ -13665,6 +13665,7 @@
 					</thead>
 					<tbody>';
 		
+		$cont = 1;
 
 		while($row = mysqli_fetch_array($data))
 	    {
@@ -13684,17 +13685,24 @@
 			<td class="item-des"><p>'.$row[4].'</p></td>
 			<td class="item-des"><p>'.$stock.'</p></td>
 			<td class="item-des"><p>
-			<input type="number" value="'.$pedir.'">
+			<input type="hidden" id="product_'.$cont.'" value="'.$row[0].'">
+			<input type="hidden" id="hijo_'.$cont.'" value="0">
+			<input type="number" id="pedir_'.$cont.'" value="'.$pedir.'" onchange="generateArr()">
+			<input type="hidden" id="almacen_'.$cont.'" value="'.$row[10].'">
 			</p></td>
 			<td class="item-des"><p>'.$row[8].' '.$row[9].'</p></td>
 			</tr>
 			';
 			
 			// Add hijos
-			$hijos = mysqli_query($con,"SELECT s.id, s.padre, a.nombre, s.stock, s.min, s.max, s.ubicacion FROM productos_sub s, almacen a where s.min >= s.stock  and s.max > s.stock and s.almacen = a.id and padre = $row[0] ");
-        
+			$hijos = mysqli_query($con,"SELECT s.id, s.padre, a.nombre, s.stock, s.min, s.max, s.ubicacion, a.id FROM productos_sub s, almacen a where s.min >= s.stock  and s.max > s.stock and s.almacen = a.id and padre = $row[0] ");
+			
+			
+
 			while($item = mysqli_fetch_array($hijos))
 			{
+				$cont ++;
+
 				$pedir0 = 0;
 				$stock0 = $item[3];
 				$min = $item[4];
@@ -13711,12 +13719,17 @@
 				<td class="item-des"><p>'.$max.'</p></td>
 				<td class="item-des"><p>'.$stock0.'</p></td>
 				<td class="item-des"><p>
-				<input type="number" value="'.$pedir0.'">
+				<input type="hidden" id="product_'.$cont.'" value="0">
+				<input type="hidden" id="hijo_'.$cont.'" value="'.$row[0].'">
+				<input type="number" id="pedir_'.$cont.'" value="'.$pedir0.'" onchange="generateArr()">
+				<input type="hidden" id="almacen_'.$cont.'" value="'.$item[7].'">
 				</p></td>
 				<td class="item-des"><p>'.$item[2].' '.$item[6].'</p></td>
 				</tr>
 				';
 			} //Finaliza hijos
+			
+			$cont ++;
 		}
 		$body = $body . '
 		</tbody>

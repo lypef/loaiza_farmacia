@@ -44,6 +44,7 @@
     <br>
     <div id="areaImprimir">    
         <?php  
+
             if (!$_GET["almacen"] && !$_GET["marca"] && !$_GET["proveedor"])
             {
                 echo g_orden_compra_todos($_GET["almacen"], $_GET["marca"], $_GET["proveedor"]);
@@ -81,11 +82,36 @@
 </div>  
 
 <div align="right">
+    <input type="text" id="arreglo_products">
+    <a class="button large mb-20" onclick="generateArr()"><span>Crear</span> </a>
     <a class="button large mb-20" onclick="printDiv('areaImprimir')"><span>Imprimir</span> </a>
 </div>
 
 
 <script>
+
+function generateArr()
+{
+    var cont = 1;
+    var pedido = "";
+
+    while (true) {
+        if (document.getElementById("pedir_"+cont) != null)   
+        {
+            pedido += "|||";
+            pedido += document.getElementById("product_"+cont).value + ",";
+            pedido += document.getElementById("hijo_"+cont).value.toString() + ",";
+            pedido += document.getElementById("pedir_"+cont).value.toString() + ",";
+            pedido += document.getElementById("almacen_"+cont).value.toString() + ",";
+
+            cont ++;
+        }else { break; }
+    }
+    document.getElementById("arreglo_products").value = pedido 
+}
+
+generateArr();
+
 function printDiv(nombreDiv) {
      var contenido= document.getElementById(nombreDiv).innerHTML;
      var contenidoOriginal= document.body.innerHTML;
