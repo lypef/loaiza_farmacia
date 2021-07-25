@@ -10212,6 +10212,81 @@
 		return $body;
 	}
 
+	function table_orders_compra()
+	{
+	    			
+	    if ($_SESSION['propiedades'] > 0)
+	    {
+	        $data = mysqli_query(db_conectar(),"SELECT o.id, o.folio, u.nombre, o.fecha, o.unidades, o.pagar, if (o.estatus = 1, 'FINALIZADO', 'EN PROCESO') as estatus FROM order_buy o, users u WHERE o.user = u.id");
+	    }else
+	    {
+	        $data = mysqli_query(db_conectar(),"SELECT o.id, o.folio, u.nombre, o.fecha, o.unidades, o.pagar, if (o.estatus = 1, 'FINALIZADO', 'EN PROCESO') as estatus FROM order_buy o, users u WHERE o.user = u.id");
+	    }
+		
+		$body = '<br>
+		<form class="header-search-box" action="cotizaciones.php">
+			<div>
+				<input type="text" placeholder="Buscar" name="search" autocomplete="off" style="
+				  width: 100%;
+                  padding: 24px 20px;
+                  margin: 8px 0;
+                  display: inline-block;
+                  border: 3px solid #4A4A4A;
+                  border-radius: 4px;
+                  box-sizing: border-box;
+              ">
+			</div>
+		</form>
+		<table class="cart table">
+					<thead>
+						<tr>
+							<th class="table-head th-name uppercase">FOLIO</th>
+							<th class="table-head th-name uppercase">USUARIO</th>
+							<th class="table-head th-name uppercase text-center">FECHA</th>
+							<th class="table-head th-name uppercase text-center">UNIDADES</th>
+							<th class="table-head th-name uppercase text-center">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;COSTO&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+							<th class="table-head th-name uppercase text-center">estatus&nbsp;de&nbsp;orden</th>
+							<th class="table-head th-name uppercase text-center">opciones</th>
+						</tr>
+					</thead>
+					<tbody>';
+		$body = $body . $pagination;
+
+		while($row = mysqli_fetch_array($data))
+	    {
+			$body = $body.'
+			<tr>
+				<td class="item-des"><a href="/sale_finaly_report_cotizacion.php?folio_sale='.$row[1].'">'.$row[1].'</a></td>
+				<td class="item-des"><p>'.$row[2].'</p></td>
+				<td class="item-des"><center>'.GetFechaText($row[3]).'</center></td>
+				<td class="item-des"><center>'.$row[4].'</center></td>
+				
+				<td class="item-des" style="text-align: right;">$ '.number_format($row[5],GetNumberDecimales(),".",",").'</td>
+				
+				<td class="item-des" style="text-align: center;">'.$row[6].'</td>
+
+				<td class="item-des">
+					<center><a href="" class="button extra-small button-black mb-20" data-toggle="modal" data-target="#mail'.$row[0].'"><i class="zmdi zmdi-email zmdi-hc-2x"></i></a></center>
+				</td>
+			</tr>
+			';
+		}
+		/*Opciones
+		<td class="item-des">
+		<div class="col-md-12">
+			<a class="button extra-small button-black mb-20" data-toggle="modal" data-target="#edit'.$row[0].'" ><span> Opciones</span></a>
+		</div>
+		
+		</td>
+		*/
+		$body = $body . '
+		</tbody>
+			</table>';
+
+		$body = $body . $pagination;
+		return $body;
+	}
+
 	function table_salidas($pagina, $txt, $desde, $hasta)
 	{
 		//$inicio = '2018-07-18 00:00:00';
@@ -13617,7 +13692,7 @@
 	{
 		$con = db_conectar();
 		
-		$data = mysqli_query($con,"SELECT p.id, p.`no. De parte`, p.nombre, p.stock_min, p.stock_max, p.stock, p.proveedor, p.marca, a.nombre ,p.loc_almacen, a.id FROM productos p, almacen a where p.stock_min >= p.stock  and p.stock_max > p.stock and p.almacen = a.id  ORDER by p.nombre asc");
+		$data = mysqli_query($con,"SELECT p.id, p.`no. De parte`, p.nombre, p.stock_min, p.stock_max, p.stock, p.proveedor, p.marca, a.nombre ,p.loc_almacen, a.id, p.foto0, p.precio_costo FROM productos p, almacen a where p.stock_min >= p.stock  and p.stock_max > p.stock and p.almacen = a.id  ORDER by p.nombre asc");
 		
 		if (!$marca)
 		{
@@ -13650,20 +13725,27 @@
 				<h4>ORDEN DE COMPRA: '. $_SESSION['empresa_nombre'] .' | '. date("d-m-Y") .'</h4>
 				'.$val.'
 		</div>
-		<div class="table-responsive compare-wraper mt-30">
-				<table class="cart table">
-					<thead>
-						<tr>
-							<th class="table-head th-name uppercase">no. de parte</th>
-							<th class="table-head item-nam uppercase">PRODUCTO</th>
-							<th class="table-head item-nam uppercase">MINIMO</th>
-							<th class="table-head item-nam uppercase">MAXIMO</th>
-							<th class="table-head item-nam uppercase">disponible</th>
-							<th class="table-head item-nam uppercase">PEDIR</th>
-							<th class="table-head item-nam uppercase">UBICACION</th>
-						</tr>
-					</thead>
-					<tbody>';
+		
+		
+		<div class="wishlist-area" style="background-color: #f5f5f5;">
+		<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="wishlist-content">
+						<div class="wishlist-table table-responsive p-30 text-uppercase">
+							<table>
+								<thead>
+									<tr>
+										<th class="product-thumbnail"></th>
+										<th class="product-name"><span class="nobr">Producto</span></th>
+										<th class="product-prices text-center"><span class="nobr">Minimo </span></th>
+										<th class="product-prices text-center"><span class="nobr">Maximo </span></th>
+										<th class="product-prices text-center"><span class="nobr">Existencias </span></th>
+										<th class="product-prices text-center"><span class="nobr">Costo</span></th>
+										<th class="product-add-to-cart text-center"><span class="nobr">Pedir </span></th>
+									</tr>
+								</thead>
+								<tbody>';
 		
 		$cont = 1;
 
@@ -13678,19 +13760,47 @@
 			$pedir = $max - $stock;
 
 			$body = $body.'
+
 			<tr>
-			<td class="item-quality">'.$row[1].'</td>
-			<td class="item-des"><p>'.$row[2].'</p></td>
-			<td class="item-des"><p>'.$row[3].'</p></td>
-			<td class="item-des"><p>'.$row[4].'</p></td>
-			<td class="item-des"><p>'.$stock.'</p></td>
-			<td class="item-des"><p>
-			<input type="hidden" id="product_'.$cont.'" value="'.$row[0].'">
-			<input type="hidden" id="hijo_'.$cont.'" value="0">
-			<input type="number" id="pedir_'.$cont.'" value="'.$pedir.'" onchange="generateArr()">
-			<input type="hidden" id="almacen_'.$cont.'" value="'.$row[10].'">
-			</p></td>
-			<td class="item-des"><p>'.$row[8].' '.$row[9].'</p></td>
+				<td class="product-thumbnail"><img src="images/'.$row[11].'" alt="" height="110" width="110" /></td>
+				<td class="product-name pull-left mt-20">'.$row[2].'
+					<p class="w-color m-0">
+						<label> No. parte :</label>
+						'.$row[1].'
+					</p>
+					<p class="w-size m-0">
+						<label> Almacen :</label>
+						'.$row[8].'
+					</p>
+				</td>
+				
+				
+				<td>
+					<center>'.$min.'</center>
+				</td>
+				
+				<td>
+					<center>'.$max.'</center>
+				</td>
+				
+				<td>
+					<center>'.$row[5].'</center>
+				</td>
+
+				<td>
+					<center>$ '.number_format($row[12],GetNumberDecimales(),".",",").'</center>
+				</td>
+
+				<td class="product-value">
+	
+					<input type="hidden" id="product_'.$cont.'" value="'.$row[0].'">
+					<input type="hidden" id="hijo_'.$cont.'" value="0">
+					<center><input type="number" id="pedir_'.$cont.'" value="'.$pedir.'" onchange="generateArr()" style="text-align: center; border: 1px solid #d9534f;"></center>
+					<input type="hidden" id="almacen_'.$cont.'" value="'.$row[10].'">
+					<input type="hidden" id="costo_'.$cont.'" value="'.$row[12].'">
+
+				</td>
+				
 			</tr>
 			';
 			
@@ -13712,19 +13822,47 @@
 				$pedir0 = $max - $stock0;
 
 				$body = $body.'
+
 				<tr>
-				<td class="item-quality">'.$row[1].'</td>
-				<td class="item-des"><p>'.$row[2].'</p></td>
-				<td class="item-des"><p>'.$min.'</p></td>
-				<td class="item-des"><p>'.$max.'</p></td>
-				<td class="item-des"><p>'.$stock0.'</p></td>
-				<td class="item-des"><p>
-				<input type="hidden" id="product_'.$cont.'" value="0">
-				<input type="hidden" id="hijo_'.$cont.'" value="'.$row[0].'">
-				<input type="number" id="pedir_'.$cont.'" value="'.$pedir0.'" onchange="generateArr()">
-				<input type="hidden" id="almacen_'.$cont.'" value="'.$item[7].'">
-				</p></td>
-				<td class="item-des"><p>'.$item[2].' '.$item[6].'</p></td>
+					<td class="product-thumbnail"><img src="images/'.$row[11].'" alt="" height="110" width="110" /></td>
+					<td class="product-name pull-left mt-20">'.$row[2].'
+						<p class="w-color m-0">
+							<label> No. parte :</label>
+							'.$row[1].'
+						</p>
+						<p class="w-size m-0">
+							<label> Almacen :</label>
+							'.$item[2].'
+						</p>
+					</td>
+					
+					
+					<td>
+						<center>'.$min.'</center>
+					</td>
+					
+					<td>
+						<center>'.$max.'</center>
+					</td>
+					
+					<td>
+						<center>'.$item[3].'</center>
+					</td>
+
+					<td>
+						<center>$ '.number_format($row[12],GetNumberDecimales(),".",",").'</center>
+					</td>
+
+					<td class="product-value">
+		
+						<input type="hidden" id="product_'.$cont.'" value="0">
+						<input type="hidden" id="hijo_'.$cont.'" value="'.$row[0].'">
+						<center><input type="number" id="pedir_'.$cont.'" value="'.$pedir0.'" onchange="generateArr()" style="text-align: center; border: 1px solid #d9534f;"></center>
+						<input type="hidden" id="almacen_'.$cont.'" value="'.$item[7].'">
+						<input type="hidden" id="costo_'.$cont.'" value="'.$row[12].'">
+
+					</td>
+					
 				</tr>
 				';
 			} //Finaliza hijos
@@ -13734,6 +13872,30 @@
 		$body = $body . '
 		</tbody>
 			</table>
+		</div>
+		
+		
+		<div class="row">
+		<div class="cart-requerment mt-50 clearfix">
+	
+		<div class="col-md-offset-0 col-md-4 col-sm-offset-3 col-sm-6 clearfix">
+				<div class="counpon-total ml-35">
+					<div class="cart-title text-uppercase">
+						<h5 class="mb-30"><strong>TOTALES</strong></h5>
+					</div>
+					<table>
+						<tbody>
+						<tr class="cart-total">
+						<th>Productos</th>
+						<td> <p id="productos_total"></td>
+					</tr>
+						<tr class="cart-total">
+							<th><b>Pagar</b></th>
+							<td><b><p id="productos_pagar"></b></td>
+						</tbody>
+					</table> 
+				</div>
+			</div>                                            
 		</div>';
 
 		return $body;
@@ -13745,7 +13907,7 @@
 
 		$con = db_conectar();
 		
-		$data = mysqli_query($con,"SELECT p.id, p.`no. De parte`, p.nombre, p.stock_min, p.stock_max, p.stock, p.proveedor, p.marca, a.nombre ,p.loc_almacen FROM productos p, almacen a where p.stock_min >= p.stock  and p.stock_max > p.stock and p.almacen = a.id and almacen = '$almacen' ORDER by p.nombre asc");
+		$data = mysqli_query($con,"SELECT p.id, p.`no. De parte`, p.nombre, p.stock_min, p.stock_max, p.stock, p.proveedor, p.marca, a.nombre ,p.loc_almacen, a.id, p.foto0, p.precio_costo  FROM productos p, almacen a where p.stock_min >= p.stock  and p.stock_max > p.stock and p.almacen = a.id and almacen = '$almacen' ORDER by p.nombre asc");
 		
 		if (!$marca)
 		{
@@ -13778,21 +13940,27 @@
 				<h4>ORDEN DE COMPRA: '. $_SESSION['empresa_nombre'] .' | '. date("d-m-Y") .'</h4>
 				'.$val.'
 		</div>
-		<div class="table-responsive compare-wraper mt-30">
-				<table class="cart table">
-					<thead>
-						<tr>
-							<th class="table-head th-name uppercase">no. de parte</th>
-							<th class="table-head item-nam uppercase">producto</th>
-							<th class="table-head item-nam uppercase">MINIMO</th>
-							<th class="table-head item-nam uppercase">MAXIMO</th>
-							<th class="table-head item-nam uppercase">disponible</th>
-							<th class="table-head item-nam uppercase">PEDIR</th>
-							<th class="table-head item-nam uppercase">UBICACION</th>
-						</tr>
-					</thead>
-					<tbody>';
+		<div class="wishlist-area" style="background-color: #f5f5f5;">
+		<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="wishlist-content">
+						<div class="wishlist-table table-responsive p-30 text-uppercase">
+							<table>
+								<thead>
+									<tr>
+										<th class="product-thumbnail"></th>
+										<th class="product-name"><span class="nobr">Producto</span></th>
+										<th class="product-prices text-center"><span class="nobr">Minimo </span></th>
+										<th class="product-prices text-center"><span class="nobr">Maximo </span></th>
+										<th class="product-prices text-center"><span class="nobr">Existencias </span></th>
+										<th class="product-prices text-center"><span class="nobr">Costo</span></th>
+										<th class="product-add-to-cart text-center"><span class="nobr">Pedir </span></th>
+									</tr>
+								</thead>
+								<tbody>';
 		
+		$cont = 1;
 
 		while($row = mysqli_fetch_array($data))
 	    {
@@ -13805,50 +13973,202 @@
 			$pedir = $max - $stock;
 
 			$body = $body.'
+
 			<tr>
-			<td class="item-quality">'.$row[1].'</td>
-			<td class="item-des"><p>'.$row[2].'</p></td>
-			<td class="item-des"><p>'.$row[3].'</p></td>
-			<td class="item-des"><p>'.$row[4].'</p></td>
-			<td class="item-des"><p>'.$stock.'</p></td>
-			<td class="item-des"><p>
-			<input type="number" value="'.$pedir.'">
-			</p></td>
-			<td class="item-des"><p>'.$row[8].' '.$row[9].'</p></td>
+				<td class="product-thumbnail"><img src="images/'.$row[11].'" alt="" height="110" width="110" /></td>
+				<td class="product-name pull-left mt-20">'.$row[2].'
+					<p class="w-color m-0">
+						<label> No. parte :</label>
+						'.$row[1].'
+					</p>
+					<p class="w-size m-0">
+						<label> Almacen :</label>
+						'.$row[8].'
+					</p>
+				</td>
+				
+				
+				<td>
+					<center>'.$min.'</center>
+				</td>
+				
+				<td>
+					<center>'.$max.'</center>
+				</td>
+				
+				<td>
+					<center>'.$row[5].'</center>
+				</td>
+
+				<td>
+					<center>$ '.number_format($row[12],GetNumberDecimales(),".",",").'</center>
+				</td>
+
+				<td class="product-value">
+	
+					<input type="hidden" id="product_'.$cont.'" value="'.$row[0].'">
+					<input type="hidden" id="hijo_'.$cont.'" value="0">
+					<center><input type="number" id="pedir_'.$cont.'" value="'.$pedir.'" onchange="generateArr()" style="text-align: center; border: 1px solid #d9534f;"></center>
+					<input type="hidden" id="almacen_'.$cont.'" value="'.$row[10].'">
+					<input type="hidden" id="costo_'.$cont.'" value="'.$row[12].'">
+
+				</td>
+				
 			</tr>
 			';
-			// Add hijos
-			$hijos = mysqli_query($con,"SELECT p.`no. De parte`, p.nombre, s.id, s.padre, a.nombre, s.stock, s.min, s.max, s.ubicacion FROM productos_sub s, almacen a, productos p where s.almacen = a.id and s.min >= s.stock and s.max > s.stock and s.padre = p.id and a.id = $almacen0 and s.padre = $row[0]");
 			
+			// Add hijos
+			$hijos = mysqli_query($con,"SELECT s.id, s.padre, a.nombre, s.stock, s.min, s.max, s.ubicacion, a.id FROM productos_sub s, almacen a where s.min >= s.stock  and s.max > s.stock and s.almacen = a.id and padre = $row[0] ");
+
 			while($item = mysqli_fetch_array($hijos))
 			{
+				$cont ++;
+
 				$pedir0 = 0;
-				$stock0 = $item[5];
-				$min = $item[6];
-				$max = $item[7];
+				$stock0 = $item[3];
+				$min = $item[4];
+				$max = $item[5];
 
 				
 				$pedir0 = $max - $stock0;
 
 				$body = $body.'
+
 				<tr>
-				<td class="item-quality">'.$item[0].'</td>
-				<td class="item-des"><p>'.$item[1].'</p></td>
-				<td class="item-des"><p>'.$min.'</p></td>
-				<td class="item-des"><p>'.$max.'</p></td>
-				<td class="item-des"><p>'.$stock0.'</p></td>
-				<td class="item-des"><p>
-				<input type="number" value="'.$pedir0.'">
-				</p></td>
-				<td class="item-des"><p>'.$item[4].' '.$item[8].'</p></td>
+					<td class="product-thumbnail"><img src="images/'.$row[11].'" alt="" height="110" width="110" /></td>
+					<td class="product-name pull-left mt-20">'.$row[2].'
+						<p class="w-color m-0">
+							<label> No. parte :</label>
+							'.$row[1].'
+						</p>
+						<p class="w-size m-0">
+							<label> Almacen :</label>
+							'.$item[2].'
+						</p>
+					</td>
+					
+					
+					<td>
+						<center>'.$min.'</center>
+					</td>
+					
+					<td>
+						<center>'.$max.'</center>
+					</td>
+					
+					<td>
+						<center>'.$item[3].'</center>
+					</td>
+
+					<td>
+						<center>$ '.number_format($row[12],GetNumberDecimales(),".",",").'</center>
+					</td>
+					
+					<td class="product-value">
+		
+						<input type="hidden" id="product_'.$cont.'" value="0">
+						<input type="hidden" id="hijo_'.$cont.'" value="'.$row[0].'">
+						<center><input type="number" id="pedir_'.$cont.'" value="'.$pedir0.'" onchange="generateArr()" style="text-align: center; border: 1px solid #d9534f;"></center>
+						<input type="hidden" id="almacen_'.$cont.'" value="'.$item[7].'">
+						<input type="hidden" id="costo_'.$cont.'" value="'.$row[12].'">
+
+					</td>
+					
 				</tr>
 				';
 			} //Finaliza hijos
+			
+			$cont ++;
+		}
+
+		// Hijos que solo tienen almacen pero no padre
+		$data_hijos_only = mysqli_query($con,"SELECT p.id, p.`no. De parte`, p.nombre, pp.min, pp.max, pp.stock, p.proveedor, p.marca, a.nombre , pp.ubicacion, a.id, p.foto0, p.precio_costo FROM productos p, almacen a, productos_sub pp WHERE  pp.padre = p.id and pp.min >= pp.stock  and pp.max > pp.stock and pp.almacen = a.id and p.almacen != '$almacen0' and pp.almacen = '$almacen0'");
+		
+		while($item = mysqli_fetch_array($data_hijos_only))
+		{
+			$pedir0 = 0;
+			$stock0 = $item[5];
+			$min = $item[3];
+			$max = $item[4];
+
+			
+			$pedir0 = $max - $stock0;
+
+			$body = $body.'
+
+			<tr>
+				<td class="product-thumbnail"><img src="images/'.$item[11].'" alt="" height="110" width="110" /></td>
+				<td class="product-name pull-left mt-20">'.$item[2].'
+					<p class="w-color m-0">
+						<label> No. parte :</label>
+						'.$item[1].'
+					</p>
+					<p class="w-size m-0">
+						<label> Almacen :</label>
+						'.$item[8].'
+					</p>
+				</td>
+				
+				
+				<td>
+					<center>'.$min.'</center>
+				</td>
+				
+				<td>
+					<center>'.$max.'</center>
+				</td>
+				
+				<td>
+					<center>'.$item[5].'</center>
+				</td>
+
+				<td>
+					<center>$ '.number_format($item[12],GetNumberDecimales(),".",",").'</center>
+				</td>
+				
+				<td class="product-value">
+	
+					<input type="hidden" id="product_'.$cont.'" value="0">
+					<input type="hidden" id="hijo_'.$cont.'" value="'.$item[0].'">
+					<center><input type="number" id="pedir_'.$cont.'" value="'.$pedir0.'" onchange="generateArr()" style="text-align: center; border: 1px solid #d9534f;"></center>
+					<input type="hidden" id="almacen_'.$cont.'" value="'.$item[10].'">
+					<input type="hidden" id="costo_'.$cont.'" value="'.$item[12].'">
+
+				</td>
+				
+			</tr>
+			';
+
+			$cont ++;
 		}
 
 		$body = $body . '
 		</tbody>
 			</table>
+		</div>
+		
+		
+		<div class="row">
+		<div class="cart-requerment mt-50 clearfix">
+	
+		<div class="col-md-offset-0 col-md-4 col-sm-offset-3 col-sm-6 clearfix">
+				<div class="counpon-total ml-35">
+					<div class="cart-title text-uppercase">
+						<h5 class="mb-30"><strong>TOTALES</strong></h5>
+					</div>
+					<table>
+						<tbody>
+						<tr class="cart-total">
+						<th>Productos</th>
+						<td> <p id="productos_total"></td>
+					</tr>
+						<tr class="cart-total">
+							<th><b>Pagar</b></th>
+							<td><b><p id="productos_pagar"></b></td>
+						</tbody>
+					</table> 
+				</div>
+			</div>                                            
 		</div>';
 
 		return $body;
@@ -13858,7 +14178,7 @@
 	{
 		$con = db_conectar();
 		
-		$data = mysqli_query($con,"SELECT p.id, p.`no. De parte`, p.nombre, p.stock_min, p.stock_max, p.stock, p.proveedor, p.marca, a.nombre ,p.loc_almacen FROM productos p, almacen a where p.stock_min >= p.stock  and p.stock_max > p.stock and p.almacen = a.id AND p.marca like '%$marca%' ORDER by p.nombre asc");
+		$data = mysqli_query($con,"SELECT p.id, p.`no. De parte`, p.nombre, p.stock_min, p.stock_max, p.stock, p.proveedor, p.marca, a.nombre ,p.loc_almacen, a.id, p.foto0, p.precio_costo FROM productos p, almacen a where p.stock_min >= p.stock  and p.stock_max > p.stock and p.almacen = a.id AND p.marca like '%$marca%' ORDER by p.nombre asc");
 		
 		if (!$marca)
 		{
@@ -13891,21 +14211,27 @@
 				<h4>ORDEN DE COMPRA: '. $_SESSION['empresa_nombre'] .' | '. date("d-m-Y") .'</h4>
 				'.$val.'
 		</div>
-		<div class="table-responsive compare-wraper mt-30">
-				<table class="cart table">
-					<thead>
-						<tr>
-							<th class="table-head th-name uppercase">no. de parte</th>
-							<th class="table-head item-nam uppercase">producto</th>
-							<th class="table-head item-nam uppercase">MINIMO</th>
-							<th class="table-head item-nam uppercase">MAXIMO</th>
-							<th class="table-head item-nam uppercase">disponible</th>
-							<th class="table-head item-nam uppercase">PEDIR</th>
-							<th class="table-head item-nam uppercase">UBICACION</th>
-						</tr>
-					</thead>
-					<tbody>';
+		<div class="wishlist-area" style="background-color: #f5f5f5;">
+		<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="wishlist-content">
+						<div class="wishlist-table table-responsive p-30 text-uppercase">
+							<table>
+								<thead>
+									<tr>
+										<th class="product-thumbnail"></th>
+										<th class="product-name"><span class="nobr">Producto</span></th>
+										<th class="product-prices text-center"><span class="nobr">Minimo </span></th>
+										<th class="product-prices text-center"><span class="nobr">Maximo </span></th>
+										<th class="product-prices text-center"><span class="nobr">Existencias </span></th>
+										<th class="product-prices text-center"><span class="nobr">Costo</span></th>
+										<th class="product-add-to-cart text-center"><span class="nobr">Pedir </span></th>
+									</tr>
+								</thead>
+								<tbody>';
 		
+		$cont = 1;
 
 		while($row = mysqli_fetch_array($data))
 	    {
@@ -13918,50 +14244,141 @@
 			$pedir = $max - $stock;
 
 			$body = $body.'
+
 			<tr>
-			<td class="item-quality">'.$row[1].'</td>
-			<td class="item-des"><p>'.$row[2].'</p></td>
-			<td class="item-des"><p>'.$row[3].'</p></td>
-			<td class="item-des"><p>'.$row[4].'</p></td>
-			<td class="item-des"><p>'.$stock.'</p></td>
-			<td class="item-des"><p>
-			<input type="number" value="'.$pedir.'">
-			</p></td>
-			<td class="item-des"><p>'.$row[8].' '.$row[9].'</p></td>
+				<td class="product-thumbnail"><img src="images/'.$row[11].'" alt="" height="110" width="110" /></td>
+				<td class="product-name pull-left mt-20">'.$row[2].'
+					<p class="w-color m-0">
+						<label> No. parte :</label>
+						'.$row[1].'
+					</p>
+					<p class="w-size m-0">
+						<label> Almacen :</label>
+						'.$row[8].'
+					</p>
+				</td>
+				
+				
+				<td>
+					<center>'.$min.'</center>
+				</td>
+				
+				<td>
+					<center>'.$max.'</center>
+				</td>
+				
+				<td>
+					<center>'.$row[5].'</center>
+				</td>
+
+				<td>
+					<center>$ '.number_format($row[12],GetNumberDecimales(),".",",").'</center>
+				</td>
+
+				<td class="product-value">
+	
+					<input type="hidden" id="product_'.$cont.'" value="'.$row[0].'">
+					<input type="hidden" id="hijo_'.$cont.'" value="0">
+					<center><input type="number" id="pedir_'.$cont.'" value="'.$pedir.'" onchange="generateArr()" style="text-align: center; border: 1px solid #d9534f;"></center>
+					<input type="hidden" id="almacen_'.$cont.'" value="'.$row[10].'">
+					<input type="hidden" id="costo_'.$cont.'" value="'.$row[12].'">
+
+				</td>
+				
 			</tr>
 			';
-			// Add hijos
-			$hijos = mysqli_query($con,"SELECT p.`no. De parte`, p.nombre, s.id, s.padre, a.nombre, s.stock, s.min, s.max, s.ubicacion FROM productos_sub s, almacen a, productos p where s.almacen = a.id and s.min >= s.stock and s.max > s.stock and s.padre = p.id and p.marca like '%$marca%' and s.padre = $row[0] ");
 			
+			// Add hijos
+			$hijos = mysqli_query($con,"SELECT s.id, s.padre, a.nombre, s.stock, s.min, s.max, s.ubicacion, a.id FROM productos_sub s, almacen a where s.min >= s.stock  and s.max > s.stock and s.almacen = a.id and padre = $row[0] ");
+
 			while($item = mysqli_fetch_array($hijos))
 			{
+				$cont ++;
+
 				$pedir0 = 0;
-				$stock0 = $item[5];
-				$min = $item[6];
-				$max = $item[7];
+				$stock0 = $item[3];
+				$min = $item[4];
+				$max = $item[5];
 
 				
 				$pedir0 = $max - $stock0;
 
 				$body = $body.'
+
 				<tr>
-				<td class="item-quality">'.$item[0].'</td>
-				<td class="item-des"><p>'.$item[1].'</p></td>
-				<td class="item-des"><p>'.$min.'</p></td>
-				<td class="item-des"><p>'.$max.'</p></td>
-				<td class="item-des"><p>'.$stock0.'</p></td>
-				<td class="item-des"><p>
-				<input type="number" value="'.$pedir0.'">
-				</p></td>
-				<td class="item-des"><p>'.$item[4].' '.$item[8].'</p></td>
+					<td class="product-thumbnail"><img src="images/'.$row[11].'" alt="" height="110" width="110" /></td>
+					<td class="product-name pull-left mt-20">'.$row[2].'
+						<p class="w-color m-0">
+							<label> No. parte :</label>
+							'.$row[1].'
+						</p>
+						<p class="w-size m-0">
+							<label> Almacen :</label>
+							'.$item[2].'
+						</p>
+					</td>
+					
+					
+					<td>
+						<center>'.$min.'</center>
+					</td>
+					
+					<td>
+						<center>'.$max.'</center>
+					</td>
+					
+					<td>
+						<center>'.$item[3].'</center>
+					</td>
+
+					<td>
+						<center>$ '.number_format($row[12],GetNumberDecimales(),".",",").'</center>
+					</td>
+					
+					<td class="product-value">
+		
+						<input type="hidden" id="product_'.$cont.'" value="0">
+						<input type="hidden" id="hijo_'.$cont.'" value="'.$row[0].'">
+						<center><input type="number" id="pedir_'.$cont.'" value="'.$pedir0.'" onchange="generateArr()" style="text-align: center; border: 1px solid #d9534f;"></center>
+						<input type="hidden" id="almacen_'.$cont.'" value="'.$item[7].'">
+						<input type="hidden" id="costo_'.$cont.'" value="'.$row[12].'">
+
+					</td>
+					
 				</tr>
 				';
 			} //Finaliza hijos
+			
+			$cont ++;
 		}
 
 		$body = $body . '
 		</tbody>
 			</table>
+		</div>
+		
+		
+		<div class="row">
+		<div class="cart-requerment mt-50 clearfix">
+	
+		<div class="col-md-offset-0 col-md-4 col-sm-offset-3 col-sm-6 clearfix">
+				<div class="counpon-total ml-35">
+					<div class="cart-title text-uppercase">
+						<h5 class="mb-30"><strong>TOTALES</strong></h5>
+					</div>
+					<table>
+						<tbody>
+						<tr class="cart-total">
+						<th>Productos</th>
+						<td> <p id="productos_total"></td>
+					</tr>
+						<tr class="cart-total">
+							<th><b>Pagar</b></th>
+							<td><b><p id="productos_pagar"></b></td>
+						</tbody>
+					</table> 
+				</div>
+			</div>                                            
 		</div>';
 
 		return $body;
@@ -13971,7 +14388,7 @@
 	{
 		$con = db_conectar();
 		
-		$data = mysqli_query($con,"SELECT p.id, p.`no. De parte`, p.nombre, p.stock_min, p.stock_max, p.stock, p.proveedor, p.marca, a.nombre ,p.loc_almacen FROM productos p, almacen a where p.stock_min >= p.stock  and p.stock_max > p.stock and p.almacen = a.id AND p.proveedor like '%$proveedor%' ORDER by p.nombre asc");
+		$data = mysqli_query($con,"SELECT p.id, p.`no. De parte`, p.nombre, p.stock_min, p.stock_max, p.stock, p.proveedor, p.marca, a.nombre ,p.loc_almacen, a.id, p.foto0, p.precio_costo FROM productos p, almacen a where p.stock_min >= p.stock  and p.stock_max > p.stock and p.almacen = a.id AND p.proveedor like '%$proveedor%' ORDER by p.nombre asc");
 		
 		if (!$marca)
 		{
@@ -14004,21 +14421,27 @@
 				<h4>ORDEN DE COMPRA: '. $_SESSION['empresa_nombre'] .' | '. date("d-m-Y") .'</h4>
 				'.$val.'
 		</div>
-		<div class="table-responsive compare-wraper mt-30">
-				<table class="cart table">
-					<thead>
-						<tr>
-							<th class="table-head th-name uppercase">no. de parte</th>
-							<th class="table-head item-nam uppercase">producto</th>
-							<th class="table-head item-nam uppercase">MINIMO</th>
-							<th class="table-head item-nam uppercase">MAXIMO</th>
-							<th class="table-head item-nam uppercase">disponible</th>
-							<th class="table-head item-nam uppercase">PEDIR</th>
-							<th class="table-head item-nam uppercase">UBICACION</th>
-						</tr>
-					</thead>
-					<tbody>';
+		<div class="wishlist-area" style="background-color: #f5f5f5;">
+		<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="wishlist-content">
+						<div class="wishlist-table table-responsive p-30 text-uppercase">
+							<table>
+								<thead>
+									<tr>
+										<th class="product-thumbnail"></th>
+										<th class="product-name"><span class="nobr">Producto</span></th>
+										<th class="product-prices text-center"><span class="nobr">Minimo </span></th>
+										<th class="product-prices text-center"><span class="nobr">Maximo </span></th>
+										<th class="product-prices text-center"><span class="nobr">Existencias </span></th>
+										<th class="product-prices text-center"><span class="nobr">Costo</span></th>
+										<th class="product-add-to-cart text-center"><span class="nobr">Pedir </span></th>
+									</tr>
+								</thead>
+								<tbody>';
 		
+		$cont = 1;
 
 		while($row = mysqli_fetch_array($data))
 	    {
@@ -14031,50 +14454,141 @@
 			$pedir = $max - $stock;
 
 			$body = $body.'
+
 			<tr>
-			<td class="item-quality">'.$row[1].'</td>
-			<td class="item-des"><p>'.$row[2].'</p></td>
-			<td class="item-des"><p>'.$row[3].'</p></td>
-			<td class="item-des"><p>'.$row[4].'</p></td>
-			<td class="item-des"><p>'.$stock.'</p></td>
-			<td class="item-des"><p>
-			<input type="number" value="'.$pedir.'">
-			</p></td>
-			<td class="item-des"><p>'.$row[8].' '.$row[9].'</p></td>
+				<td class="product-thumbnail"><img src="images/'.$row[11].'" alt="" height="110" width="110" /></td>
+				<td class="product-name pull-left mt-20">'.$row[2].'
+					<p class="w-color m-0">
+						<label> No. parte :</label>
+						'.$row[1].'
+					</p>
+					<p class="w-size m-0">
+						<label> Almacen :</label>
+						'.$row[8].'
+					</p>
+				</td>
+				
+				
+				<td>
+					<center>'.$min.'</center>
+				</td>
+				
+				<td>
+					<center>'.$max.'</center>
+				</td>
+				
+				<td>
+					<center>'.$row[5].'</center>
+				</td>
+
+				<td>
+					<center>$ '.number_format($row[12],GetNumberDecimales(),".",",").'</center>
+				</td>
+
+				<td class="product-value">
+	
+					<input type="hidden" id="product_'.$cont.'" value="'.$row[0].'">
+					<input type="hidden" id="hijo_'.$cont.'" value="0">
+					<center><input type="number" id="pedir_'.$cont.'" value="'.$pedir.'" onchange="generateArr()" style="text-align: center; border: 1px solid #d9534f;"></center>
+					<input type="hidden" id="almacen_'.$cont.'" value="'.$row[10].'">
+					<input type="hidden" id="costo_'.$cont.'" value="'.$row[12].'">
+
+				</td>
+				
 			</tr>
 			';
-			// Add hijos
-			$hijos = mysqli_query($con,"SELECT p.`no. De parte`, p.nombre, s.id, s.padre, a.nombre, s.stock, s.min, s.max, s.ubicacion FROM productos_sub s, almacen a, productos p where s.almacen = a.id and s.min >= s.stock  and s.max > s.stock and s.padre = p.id and p.proveedor like '%$proveedor%' and s.padre = $row[0]");
 			
+			// Add hijos
+			$hijos = mysqli_query($con,"SELECT s.id, s.padre, a.nombre, s.stock, s.min, s.max, s.ubicacion, a.id FROM productos_sub s, almacen a where s.min >= s.stock  and s.max > s.stock and s.almacen = a.id and padre = $row[0] ");
+
 			while($item = mysqli_fetch_array($hijos))
 			{
+				$cont ++;
+
 				$pedir0 = 0;
-				$stock0 = $item[5];
-				$min = $item[6];
-				$max = $item[7];
+				$stock0 = $item[3];
+				$min = $item[4];
+				$max = $item[5];
 
 				
 				$pedir0 = $max - $stock0;
 
 				$body = $body.'
+
 				<tr>
-				<td class="item-quality">'.$item[0].'</td>
-				<td class="item-des"><p>'.$item[1].'</p></td>
-				<td class="item-des"><p>'.$min.'</p></td>
-				<td class="item-des"><p>'.$max.'</p></td>
-				<td class="item-des"><p>'.$stock0.'</p></td>
-				<td class="item-des"><p>
-				<input type="number" value="'.$pedir0.'">
-				</p></td>
-				<td class="item-des"><p>'.$item[4].' '.$item[8].'</p></td>
+					<td class="product-thumbnail"><img src="images/'.$row[11].'" alt="" height="110" width="110" /></td>
+					<td class="product-name pull-left mt-20">'.$row[2].'
+						<p class="w-color m-0">
+							<label> No. parte :</label>
+							'.$row[1].'
+						</p>
+						<p class="w-size m-0">
+							<label> Almacen :</label>
+							'.$item[2].'
+						</p>
+					</td>
+					
+					
+					<td>
+						<center>'.$min.'</center>
+					</td>
+					
+					<td>
+						<center>'.$max.'</center>
+					</td>
+					
+					<td>
+						<center>'.$item[3].'</center>
+					</td>
+
+					<td>
+						<center>$ '.number_format($row[12],GetNumberDecimales(),".",",").'</center>
+					</td>
+					
+					<td class="product-value">
+		
+						<input type="hidden" id="product_'.$cont.'" value="0">
+						<input type="hidden" id="hijo_'.$cont.'" value="'.$row[0].'">
+						<center><input type="number" id="pedir_'.$cont.'" value="'.$pedir0.'" onchange="generateArr()" style="text-align: center; border: 1px solid #d9534f;"></center>
+						<input type="hidden" id="almacen_'.$cont.'" value="'.$item[7].'">
+						<input type="hidden" id="costo_'.$cont.'" value="'.$row[12].'">
+
+					</td>
+					
 				</tr>
 				';
 			} //Finaliza hijos
+			
+			$cont ++;
 		}
 
 		$body = $body . '
 		</tbody>
 			</table>
+		</div>
+		
+		
+		<div class="row">
+		<div class="cart-requerment mt-50 clearfix">
+	
+		<div class="col-md-offset-0 col-md-4 col-sm-offset-3 col-sm-6 clearfix">
+				<div class="counpon-total ml-35">
+					<div class="cart-title text-uppercase">
+						<h5 class="mb-30"><strong>TOTALES</strong></h5>
+					</div>
+					<table>
+						<tbody>
+						<tr class="cart-total">
+						<th>Productos</th>
+						<td> <p id="productos_total"></td>
+					</tr>
+						<tr class="cart-total">
+							<th><b>Pagar</b></th>
+							<td><b><p id="productos_pagar"></b></td>
+						</tbody>
+					</table> 
+				</div>
+			</div>                                            
 		</div>';
 
 		return $body;
@@ -14086,7 +14600,7 @@
 
 		$con = db_conectar();
 		
-		$data = mysqli_query($con,"SELECT p.id, p.`no. De parte`, p.nombre, p.stock_min, p.stock_max, p.stock, p.proveedor, p.marca, a.nombre ,p.loc_almacen FROM productos p, almacen a where p.stock_min >= p.stock  and p.stock_max > p.stock and p.almacen = a.id AND p.almacen = '$almacen' AND  p.marca like '%$marca%' ORDER by p.nombre asc");
+		$data = mysqli_query($con,"SELECT p.id, p.`no. De parte`, p.nombre, p.stock_min, p.stock_max, p.stock, p.proveedor, p.marca, a.nombre ,p.loc_almacen, a.id, p.foto0, p.precio_costo FROM productos p, almacen a where p.stock_min >= p.stock  and p.stock_max > p.stock and p.almacen = a.id AND p.almacen = '$almacen' AND  p.marca like '%$marca%' ORDER by p.nombre asc");
 		
 		if (!$marca)
 		{
@@ -14119,21 +14633,27 @@
 				<h4>ORDEN DE COMPRA: '. $_SESSION['empresa_nombre'] .' | '. date("d-m-Y") .'</h4>
 				'.$val.'
 		</div>
-		<div class="table-responsive compare-wraper mt-30">
-				<table class="cart table">
-					<thead>
-						<tr>
-							<th class="table-head th-name uppercase">no. de parte</th>
-							<th class="table-head item-nam uppercase">producto</th>
-							<th class="table-head item-nam uppercase">MINIMO</th>
-							<th class="table-head item-nam uppercase">MAXIMO</th>
-							<th class="table-head item-nam uppercase">disponible</th>
-							<th class="table-head item-nam uppercase">PEDIR</th>
-							<th class="table-head item-nam uppercase">UBICACION</th>
-						</tr>
-					</thead>
-					<tbody>';
+		<div class="wishlist-area" style="background-color: #f5f5f5;">
+		<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="wishlist-content">
+						<div class="wishlist-table table-responsive p-30 text-uppercase">
+							<table>
+								<thead>
+									<tr>
+										<th class="product-thumbnail"></th>
+										<th class="product-name"><span class="nobr">Producto</span></th>
+										<th class="product-prices text-center"><span class="nobr">Minimo </span></th>
+										<th class="product-prices text-center"><span class="nobr">Maximo </span></th>
+										<th class="product-prices text-center"><span class="nobr">Existencias </span></th>
+										<th class="product-prices text-center"><span class="nobr">Costo</span></th>
+										<th class="product-add-to-cart text-center"><span class="nobr">Pedir </span></th>
+									</tr>
+								</thead>
+								<tbody>';
 		
+		$cont = 1;
 
 		while($row = mysqli_fetch_array($data))
 	    {
@@ -14146,50 +14666,202 @@
 			$pedir = $max - $stock;
 
 			$body = $body.'
+
 			<tr>
-			<td class="item-quality">'.$row[1].'</td>
-			<td class="item-des"><p>'.$row[2].'</p></td>
-			<td class="item-des"><p>'.$row[3].'</p></td>
-			<td class="item-des"><p>'.$row[4].'</p></td>
-			<td class="item-des"><p>'.$stock.'</p></td>
-			<td class="item-des"><p>
-			<input type="number" value="'.$pedir.'">
-			</p></td>
-			<td class="item-des"><p>'.$row[8].' '.$row[9].'</p></td>
+				<td class="product-thumbnail"><img src="images/'.$row[11].'" alt="" height="110" width="110" /></td>
+				<td class="product-name pull-left mt-20">'.$row[2].'
+					<p class="w-color m-0">
+						<label> No. parte :</label>
+						'.$row[1].'
+					</p>
+					<p class="w-size m-0">
+						<label> Almacen :</label>
+						'.$row[8].'
+					</p>
+				</td>
+				
+				
+				<td>
+					<center>'.$min.'</center>
+				</td>
+				
+				<td>
+					<center>'.$max.'</center>
+				</td>
+				
+				<td>
+					<center>'.$row[5].'</center>
+				</td>
+
+				<td>
+					<center>$ '.number_format($row[12],GetNumberDecimales(),".",",").'</center>
+				</td>
+
+				<td class="product-value">
+	
+					<input type="hidden" id="product_'.$cont.'" value="'.$row[0].'">
+					<input type="hidden" id="hijo_'.$cont.'" value="0">
+					<center><input type="number" id="pedir_'.$cont.'" value="'.$pedir.'" onchange="generateArr()" style="text-align: center; border: 1px solid #d9534f;"></center>
+					<input type="hidden" id="almacen_'.$cont.'" value="'.$row[10].'">
+					<input type="hidden" id="costo_'.$cont.'" value="'.$row[12].'">
+
+				</td>
+				
 			</tr>
 			';
-			// Add hijos
-			$hijos = mysqli_query($con,"SELECT p.`no. De parte`, p.nombre, s.id, s.padre, a.nombre, s.stock, s.min, s.max, s.ubicacion FROM productos_sub s, almacen a, productos p where s.almacen = a.id and s.min >= s.stock  and s.max > s.stock and s.padre = p.id and s.almacen = '$almacen0' and p.marca like '%$marca%' and s.padre = $row[0] ");
 			
+			// Add hijos
+			$hijos = mysqli_query($con,"SELECT s.id, s.padre, a.nombre, s.stock, s.min, s.max, s.ubicacion, a.id FROM productos_sub s, almacen a where s.min >= s.stock  and s.max > s.stock and s.almacen = a.id and padre = $row[0] ");
+
 			while($item = mysqli_fetch_array($hijos))
 			{
+				$cont ++;
+
 				$pedir0 = 0;
-				$stock0 = $item[5];
-				$min = $item[6];
-				$max = $item[7];
+				$stock0 = $item[3];
+				$min = $item[4];
+				$max = $item[5];
 
 				
 				$pedir0 = $max - $stock0;
 
 				$body = $body.'
+
 				<tr>
-				<td class="item-quality">'.$item[0].'</td>
-				<td class="item-des"><p>'.$item[1].'</p></td>
-				<td class="item-des"><p>'.$min.'</p></td>
-				<td class="item-des"><p>'.$max.'</p></td>
-				<td class="item-des"><p>'.$stock0.'</p></td>
-				<td class="item-des"><p>
-				<input type="number" value="'.$pedir0.'">
-				</p></td>
-				<td class="item-des"><p>'.$item[4].' '.$item[8].'</p></td>
+					<td class="product-thumbnail"><img src="images/'.$row[11].'" alt="" height="110" width="110" /></td>
+					<td class="product-name pull-left mt-20">'.$row[2].'
+						<p class="w-color m-0">
+							<label> No. parte :</label>
+							'.$row[1].'
+						</p>
+						<p class="w-size m-0">
+							<label> Almacen :</label>
+							'.$item[2].'
+						</p>
+					</td>
+					
+					
+					<td>
+						<center>'.$min.'</center>
+					</td>
+					
+					<td>
+						<center>'.$max.'</center>
+					</td>
+					
+					<td>
+						<center>'.$item[3].'</center>
+					</td>
+
+					<td>
+						<center>$ '.number_format($row[12],GetNumberDecimales(),".",",").'</center>
+					</td>
+					
+					<td class="product-value">
+		
+						<input type="hidden" id="product_'.$cont.'" value="0">
+						<input type="hidden" id="hijo_'.$cont.'" value="'.$row[0].'">
+						<center><input type="number" id="pedir_'.$cont.'" value="'.$pedir0.'" onchange="generateArr()" style="text-align: center; border: 1px solid #d9534f;"></center>
+						<input type="hidden" id="almacen_'.$cont.'" value="'.$item[7].'">
+						<input type="hidden" id="costo_'.$cont.'" value="'.$row[12].'">
+
+					</td>
+					
 				</tr>
 				';
 			} //Finaliza hijos
+			
+			$cont ++;
+		}
+
+		// Hijos que solo tienen almacen pero no padre
+		$data_hijos_only = mysqli_query($con,"SELECT p.id, p.`no. De parte`, p.nombre, pp.min, pp.max, pp.stock, p.proveedor, p.marca, a.nombre , pp.ubicacion, a.id, p.foto0, p.precio_costo FROM productos p, almacen a, productos_sub pp WHERE  pp.padre = p.id and pp.min >= pp.stock  and pp.max > pp.stock and pp.almacen = a.id and p.almacen != '$almacen0' and pp.almacen = '$almacen0'");
+		
+		while($item = mysqli_fetch_array($data_hijos_only))
+		{
+			$pedir0 = 0;
+			$stock0 = $item[5];
+			$min = $item[3];
+			$max = $item[4];
+
+			
+			$pedir0 = $max - $stock0;
+
+			$body = $body.'
+
+			<tr>
+				<td class="product-thumbnail"><img src="images/'.$item[11].'" alt="" height="110" width="110" /></td>
+				<td class="product-name pull-left mt-20">'.$item[2].'
+					<p class="w-color m-0">
+						<label> No. parte :</label>
+						'.$item[1].'
+					</p>
+					<p class="w-size m-0">
+						<label> Almacen :</label>
+						'.$item[8].'
+					</p>
+				</td>
+				
+				
+				<td>
+					<center>'.$min.'</center>
+				</td>
+				
+				<td>
+					<center>'.$max.'</center>
+				</td>
+				
+				<td>
+					<center>'.$item[5].'</center>
+				</td>
+
+				<td>
+					<center>$ '.number_format($item[12],GetNumberDecimales(),".",",").'</center>
+				</td>
+				
+				<td class="product-value">
+	
+					<input type="hidden" id="product_'.$cont.'" value="0">
+					<input type="hidden" id="hijo_'.$cont.'" value="'.$item[0].'">
+					<center><input type="number" id="pedir_'.$cont.'" value="'.$pedir0.'" onchange="generateArr()" style="text-align: center; border: 1px solid #d9534f;"></center>
+					<input type="hidden" id="almacen_'.$cont.'" value="'.$item[7].'">
+					<input type="hidden" id="costo_'.$cont.'" value="'.$item[12].'">
+
+				</td>
+				
+			</tr>
+			';
+
+			$cont ++;
 		}
 
 		$body = $body . '
 		</tbody>
 			</table>
+		</div>
+		
+		
+		<div class="row">
+		<div class="cart-requerment mt-50 clearfix">
+	
+		<div class="col-md-offset-0 col-md-4 col-sm-offset-3 col-sm-6 clearfix">
+				<div class="counpon-total ml-35">
+					<div class="cart-title text-uppercase">
+						<h5 class="mb-30"><strong>TOTALES</strong></h5>
+					</div>
+					<table>
+						<tbody>
+						<tr class="cart-total">
+						<th>Productos</th>
+						<td> <p id="productos_total"></td>
+					</tr>
+						<tr class="cart-total">
+							<th><b>Pagar</b></th>
+							<td><b><p id="productos_pagar"></b></td>
+						</tbody>
+					</table> 
+				</div>
+			</div>                                            
 		</div>';
 
 		return $body;
@@ -14201,7 +14873,7 @@
 
 		$con = db_conectar();
 		
-		$data = mysqli_query($con,"SELECT p.id, p.`no. De parte`, p.nombre, p.stock_min, p.stock_max, p.stock, p.proveedor, p.marca, a.nombre ,p.loc_almacen FROM productos p, almacen a where p.stock_min >= p.stock  and p.stock_max > p.stock and p.almacen = a.id AND p.almacen = '$almacen' AND  p.proveedor like '%$proveedor%' ORDER by nombre asc");
+		$data = mysqli_query($con,"SELECT p.id, p.`no. De parte`, p.nombre, p.stock_min, p.stock_max, p.stock, p.proveedor, p.marca, a.nombre ,p.loc_almacen, a.id, p.foto0, p.precio_costo FROM productos p, almacen a where p.stock_min >= p.stock  and p.stock_max > p.stock and p.almacen = a.id AND p.almacen = '$almacen' AND  p.proveedor like '%$proveedor%' ORDER by nombre asc");
 		
 		if (!$marca)
 		{
@@ -14234,21 +14906,27 @@
 				<h4>ORDEN DE COMPRA: '. $_SESSION['empresa_nombre'] .' | '. date("d-m-Y") .'</h4>
 				'.$val.'
 		</div>
-		<div class="table-responsive compare-wraper mt-30">
-				<table class="cart table">
-					<thead>
-						<tr>
-							<th class="table-head th-name uppercase">no. de parte</th>
-							<th class="table-head item-nam uppercase">producto</th>
-							<th class="table-head item-nam uppercase">MINIMO</th>
-							<th class="table-head item-nam uppercase">MAXIMO</th>
-							<th class="table-head item-nam uppercase">disponible</th>
-							<th class="table-head item-nam uppercase">PEDIR</th>
-							<th class="table-head item-nam uppercase">UBICACION</th>
-						</tr>
-					</thead>
-					<tbody>';
+		<div class="wishlist-area" style="background-color: #f5f5f5;">
+		<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="wishlist-content">
+						<div class="wishlist-table table-responsive p-30 text-uppercase">
+							<table>
+								<thead>
+									<tr>
+										<th class="product-thumbnail"></th>
+										<th class="product-name"><span class="nobr">Producto</span></th>
+										<th class="product-prices text-center"><span class="nobr">Minimo </span></th>
+										<th class="product-prices text-center"><span class="nobr">Maximo </span></th>
+										<th class="product-prices text-center"><span class="nobr">Existencias </span></th>
+										<th class="product-prices text-center"><span class="nobr">Costo</span></th>
+										<th class="product-add-to-cart text-center"><span class="nobr">Pedir </span></th>
+									</tr>
+								</thead>
+								<tbody>';
 		
+		$cont = 1;
 
 		while($row = mysqli_fetch_array($data))
 	    {
@@ -14261,50 +14939,202 @@
 			$pedir = $max - $stock;
 
 			$body = $body.'
+
 			<tr>
-			<td class="item-quality">'.$row[1].'</td>
-			<td class="item-des"><p>'.$row[2].'</p></td>
-			<td class="item-des"><p>'.$row[3].'</p></td>
-			<td class="item-des"><p>'.$row[4].'</p></td>
-			<td class="item-des"><p>'.$stock.'</p></td>
-			<td class="item-des"><p>
-			<input type="number" value="'.$pedir.'">
-			</p></td>
-			<td class="item-des"><p>'.$row[8].' '.$row[9].'</p></td>
+				<td class="product-thumbnail"><img src="images/'.$row[11].'" alt="" height="110" width="110" /></td>
+				<td class="product-name pull-left mt-20">'.$row[2].'
+					<p class="w-color m-0">
+						<label> No. parte :</label>
+						'.$row[1].'
+					</p>
+					<p class="w-size m-0">
+						<label> Almacen :</label>
+						'.$row[8].'
+					</p>
+				</td>
+				
+				
+				<td>
+					<center>'.$min.'</center>
+				</td>
+				
+				<td>
+					<center>'.$max.'</center>
+				</td>
+				
+				<td>
+					<center>'.$row[5].'</center>
+				</td>
+
+				<td>
+					<center>$ '.number_format($row[12],GetNumberDecimales(),".",",").'</center>
+				</td>
+
+				<td class="product-value">
+	
+					<input type="hidden" id="product_'.$cont.'" value="'.$row[0].'">
+					<input type="hidden" id="hijo_'.$cont.'" value="0">
+					<center><input type="number" id="pedir_'.$cont.'" value="'.$pedir.'" onchange="generateArr()" style="text-align: center; border: 1px solid #d9534f;"></center>
+					<input type="hidden" id="almacen_'.$cont.'" value="'.$row[10].'">
+					<input type="hidden" id="costo_'.$cont.'" value="'.$row[12].'">
+
+				</td>
+				
 			</tr>
 			';
-			// Add hijos
-			$hijos = mysqli_query($con,"SELECT p.`no. De parte`, p.nombre, s.id, s.padre, a.nombre, s.stock, s.min, s.max, s.ubicacion FROM productos_sub s, almacen a, productos p where s.almacen = a.id and s.min >= s.stock  and s.max > s.stock and s.padre = p.id and s.almacen = '$almacen0' and p.proveedor like '%$proveedor%' and s.padre = $row[0] ");
 			
+			// Add hijos
+			$hijos = mysqli_query($con,"SELECT s.id, s.padre, a.nombre, s.stock, s.min, s.max, s.ubicacion, a.id FROM productos_sub s, almacen a where s.min >= s.stock  and s.max > s.stock and s.almacen = a.id and padre = $row[0] ");
+
 			while($item = mysqli_fetch_array($hijos))
 			{
+				$cont ++;
+
 				$pedir0 = 0;
-				$stock0 = $item[5];
-				$min = $item[6];
-				$max = $item[7];
+				$stock0 = $item[3];
+				$min = $item[4];
+				$max = $item[5];
 
 				
 				$pedir0 = $max - $stock0;
 
 				$body = $body.'
+
 				<tr>
-				<td class="item-quality">'.$item[0].'</td>
-				<td class="item-des"><p>'.$item[1].'</p></td>
-				<td class="item-des"><p>'.$min.'</p></td>
-				<td class="item-des"><p>'.$max.'</p></td>
-				<td class="item-des"><p>'.$stock0.'</p></td>
-				<td class="item-des"><p>
-				<input type="number" value="'.$pedir0.'">
-				</p></td>
-				<td class="item-des"><p>'.$item[4].' '.$item[8].'</p></td>
+					<td class="product-thumbnail"><img src="images/'.$row[11].'" alt="" height="110" width="110" /></td>
+					<td class="product-name pull-left mt-20">'.$row[2].'
+						<p class="w-color m-0">
+							<label> No. parte :</label>
+							'.$row[1].'
+						</p>
+						<p class="w-size m-0">
+							<label> Almacen :</label>
+							'.$item[2].'
+						</p>
+					</td>
+					
+					
+					<td>
+						<center>'.$min.'</center>
+					</td>
+					
+					<td>
+						<center>'.$max.'</center>
+					</td>
+					
+					<td>
+						<center>'.$item[3].'</center>
+					</td>
+
+					<td>
+						<center>$ '.number_format($row[12],GetNumberDecimales(),".",",").'</center>
+					</td>
+					
+					<td class="product-value">
+		
+						<input type="hidden" id="product_'.$cont.'" value="0">
+						<input type="hidden" id="hijo_'.$cont.'" value="'.$row[0].'">
+						<center><input type="number" id="pedir_'.$cont.'" value="'.$pedir0.'" onchange="generateArr()" style="text-align: center; border: 1px solid #d9534f;"></center>
+						<input type="hidden" id="almacen_'.$cont.'" value="'.$item[7].'">
+						<input type="hidden" id="costo_'.$cont.'" value="'.$row[12].'">
+
+					</td>
+					
 				</tr>
 				';
 			} //Finaliza hijos
+			
+			$cont ++;
+		}
+
+		// Hijos que solo tienen almacen pero no padre
+		$data_hijos_only = mysqli_query($con,"SELECT p.id, p.`no. De parte`, p.nombre, pp.min, pp.max, pp.stock, p.proveedor, p.marca, a.nombre , pp.ubicacion, a.id, p.foto0, p.precio_costo FROM productos p, almacen a, productos_sub pp WHERE  pp.padre = p.id and pp.min >= pp.stock  and pp.max > pp.stock and pp.almacen = a.id and p.almacen != '$almacen0' and pp.almacen = '$almacen0'");
+		
+		while($item = mysqli_fetch_array($data_hijos_only))
+		{
+			$pedir0 = 0;
+			$stock0 = $item[5];
+			$min = $item[3];
+			$max = $item[4];
+
+			
+			$pedir0 = $max - $stock0;
+
+			$body = $body.'
+
+			<tr>
+				<td class="product-thumbnail"><img src="images/'.$item[11].'" alt="" height="110" width="110" /></td>
+				<td class="product-name pull-left mt-20">'.$item[2].'
+					<p class="w-color m-0">
+						<label> No. parte :</label>
+						'.$item[1].'
+					</p>
+					<p class="w-size m-0">
+						<label> Almacen :</label>
+						'.$item[8].'
+					</p>
+				</td>
+				
+				
+				<td>
+					<center>'.$min.'</center>
+				</td>
+				
+				<td>
+					<center>'.$max.'</center>
+				</td>
+				
+				<td>
+					<center>'.$item[5].'</center>
+				</td>
+
+				<td>
+					<center>$ '.number_format($item[12],GetNumberDecimales(),".",",").'</center>
+				</td>
+				
+				<td class="product-value">
+	
+					<input type="hidden" id="product_'.$cont.'" value="0">
+					<input type="hidden" id="hijo_'.$cont.'" value="'.$item[0].'">
+					<center><input type="number" id="pedir_'.$cont.'" value="'.$pedir0.'" onchange="generateArr()" style="text-align: center; border: 1px solid #d9534f;"></center>
+					<input type="hidden" id="almacen_'.$cont.'" value="'.$item[7].'">
+					<input type="hidden" id="costo_'.$cont.'" value="'.$item[12].'">
+
+				</td>
+				
+			</tr>
+			';
+
+			$cont ++;
 		}
 
 		$body = $body . '
 		</tbody>
 			</table>
+		</div>
+		
+		
+		<div class="row">
+		<div class="cart-requerment mt-50 clearfix">
+	
+		<div class="col-md-offset-0 col-md-4 col-sm-offset-3 col-sm-6 clearfix">
+				<div class="counpon-total ml-35">
+					<div class="cart-title text-uppercase">
+						<h5 class="mb-30"><strong>TOTALES</strong></h5>
+					</div>
+					<table>
+						<tbody>
+						<tr class="cart-total">
+						<th>Productos</th>
+						<td> <p id="productos_total"></td>
+					</tr>
+						<tr class="cart-total">
+							<th><b>Pagar</b></th>
+							<td><b><p id="productos_pagar"></b></td>
+						</tbody>
+					</table> 
+				</div>
+			</div>                                            
 		</div>';
 
 		return $body;
@@ -14316,7 +15146,7 @@
 
 		$con = db_conectar();
 		
-		$data = mysqli_query($con,"SELECT p.id, p.`no. De parte`, p.nombre, p.stock_min, p.stock_max, p.stock, p.proveedor, p.marca, a.nombre ,p.loc_almacen FROM productos p, almacen a where p.stock_min >= p.stock  and p.stock_max > p.stock and p.almacen = a.id AND p.marca like '%$marca%' AND  p.proveedor like '%$proveedor%' ORDER by p.nombre asc");
+		$data = mysqli_query($con,"SELECT p.id, p.`no. De parte`, p.nombre, p.stock_min, p.stock_max, p.stock, p.proveedor, p.marca, a.nombre ,p.loc_almacen, a.id, p.foto0, p.precio_costo FROM productos p, almacen a where p.stock_min >= p.stock  and p.stock_max > p.stock and p.almacen = a.id AND p.marca like '%$marca%' AND  p.proveedor like '%$proveedor%' ORDER by p.nombre asc");
 		
 		if (!$marca)
 		{
@@ -14349,21 +15179,27 @@
 				<h4>ORDEN DE COMPRA: '. $_SESSION['empresa_nombre'] .' | '. date("d-m-Y") .'</h4>
 				'.$val.'
 		</div>
-		<div class="table-responsive compare-wraper mt-30">
-				<table class="cart table">
-					<thead>
-						<tr>
-							<th class="table-head th-name uppercase">no. de parte</th>
-							<th class="table-head item-nam uppercase">producto</th>
-							<th class="table-head item-nam uppercase">MINIMO</th>
-							<th class="table-head item-nam uppercase">MAXIMO</th>
-							<th class="table-head item-nam uppercase">disponible</th>
-							<th class="table-head item-nam uppercase">PEDIR</th>
-							<th class="table-head item-nam uppercase">UBICACION</th>
-						</tr>
-					</thead>
-					<tbody>';
+		<div class="wishlist-area" style="background-color: #f5f5f5;">
+		<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="wishlist-content">
+						<div class="wishlist-table table-responsive p-30 text-uppercase">
+							<table>
+								<thead>
+									<tr>
+										<th class="product-thumbnail"></th>
+										<th class="product-name"><span class="nobr">Producto</span></th>
+										<th class="product-prices text-center"><span class="nobr">Minimo </span></th>
+										<th class="product-prices text-center"><span class="nobr">Maximo </span></th>
+										<th class="product-prices text-center"><span class="nobr">Existencias </span></th>
+										<th class="product-prices text-center"><span class="nobr">Costo</span></th>
+										<th class="product-add-to-cart text-center"><span class="nobr">Pedir </span></th>
+									</tr>
+								</thead>
+								<tbody>';
 		
+		$cont = 1;
 
 		while($row = mysqli_fetch_array($data))
 	    {
@@ -14376,51 +15212,202 @@
 			$pedir = $max - $stock;
 
 			$body = $body.'
+
 			<tr>
-			<td class="item-quality">'.$row[1].'</td>
-			<td class="item-des"><p>'.$row[2].'</p></td>
-			<td class="item-des"><p>'.$row[3].'</p></td>
-			<td class="item-des"><p>'.$row[4].'</p></td>
-			<td class="item-des"><p>'.$stock.'</p></td>
-			<td class="item-des"><p>
-			<input type="number" value="'.$pedir.'">
-			</p></td>
-			<td class="item-des"><p>'.$row[8].' '.$row[9].'</p></td>
+				<td class="product-thumbnail"><img src="images/'.$row[11].'" alt="" height="110" width="110" /></td>
+				<td class="product-name pull-left mt-20">'.$row[2].'
+					<p class="w-color m-0">
+						<label> No. parte :</label>
+						'.$row[1].'
+					</p>
+					<p class="w-size m-0">
+						<label> Almacen :</label>
+						'.$row[8].'
+					</p>
+				</td>
+				
+				
+				<td>
+					<center>'.$min.'</center>
+				</td>
+				
+				<td>
+					<center>'.$max.'</center>
+				</td>
+				
+				<td>
+					<center>'.$row[5].'</center>
+				</td>
+
+				<td>
+					<center>$ '.number_format($row[12],GetNumberDecimales(),".",",").'</center>
+				</td>
+
+				<td class="product-value">
+	
+					<input type="hidden" id="product_'.$cont.'" value="'.$row[0].'">
+					<input type="hidden" id="hijo_'.$cont.'" value="0">
+					<center><input type="number" id="pedir_'.$cont.'" value="'.$pedir.'" onchange="generateArr()" style="text-align: center; border: 1px solid #d9534f;"></center>
+					<input type="hidden" id="almacen_'.$cont.'" value="'.$row[10].'">
+					<input type="hidden" id="costo_'.$cont.'" value="'.$row[12].'">
+
+				</td>
+				
 			</tr>
 			';
-			// Add hijos
-			$hijos = mysqli_query($con,"SELECT p.`no. De parte`, p.nombre, s.id, s.padre, a.nombre, s.stock, s.min, s.max, s.ubicacion FROM productos_sub s, almacen a, productos p where s.almacen = a.id and s.min >= s.stock  and s.max > s.stock and s.padre = p.id and p.marca like '%$marca%' and p.proveedor like '%$proveedor%' and s.padre = $row[0] ");
 			
+			// Add hijos
+			$hijos = mysqli_query($con,"SELECT s.id, s.padre, a.nombre, s.stock, s.min, s.max, s.ubicacion, a.id FROM productos_sub s, almacen a where s.min >= s.stock  and s.max > s.stock and s.almacen = a.id and padre = $row[0] ");
+
 			while($item = mysqli_fetch_array($hijos))
 			{
+				$cont ++;
+
 				$pedir0 = 0;
-				$stock0 = $item[5];
-				$min = $item[6];
-				$max = $item[7];
+				$stock0 = $item[3];
+				$min = $item[4];
+				$max = $item[5];
 
 				
 				$pedir0 = $max - $stock0;
 
 				$body = $body.'
+
 				<tr>
-				<td class="item-quality">'.$item[0].'</td>
-				<td class="item-des"><p>'.$item[1].'</p></td>
-				<td class="item-des"><p>'.$min.'</p></td>
-				<td class="item-des"><p>'.$max.'</p></td>
-				<td class="item-des"><p>'.$stock0.'</p></td>
-				<td class="item-des"><p>
-				<input type="number" value="'.$pedir0.'">
-				</p></td>
-				<td class="item-des"><p>'.$item[4].' '.$item[8].'</p></td>
+					<td class="product-thumbnail"><img src="images/'.$row[11].'" alt="" height="110" width="110" /></td>
+					<td class="product-name pull-left mt-20">'.$row[2].'
+						<p class="w-color m-0">
+							<label> No. parte :</label>
+							'.$row[1].'
+						</p>
+						<p class="w-size m-0">
+							<label> Almacen :</label>
+							'.$item[2].'
+						</p>
+					</td>
+					
+					
+					<td>
+						<center>'.$min.'</center>
+					</td>
+					
+					<td>
+						<center>'.$max.'</center>
+					</td>
+					
+					<td>
+						<center>'.$item[3].'</center>
+					</td>
+
+					<td>
+						<center>$ '.number_format($row[12],GetNumberDecimales(),".",",").'</center>
+					</td>
+					
+					<td class="product-value">
+		
+						<input type="hidden" id="product_'.$cont.'" value="0">
+						<input type="hidden" id="hijo_'.$cont.'" value="'.$row[0].'">
+						<center><input type="number" id="pedir_'.$cont.'" value="'.$pedir0.'" onchange="generateArr()" style="text-align: center; border: 1px solid #d9534f;"></center>
+						<input type="hidden" id="almacen_'.$cont.'" value="'.$item[7].'">
+						<input type="hidden" id="costo_'.$cont.'" value="'.$row[12].'">
+
+					</td>
+					
 				</tr>
 				';
 			} //Finaliza hijos
+			
+			$cont ++;
 		}
 
+		// Hijos que solo tienen almacen pero no padre
+		$data_hijos_only = mysqli_query($con,"SELECT p.id, p.`no. De parte`, p.nombre, pp.min, pp.max, pp.stock, p.proveedor, p.marca, a.nombre , pp.ubicacion, a.id, p.foto0, p.precio_costo FROM productos p, almacen a, productos_sub pp WHERE  pp.padre = p.id and pp.min >= pp.stock  and pp.max > pp.stock and pp.almacen = a.id and p.almacen != '$almacen0' and pp.almacen = '$almacen0'");
+		
+		while($item = mysqli_fetch_array($data_hijos_only))
+		{
+			$pedir0 = 0;
+			$stock0 = $item[5];
+			$min = $item[3];
+			$max = $item[4];
+
+			
+			$pedir0 = $max - $stock0;
+
+			$body = $body.'
+
+			<tr>
+				<td class="product-thumbnail"><img src="images/'.$item[11].'" alt="" height="110" width="110" /></td>
+				<td class="product-name pull-left mt-20">'.$item[2].'
+					<p class="w-color m-0">
+						<label> No. parte :</label>
+						'.$item[1].'
+					</p>
+					<p class="w-size m-0">
+						<label> Almacen :</label>
+						'.$item[8].'
+					</p>
+				</td>
+				
+				
+				<td>
+					<center>'.$min.'</center>
+				</td>
+				
+				<td>
+					<center>'.$max.'</center>
+				</td>
+				
+				<td>
+					<center>'.$item[5].'</center>
+				</td>
+
+				<td>
+					<center>$ '.number_format($item[12],GetNumberDecimales(),".",",").'</center>
+				</td>
+				
+				<td class="product-value">
+	
+					<input type="hidden" id="product_'.$cont.'" value="0">
+					<input type="hidden" id="hijo_'.$cont.'" value="'.$item[0].'">
+					<center><input type="number" id="pedir_'.$cont.'" value="'.$pedir0.'" onchange="generateArr()" style="text-align: center; border: 1px solid #d9534f;"></center>
+					<input type="hidden" id="almacen_'.$cont.'" value="'.$item[7].'">
+					<input type="hidden" id="costo_'.$cont.'" value="'.$item[12].'">
+
+				</td>
+				
+			</tr>
+			';
+
+			$cont ++;
+		}
 
 		$body = $body . '
 		</tbody>
 			</table>
+		</div>
+		
+		
+		<div class="row">
+		<div class="cart-requerment mt-50 clearfix">
+	
+		<div class="col-md-offset-0 col-md-4 col-sm-offset-3 col-sm-6 clearfix">
+				<div class="counpon-total ml-35">
+					<div class="cart-title text-uppercase">
+						<h5 class="mb-30"><strong>TOTALES</strong></h5>
+					</div>
+					<table>
+						<tbody>
+						<tr class="cart-total">
+						<th>Productos</th>
+						<td> <p id="productos_total"></td>
+					</tr>
+						<tr class="cart-total">
+							<th><b>Pagar</b></th>
+							<td><b><p id="productos_pagar"></b></td>
+						</tbody>
+					</table> 
+				</div>
+			</div>                                            
 		</div>';
 
 		return $body;
@@ -14432,7 +15419,7 @@
 
 		$con = db_conectar();
 		
-		$data = mysqli_query($con,"SELECT p.id, p.`no. De parte`, p.nombre, p.stock_min, p.stock_max, p.stock, p.proveedor, p.marca, a.nombre ,p.loc_almacen FROM productos p, almacen a where p.stock_min >= p.stock  and p.stock_max > p.stock and p.almacen = a.id AND p.marca like '%$marca%' AND  p.proveedor like '%$proveedor%' and p.almacen = $almacen ORDER by p.nombre asc");
+		$data = mysqli_query($con,"SELECT p.id, p.`no. De parte`, p.nombre, p.stock_min, p.stock_max, p.stock, p.proveedor, p.marca, a.nombre ,p.loc_almacen, a.id, p.foto0, p.precio_costo FROM productos p, almacen a where p.stock_min >= p.stock  and p.stock_max > p.stock and p.almacen = a.id AND p.marca like '%$marca%' AND  p.proveedor like '%$proveedor%' and p.almacen = $almacen ORDER by p.nombre asc");
 		
 		if (!$marca)
 		{
@@ -14465,21 +15452,27 @@
 				<h4>ORDEN DE COMPRA: '. $_SESSION['empresa_nombre'] .' | '. date("d-m-Y") .'</h4>
 				'.$val.'
 		</div>
-		<div class="table-responsive compare-wraper mt-30">
-				<table class="cart table">
-					<thead>
-						<tr>
-							<th class="table-head th-name uppercase">no. de parte</th>
-							<th class="table-head item-nam uppercase">producto</th>
-							<th class="table-head item-nam uppercase">MINIMO</th>
-							<th class="table-head item-nam uppercase">MAXIMO</th>
-							<th class="table-head item-nam uppercase">disponible</th>
-							<th class="table-head item-nam uppercase">PEDIR</th>
-							<th class="table-head item-nam uppercase">UBICACION</th>
-						</tr>
-					</thead>
-					<tbody>';
+		<div class="wishlist-area" style="background-color: #f5f5f5;">
+		<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="wishlist-content">
+						<div class="wishlist-table table-responsive p-30 text-uppercase">
+							<table>
+								<thead>
+									<tr>
+										<th class="product-thumbnail"></th>
+										<th class="product-name"><span class="nobr">Producto</span></th>
+										<th class="product-prices text-center"><span class="nobr">Minimo </span></th>
+										<th class="product-prices text-center"><span class="nobr">Maximo </span></th>
+										<th class="product-prices text-center"><span class="nobr">Existencias </span></th>
+										<th class="product-prices text-center"><span class="nobr">Costo</span></th>
+										<th class="product-add-to-cart text-center"><span class="nobr">Pedir </span></th>
+									</tr>
+								</thead>
+								<tbody>';
 		
+		$cont = 1;
 
 		while($row = mysqli_fetch_array($data))
 	    {
@@ -14492,51 +15485,202 @@
 			$pedir = $max - $stock;
 
 			$body = $body.'
+
 			<tr>
-			<td class="item-quality">'.$row[1].'</td>
-			<td class="item-des"><p>'.$row[2].'</p></td>
-			<td class="item-des"><p>'.$row[3].'</p></td>
-			<td class="item-des"><p>'.$row[4].'</p></td>
-			<td class="item-des"><p>'.$stock.'</p></td>
-			<td class="item-des"><p>
-			<input type="number" value="'.$pedir.'">
-			</p></td>
-			<td class="item-des"><p>'.$row[8].' '.$row[9].'</p></td>
+				<td class="product-thumbnail"><img src="images/'.$row[11].'" alt="" height="110" width="110" /></td>
+				<td class="product-name pull-left mt-20">'.$row[2].'
+					<p class="w-color m-0">
+						<label> No. parte :</label>
+						'.$row[1].'
+					</p>
+					<p class="w-size m-0">
+						<label> Almacen :</label>
+						'.$row[8].'
+					</p>
+				</td>
+				
+				
+				<td>
+					<center>'.$min.'</center>
+				</td>
+				
+				<td>
+					<center>'.$max.'</center>
+				</td>
+				
+				<td>
+					<center>'.$row[5].'</center>
+				</td>
+
+				<td>
+					<center>$ '.number_format($row[12],GetNumberDecimales(),".",",").'</center>
+				</td>
+
+				<td class="product-value">
+	
+					<input type="hidden" id="product_'.$cont.'" value="'.$row[0].'">
+					<input type="hidden" id="hijo_'.$cont.'" value="0">
+					<center><input type="number" id="pedir_'.$cont.'" value="'.$pedir.'" onchange="generateArr()" style="text-align: center; border: 1px solid #d9534f;"></center>
+					<input type="hidden" id="almacen_'.$cont.'" value="'.$row[10].'">
+					<input type="hidden" id="costo_'.$cont.'" value="'.$row[12].'">
+
+				</td>
+				
 			</tr>
 			';
-			// Add hijos
-			$hijos = mysqli_query($con,"SELECT p.`no. De parte`, p.nombre, s.id, s.padre, a.nombre, s.stock, s.min, s.max, s.ubicacion FROM productos_sub s, almacen a, productos p where s.almacen = a.id and s.min >= s.stock  and s.max > s.stock and s.padre = p.id and p.marca like '%$marca%' and p.proveedor like '%$proveedor%' and s.padre = $row[0] ");
 			
+			// Add hijos
+			$hijos = mysqli_query($con,"SELECT s.id, s.padre, a.nombre, s.stock, s.min, s.max, s.ubicacion, a.id FROM productos_sub s, almacen a where s.min >= s.stock  and s.max > s.stock and s.almacen = a.id and padre = $row[0] ");
+
 			while($item = mysqli_fetch_array($hijos))
 			{
+				$cont ++;
+
 				$pedir0 = 0;
-				$stock0 = $item[5];
-				$min = $item[6];
-				$max = $item[7];
+				$stock0 = $item[3];
+				$min = $item[4];
+				$max = $item[5];
 
 				
 				$pedir0 = $max - $stock0;
 
 				$body = $body.'
+
 				<tr>
-				<td class="item-quality">'.$item[0].'</td>
-				<td class="item-des"><p>'.$item[1].'</p></td>
-				<td class="item-des"><p>'.$min.'</p></td>
-				<td class="item-des"><p>'.$max.'</p></td>
-				<td class="item-des"><p>'.$stock0.'</p></td>
-				<td class="item-des"><p>
-				<input type="number" value="'.$pedir0.'">
-				</p></td>
-				<td class="item-des"><p>'.$item[4].' '.$item[8].'</p></td>
+					<td class="product-thumbnail"><img src="images/'.$row[11].'" alt="" height="110" width="110" /></td>
+					<td class="product-name pull-left mt-20">'.$row[2].'
+						<p class="w-color m-0">
+							<label> No. parte :</label>
+							'.$row[1].'
+						</p>
+						<p class="w-size m-0">
+							<label> Almacen :</label>
+							'.$item[2].'
+						</p>
+					</td>
+					
+					
+					<td>
+						<center>'.$min.'</center>
+					</td>
+					
+					<td>
+						<center>'.$max.'</center>
+					</td>
+					
+					<td>
+						<center>'.$item[3].'</center>
+					</td>
+
+					<td>
+						<center>$ '.number_format($row[12],GetNumberDecimales(),".",",").'</center>
+					</td>
+					
+					<td class="product-value">
+		
+						<input type="hidden" id="product_'.$cont.'" value="0">
+						<input type="hidden" id="hijo_'.$cont.'" value="'.$row[0].'">
+						<center><input type="number" id="pedir_'.$cont.'" value="'.$pedir0.'" onchange="generateArr()" style="text-align: center; border: 1px solid #d9534f;"></center>
+						<input type="hidden" id="almacen_'.$cont.'" value="'.$item[7].'">
+						<input type="hidden" id="costo_'.$cont.'" value="'.$row[12].'">
+
+					</td>
+					
 				</tr>
 				';
 			} //Finaliza hijos
+			
+			$cont ++;
 		}
 
+		// Hijos que solo tienen almacen pero no padre
+		$data_hijos_only = mysqli_query($con,"SELECT p.id, p.`no. De parte`, p.nombre, pp.min, pp.max, pp.stock, p.proveedor, p.marca, a.nombre , pp.ubicacion, a.id, p.foto0, p.precio_costo FROM productos p, almacen a, productos_sub pp WHERE  pp.padre = p.id and pp.min >= pp.stock  and pp.max > pp.stock and pp.almacen = a.id and p.almacen != '$almacen0' and pp.almacen = '$almacen0'");
+		
+		while($item = mysqli_fetch_array($data_hijos_only))
+		{
+			$pedir0 = 0;
+			$stock0 = $item[5];
+			$min = $item[3];
+			$max = $item[4];
+
+			
+			$pedir0 = $max - $stock0;
+
+			$body = $body.'
+
+			<tr>
+				<td class="product-thumbnail"><img src="images/'.$item[11].'" alt="" height="110" width="110" /></td>
+				<td class="product-name pull-left mt-20">'.$item[2].'
+					<p class="w-color m-0">
+						<label> No. parte :</label>
+						'.$item[1].'
+					</p>
+					<p class="w-size m-0">
+						<label> Almacen :</label>
+						'.$item[8].'
+					</p>
+				</td>
+				
+				
+				<td>
+					<center>'.$min.'</center>
+				</td>
+				
+				<td>
+					<center>'.$max.'</center>
+				</td>
+				
+				<td>
+					<center>'.$item[5].'</center>
+				</td>
+
+				<td>
+					<center>$ '.number_format($item[12],GetNumberDecimales(),".",",").'</center>
+				</td>
+				
+				<td class="product-value">
+	
+					<input type="hidden" id="product_'.$cont.'" value="0">
+					<input type="hidden" id="hijo_'.$cont.'" value="'.$item[0].'">
+					<center><input type="number" id="pedir_'.$cont.'" value="'.$pedir0.'" onchange="generateArr()" style="text-align: center; border: 1px solid #d9534f;"></center>
+					<input type="hidden" id="almacen_'.$cont.'" value="'.$item[7].'">
+					<input type="hidden" id="costo_'.$cont.'" value="'.$item[12].'">
+
+				</td>
+				
+			</tr>
+			';
+
+			$cont ++;
+		}
 
 		$body = $body . '
 		</tbody>
 			</table>
+		</div>
+		
+		
+		<div class="row">
+		<div class="cart-requerment mt-50 clearfix">
+	
+		<div class="col-md-offset-0 col-md-4 col-sm-offset-3 col-sm-6 clearfix">
+				<div class="counpon-total ml-35">
+					<div class="cart-title text-uppercase">
+						<h5 class="mb-30"><strong>TOTALES</strong></h5>
+					</div>
+					<table>
+						<tbody>
+						<tr class="cart-total">
+						<th>Productos</th>
+						<td> <p id="productos_total"></td>
+					</tr>
+						<tr class="cart-total">
+							<th><b>Pagar</b></th>
+							<td><b><p id="productos_pagar"></b></td>
+						</tbody>
+					</table> 
+				</div>
+			</div>                                            
 		</div>';
 
 		return $body;

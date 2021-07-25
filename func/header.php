@@ -335,7 +335,9 @@
 
                                                         if ($_SESSION['gen_orden_compra'] == 1)
                                                         {
-                                                            echo '<li><a href="g_compra.php?almacen=&marca=&proveedor=">G. Orden de compra</a></li>';
+                                                            echo '<li><a href="ordens_compra.php?pagina=1">Ordens de compra</a></li>';
+                                                            echo '<li><a href="g_compra.php?almacen=&marca=&proveedor=">Nueva orden</a></li>';
+                                                            echo '<hr style="margin-top: 0em; margin-bottom: 0.9em;">';
                                                         }
                                                         if ($_SESSION['product_gest'] == 1)
                                                         {

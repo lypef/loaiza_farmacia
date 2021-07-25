@@ -42,49 +42,53 @@
         </form>
     </div>
     <br>
-    <div id="areaImprimir">    
-        <?php  
+    <?php  
 
-            if (!$_GET["almacen"] && !$_GET["marca"] && !$_GET["proveedor"])
-            {
-                echo g_orden_compra_todos($_GET["almacen"], $_GET["marca"], $_GET["proveedor"]);
-            }
-            if ($_GET["almacen"] > 0 && !$_GET["marca"] && !$_GET["proveedor"])
-            {
-                echo g_orden_compra_almacen($_GET["almacen"], $_GET["marca"], $_GET["proveedor"]);
-            }
-            if (!$_GET["almacen"] && $_GET["marca"] && !$_GET["proveedor"])
-            {
-                echo g_orden_compra_marca($_GET["almacen"], $_GET["marca"], $_GET["proveedor"]);
-            }
-            if (!$_GET["almacen"] && !$_GET["marca"] && $_GET["proveedor"])
-            {
-                echo g_orden_compra_proveedor($_GET["almacen"], $_GET["marca"], $_GET["proveedor"]);
-            }
-            if ($_GET["almacen"] && $_GET["marca"] && !$_GET["proveedor"])
-            {
-                echo g_orden_compra_AlmacenMarca($_GET["almacen"], $_GET["marca"], $_GET["proveedor"]);
-            }
-            if ($_GET["almacen"] && !$_GET["marca"] && $_GET["proveedor"])
-            {
-                echo g_orden_compra_AlmacenProveedor($_GET["almacen"], $_GET["marca"], $_GET["proveedor"]);
-            }
-            if (!$_GET["almacen"] && $_GET["marca"] && $_GET["proveedor"])
-            {
-                echo g_orden_compra_MarcaProveedor($_GET["almacen"], $_GET["marca"], $_GET["proveedor"]);
-            }
-            if ($_GET["almacen"] && $_GET["marca"] && $_GET["proveedor"])
-            {
-                echo g_orden_compra_AlmacenMarcaProveedor($_GET["almacen"], $_GET["marca"], $_GET["proveedor"]);
-            }        
-         ?>
-    </div>
+        if (!$_GET["almacen"] && !$_GET["marca"] && !$_GET["proveedor"])
+        {
+            echo g_orden_compra_todos($_GET["almacen"], $_GET["marca"], $_GET["proveedor"]);
+        }
+        if ($_GET["almacen"] > 0 && !$_GET["marca"] && !$_GET["proveedor"])
+        {
+            echo g_orden_compra_almacen($_GET["almacen"], $_GET["marca"], $_GET["proveedor"]);
+        }
+        if (!$_GET["almacen"] && $_GET["marca"] && !$_GET["proveedor"])
+        {
+            echo g_orden_compra_marca($_GET["almacen"], $_GET["marca"], $_GET["proveedor"]);
+        }
+        if (!$_GET["almacen"] && !$_GET["marca"] && $_GET["proveedor"])
+        {
+            echo g_orden_compra_proveedor($_GET["almacen"], $_GET["marca"], $_GET["proveedor"]);
+        }
+        if ($_GET["almacen"] && $_GET["marca"] && !$_GET["proveedor"])
+        {
+            echo g_orden_compra_AlmacenMarca($_GET["almacen"], $_GET["marca"], $_GET["proveedor"]);
+        }
+        if ($_GET["almacen"] && !$_GET["marca"] && $_GET["proveedor"])
+        {
+            echo g_orden_compra_AlmacenProveedor($_GET["almacen"], $_GET["marca"], $_GET["proveedor"]);
+        }
+        if (!$_GET["almacen"] && $_GET["marca"] && $_GET["proveedor"])
+        {
+            echo g_orden_compra_MarcaProveedor($_GET["almacen"], $_GET["marca"], $_GET["proveedor"]);
+        }
+        if ($_GET["almacen"] && $_GET["marca"] && $_GET["proveedor"])
+        {
+            echo g_orden_compra_AlmacenMarcaProveedor($_GET["almacen"], $_GET["marca"], $_GET["proveedor"]);
+        }        
+        ?>
 </div>  
 
-<div align="right">
-    <input type="text" id="arreglo_products">
-    <a class="button large mb-20" onclick="generateArr()"><span>Crear</span> </a>
-    <a class="button large mb-20" onclick="printDiv('areaImprimir')"><span>Imprimir</span> </a>
+<div class="col-md-12">
+        <form action="func/g_compra_create.php" autocomplete="off" method="post">
+
+            <input type="hidden" id="arreglo_products" name="arreglo_products">
+            <input type="hidden" id="_productos_total" name="_productos_total" value="0">
+            <input type="hidden" id="_productos_pagar" name="_productos_pagar" value="0">
+
+            <button style="width: 100%; height: 45px; " type="submit" class="btn btn-warning">Crear orden</button>	
+
+        </form>
 </div>
 
 
@@ -95,33 +99,63 @@ function generateArr()
     var cont = 1;
     var pedido = "";
 
+    var pedido_total = 0;
+    var pedido_pagar = 0;
+
     while (true) {
         if (document.getElementById("pedir_"+cont) != null)   
         {
+            pedido_total +=  parseFloat(document.getElementById("pedir_"+cont).value.toString());
+
+            pedido_pagar +=  (parseFloat(document.getElementById("costo_"+cont).value.toString()) * parseFloat(document.getElementById("pedir_"+cont).value.toString()));
+
             pedido += "|||";
             pedido += document.getElementById("product_"+cont).value + ",";
             pedido += document.getElementById("hijo_"+cont).value.toString() + ",";
             pedido += document.getElementById("pedir_"+cont).value.toString() + ",";
             pedido += document.getElementById("almacen_"+cont).value.toString() + ",";
+            pedido += document.getElementById("costo_"+cont).value.toString();
 
             cont ++;
         }else { break; }
     }
     document.getElementById("arreglo_products").value = pedido 
+    
+
+    document.getElementById("productos_total").innerHTML = pedido_total + " UNIDADES";
+    document.getElementById("productos_pagar").innerHTML = "<b>"+ number_format(pedido_pagar,2) +" Mxn</b>";
+
+    document.getElementById("_productos_total").value = pedido_total;
+    document.getElementById("_productos_pagar").value = pedido_pagar;
+
+    
+}
+
+function number_format(amount, decimals) {
+
+amount += ''; // por si pasan un numero en vez de un string
+amount = parseFloat(amount.replace(/[^0-9\.]/g, '')); // elimino cualquier cosa que no sea numero o punto
+
+decimals = decimals || 0; // por si la variable no fue fue pasada
+
+// si no es un numero o es igual a cero retorno el mismo cero
+if (isNaN(amount) || amount === 0) 
+    return parseFloat(0).toFixed(decimals);
+
+// si es mayor o menor que cero retorno el valor formateado como numero
+amount = '' + amount.toFixed(decimals);
+
+var amount_parts = amount.split('.'),
+    regexp = /(\d+)(\d{3})/;
+
+while (regexp.test(amount_parts[0]))
+    amount_parts[0] = amount_parts[0].replace(regexp, '$1' + ',' + '$2');
+
+return amount_parts.join('.');
 }
 
 generateArr();
 
-function printDiv(nombreDiv) {
-     var contenido= document.getElementById(nombreDiv).innerHTML;
-     var contenidoOriginal= document.body.innerHTML;
-
-     document.body.innerHTML = contenido;
-
-     window.print();
-
-     document.body.innerHTML = contenidoOriginal;
-}
 </script>
 <?php
     include 'func/footer.php';
