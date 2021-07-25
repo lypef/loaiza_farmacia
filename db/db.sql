@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 24-07-2021 a las 07:31:50
+-- Tiempo de generación: 25-07-2021 a las 21:09:30
 -- Versión del servidor: 10.4.8-MariaDB
 -- Versión de PHP: 7.1.32
 
@@ -264,7 +264,6 @@ CREATE TABLE `folio_venta` (
 --
 
 INSERT INTO `folio_venta` (`folio`, `vendedor`, `client`, `descuento`, `fecha`, `open`, `cobrado`, `fecha_venta`, `cut`, `sucursal`, `cut_global`, `iva`, `t_pago`, `pedido`, `folio_venta_ini`, `cotizacion`, `concepto`, `comision_pagada`, `oxxo_pay`, `titulo`, `f_entrega`, `estrategia`, `facturar`, `f_instalacion`, `schedule`, `schedule_end`) VALUES
-('120210722214223', 1, 1, 0, '2021-07-22 21:42:23', 0, 100, '2021-07-22 22:01:22', 0, 10, 0, 16, 'transferencia', 0, '120210722214223', 0, NULL, 0, '0', '', NULL, 3, 0, NULL, 0, 0),
 ('120210722215208', 1, 1, 0, '2021-07-22 21:52:08', 0, 430, '2021-07-22 21:53:29', 0, 10, 0, 16, 'transferencia', 0, '120210722215208', 0, NULL, 0, '0', '', NULL, 2, 0, NULL, 0, 0),
 ('120210723055927', 1, 1, 0, '2021-07-23 05:59:27', 1, 0, NULL, 0, 10, 0, 16, 'transferencia', 0, '120210723055927', 1, NULL, 0, '0', '', NULL, NULL, 0, NULL, 0, 0),
 ('120210723055933', 1, 1, 0, '2021-07-23 05:59:33', 1, NULL, NULL, 0, 10, 0, 16, 'efectivo', 0, NULL, 0, NULL, 0, '0', '', NULL, NULL, 0, NULL, 0, 0),
@@ -317,6 +316,84 @@ INSERT INTO `folio_venta` (`folio`, `vendedor`, `client`, `descuento`, `fecha`, 
 ('4520210515161232', 45, 307, 10, '2021-05-15 16:12:32', 0, 807.3, '2021-05-15 16:42:42', 0, 10, 1, 16, 'efectivo', 0, NULL, 0, NULL, 0, '0', '', '2021-04-28', 1, 0, '2021-04-28 22:29:47', 0, 0),
 ('4520210613212948', 45, 307, 10, '2021-06-13 21:29:48', 0, 490.5, '2021-06-13 21:45:55', 0, 10, 1, 16, 'efectivo', 0, NULL, 0, NULL, 0, '0', '', '2021-04-28', 1, 0, '2021-04-28 22:29:47', 0, 0),
 ('4520210628200857', 45, 310, 10, '2021-06-28 20:08:57', 0, 781.2, '2021-06-28 20:19:54', 0, 10, 1, 16, 'efectivo', 0, NULL, 0, NULL, 0, '0', '', '2021-04-28', 1, 0, '2021-04-28 22:29:47', 0, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `order_buy`
+--
+
+CREATE TABLE `order_buy` (
+  `id` int(11) NOT NULL,
+  `folio` varchar(254) NOT NULL,
+  `user` int(11) NOT NULL,
+  `fecha` datetime NOT NULL,
+  `unidades` int(11) NOT NULL,
+  `pagar` decimal(64,2) NOT NULL,
+  `estatus` tinyint(1) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `order_buy`
+--
+
+INSERT INTO `order_buy` (`id`, `folio`, `user`, `fecha`, `unidades`, `pagar`, `estatus`) VALUES
+(26, '20210725201052', 1, '2021-07-25 20:10:52', 15, '420.00', 1),
+(27, '20210725202428', 1, '2021-07-25 20:24:28', 140, '3792.00', 0),
+(28, '20210725204738', 1, '2021-07-25 20:47:38', 140, '3792.00', 0),
+(29, '20210725204742', 1, '2021-07-25 20:47:42', 140, '3792.00', 0),
+(30, '20210725204745', 1, '2021-07-25 20:47:45', 140, '3792.00', 0),
+(31, '20210725204749', 1, '2021-07-25 20:47:49', 140, '3792.00', 0),
+(32, '20210725204753', 1, '2021-07-25 20:47:53', 140, '3792.00', 0),
+(33, '20210725204757', 1, '2021-07-25 20:47:57', 140, '3792.00', 0),
+(34, '20210725204802', 1, '2021-07-25 20:48:02', 140, '3792.00', 0),
+(35, '20210725204805', 1, '2021-07-25 20:48:05', 140, '3792.00', 0),
+(36, '20210725204809', 1, '2021-07-25 20:48:09', 140, '3792.00', 0);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `order_buy_products`
+--
+
+CREATE TABLE `order_buy_products` (
+  `id` int(11) NOT NULL,
+  `folio` varchar(254) NOT NULL,
+  `product` int(11) NOT NULL,
+  `hijo` int(11) NOT NULL,
+  `pedir` int(11) NOT NULL,
+  `almacen` int(11) NOT NULL,
+  `costo` decimal(64,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `order_buy_products`
+--
+
+INSERT INTO `order_buy_products` (`id`, `folio`, `product`, `hijo`, `pedir`, `almacen`, `costo`) VALUES
+(618, '20210725201052', 168, 0, 5, 15, '24.00'),
+(619, '20210725201052', 0, 5, 5, 15, '24.00'),
+(620, '20210725201052', 0, 6, 5, 15, '36.00'),
+(621, '20210725202428', 168, 0, 104, 15, '24.00'),
+(622, '20210725202428', 0, 6, 36, 15, '36.00'),
+(623, '20210725204738', 168, 0, 104, 15, '24.00'),
+(624, '20210725204738', 0, 6, 36, 15, '36.00'),
+(625, '20210725204742', 168, 0, 104, 15, '24.00'),
+(626, '20210725204742', 0, 6, 36, 15, '36.00'),
+(627, '20210725204745', 168, 0, 104, 15, '24.00'),
+(628, '20210725204745', 0, 6, 36, 15, '36.00'),
+(629, '20210725204749', 168, 0, 104, 15, '24.00'),
+(630, '20210725204749', 0, 6, 36, 15, '36.00'),
+(631, '20210725204753', 168, 0, 104, 15, '24.00'),
+(632, '20210725204753', 0, 6, 36, 15, '36.00'),
+(633, '20210725204757', 168, 0, 104, 15, '24.00'),
+(634, '20210725204757', 0, 6, 36, 15, '36.00'),
+(635, '20210725204802', 168, 0, 104, 15, '24.00'),
+(636, '20210725204802', 0, 6, 36, 15, '36.00'),
+(637, '20210725204805', 168, 0, 104, 15, '24.00'),
+(638, '20210725204805', 0, 6, 36, 15, '36.00'),
+(639, '20210725204809', 168, 0, 104, 15, '24.00'),
+(640, '20210725204809', 0, 6, 36, 15, '36.00');
 
 -- --------------------------------------------------------
 
@@ -452,7 +529,7 @@ INSERT INTO `productos` (`id`, `no. De parte`, `nombre`, `descripcion`, `almacen
 (165, 'EMCAN-01', 'CANASTA DULCE COMPLETA EMCAN-01', '', 14, 50, '', 'EL MINERITO', 'GRUPO ALPARIED SA DE CV', 'product/product_img120210616171851.jpg', '', '', '', 0, 99, 1, 27, '', 40, 400, 28, '01010101', 'H87', 'NA', 0),
 (166, 'EMARTGIG-03', 'PROMO 3 CANASTAS', '', 14, 52, '', 'EL MINERITO', 'GRUPO ALPARIED SA DE CV', 'product/product_img120210616172112.jpg', '', '', '', 1, 250, 250, -4, '', 0, 0, 60, '01010101', 'H87', 'NA', 0),
 (167, 'EMCABEZA-01', 'ARTESANIA BUSTO GRANDE EMCABEZA-01', '', 14, 50, '', 'EL MINERITO', 'GRUPO ALPARIED SA DE CV', 'product/product_img120210616172703.jpg', '', '', '', 0, 7699, 1, -1, '', 1, 10, 4000, '01010101', 'H87', 'NA', 0),
-(168, 'EMTARUGO-01', 'TARUGOS 3X50 EMTARUGO-01', '', 14, 52, '', 'EL MINERITO', 'GRUPO ALPARIED SA DE CV', '', '', '', '', 0, 50, 1, 6, '', 24, 120, 24, '01010101', 'H87', 'NA', 0),
+(168, 'EMTARUGO-01', 'TARUGOS 3X50 EMTARUGO-01', '', 15, 52, '', 'EL MINERITO', 'GRUPO ALPARIED SA DE CV', '', '', '', '', 0, 50, 1, 16, '', 24, 120, 24, '01010101', 'H87', 'NA', 0),
 (169, 'EMCHUPO-01', 'CHUPON DULCE', '', 14, 52, '', 'EL MINERITO', 'GRUPO ALPARIED SA DE CV', '', '', '', '', 0, 50, 1, 3, '', 4, 40, 20, '01010101', 'H87', 'NA', 0),
 (170, 'EMJAMOCILLO-01', 'JAMONCILLOS DE DULCE EMJAMOCILLO-01', '', 14, 52, '', 'EL MINERITO', 'GRUPO ALPARIED SA DE CV', '', '', '', '', 0, 40, 1, 2, '', 4, 40, 20, '01010101', 'H87', 'NA', 0),
 (171, 'EMSETCORCHO-01', 'SET DESTAPACORCHO EMSETCORCHO-01', '', 14, 47, '', 'EL MINERITO', 'GRUPO ALPARIED SA DE CV', 'product/product_img120210620185043.jpg', '', '', '', 0, 580, 1, -2, '', 1, 10, 250, '01010101', 'H87', 'NA', 0),
@@ -483,7 +560,9 @@ INSERT INTO `productos_sub` (`id`, `padre`, `almacen`, `stock`, `ubicacion`, `ma
 (1, 85, 14, -15, '', 1, 1),
 (2, 171, 14, -3, '', 1, 1),
 (3, 167, 14, 13, '', 1, 1),
-(4, 167, 15, 100, '', 1, 1);
+(4, 167, 15, 100, '', 1, 1),
+(5, 172, 15, 12, '', 25, 10),
+(6, 79, 15, 14, '1', 50, 20);
 
 -- --------------------------------------------------------
 
@@ -729,7 +808,7 @@ INSERT INTO `product_venta` (`id`, `folio_venta`, `product`, `unidades`, `precio
 (3832, '120210722215208', 166, 1, 250, NULL, NULL, '0.00', '0.00', '0.00', '0.00'),
 (3833, '120210722215208', 151, 1, 60, NULL, NULL, '0.00', '0.00', '0.00', '0.00'),
 (3834, '120210722215208', 130, 1, 120, NULL, NULL, '0.00', '0.00', '0.00', '0.00'),
-(3835, '120210722214223', 66, 1, 100, NULL, NULL, '0.00', '0.00', '0.00', '0.00');
+(3841, '120210723055933', 151, 1, 60, NULL, NULL, '0.00', '0.00', '0.00', '0.00');
 
 -- --------------------------------------------------------
 
@@ -1080,6 +1159,19 @@ ALTER TABLE `folio_venta`
   ADD KEY `estrategia_venta` (`estrategia`);
 
 --
+-- Indices de la tabla `order_buy`
+--
+ALTER TABLE `order_buy`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `folio` (`folio`);
+
+--
+-- Indices de la tabla `order_buy_products`
+--
+ALTER TABLE `order_buy_products`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indices de la tabla `productos`
 --
 ALTER TABLE `productos`
@@ -1233,6 +1325,18 @@ ALTER TABLE `e_ventas`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
+-- AUTO_INCREMENT de la tabla `order_buy`
+--
+ALTER TABLE `order_buy`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+
+--
+-- AUTO_INCREMENT de la tabla `order_buy_products`
+--
+ALTER TABLE `order_buy_products`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=641;
+
+--
 -- AUTO_INCREMENT de la tabla `productos`
 --
 ALTER TABLE `productos`
@@ -1242,7 +1346,7 @@ ALTER TABLE `productos`
 -- AUTO_INCREMENT de la tabla `productos_sub`
 --
 ALTER TABLE `productos_sub`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `product_pedido`
@@ -1260,7 +1364,7 @@ ALTER TABLE `product_trasnfer`
 -- AUTO_INCREMENT de la tabla `product_venta`
 --
 ALTER TABLE `product_venta`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3841;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3842;
 
 --
 -- AUTO_INCREMENT de la tabla `prospecto_acciones`

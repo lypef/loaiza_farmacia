@@ -7,10 +7,10 @@
     <?php 
         if ($_GET["search"])
         {
-            echo table_cotizaciones_search($_GET["search"]); 
+            echo table_o_compra_search($_GET["search"]); 
         }else
         {
-            echo table_orders_compra(); 
+            echo table_orders_compra($_GET["pagina"]); 
         }
     ?>
 </div>  

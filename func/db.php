@@ -10212,19 +10212,80 @@
 		return $body;
 	}
 
-	function table_orders_compra()
+	function table_orders_compra($pagina)
 	{
+		$TAMANO_PAGINA = 6;
+
+		if (!$pagina) {
+			$inicio = 0;
+			$pagina = 1;
+		}
+		else {
+			$inicio = ($pagina - 1) * $TAMANO_PAGINA;
+		}
 	    			
-	    if ($_SESSION['propiedades'] > 0)
-	    {
-	        $data = mysqli_query(db_conectar(),"SELECT o.id, o.folio, u.nombre, o.fecha, o.unidades, o.pagar, if (o.estatus = 1, 'FINALIZADO', 'EN PROCESO') as estatus FROM order_buy o, users u WHERE o.user = u.id");
-	    }else
-	    {
-	        $data = mysqli_query(db_conectar(),"SELECT o.id, o.folio, u.nombre, o.fecha, o.unidades, o.pagar, if (o.estatus = 1, 'FINALIZADO', 'EN PROCESO') as estatus FROM order_buy o, users u WHERE o.user = u.id");
-	    }
+	    $data = mysqli_query(db_conectar(),"SELECT o.id, o.folio, u.nombre, o.fecha, o.unidades, o.pagar, if (o.estatus = 1, 'FINALIZADO', 'EN PROCESO') as estatus FROM order_buy o, users u WHERE o.user = u.id ORDER BY o.estatus asc LIMIT $inicio, $TAMANO_PAGINA");
 		
+		$datatmp = mysqli_query(db_conectar(),"SELECT o.id FROM order_buy o, users u WHERE o.user = u.id ORDER BY o.estatus asc");
+		
+		$pagination = '<div class="row">
+						<div class="col-md-12">
+						<div class="shop-pagination p-10 text-center">
+							<ul>';
+
+		
+		$num_total_registros = mysqli_num_rows($datatmp);
+		$total_paginas = ceil($num_total_registros / $TAMANO_PAGINA);
+
+		if ($pagina > 1)
+		{
+			$pagination = $pagination . '<li><a href="?pagina='.($pagina - 1 ).'" ><i class="zmdi zmdi-chevron-left"></i></a></li>';
+		}
+		
+		
+		if ($total_paginas > 1) {
+
+			if ($pagina <= 6)
+			{
+				for ($i=1; $i<$pagina; $i++) {
+				
+					$pagination = $pagination . '<li><a href="?pagina='.$i.'">'.$i.'</a></li>';	
+				}
+			}else
+			{
+				for ($i= ($pagina - 6); $i < $pagina; $i++) {
+				
+					$pagination = $pagination . '<li><a href="?pagina='.$i.'">'.$i.'</a></li>';	
+				}
+			}
+			
+		}
+		
+		$Pag_Max = $pagina + 8;
+		
+		if ($total_paginas > 1) {
+
+			for ($i=$pagina;$i<=$total_paginas;$i++) {
+				
+				if ( $i == $pagina)
+					$pagination = $pagination . '<li><a href="?pagina='.$i.'"><b>'.$i.'</b></a></li>';
+				elseif ( $i < $Pag_Max)
+					$pagination = $pagination . '<li><a href="?pagina='.$i.'">'.$i.'</a></li>';
+			}
+		}
+
+		if ($pagina < $total_paginas)
+		{
+			$pagination = $pagination . '<li><a href="?pagina='.($pagina + 1 ).'" ><i class="zmdi zmdi-chevron-right"></i></a></li>';
+		}
+		
+		$pagination = $pagination . '</ul>
+									</div>
+									</div>
+									</div><p>';
+									
 		$body = '<br>
-		<form class="header-search-box" action="cotizaciones.php">
+		<form class="header-search-box" action="ordens_compra.php">
 			<div>
 				<input type="text" placeholder="Buscar" name="search" autocomplete="off" style="
 				  width: 100%;
@@ -10246,14 +10307,41 @@
 							<th class="table-head th-name uppercase text-center">UNIDADES</th>
 							<th class="table-head th-name uppercase text-center">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;COSTO&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
 							<th class="table-head th-name uppercase text-center">estatus&nbsp;de&nbsp;orden</th>
-							<th class="table-head th-name uppercase text-center">opciones</th>
+							<th class="table-head th-name uppercase text-center">finalizar</th>
+							<th class="table-head th-name uppercase text-center">eliminar</th>
 						</tr>
 					</thead>
 					<tbody>';
+		
 		$body = $body . $pagination;
 
 		while($row = mysqli_fetch_array($data))
 	    {
+			if ($row[6] == "FINALIZADO")
+			{
+				$botones = '
+				<td>
+					<center><a href="#" class="button extra-small button-black mb-20"><i class="zmdi zmdi-block zmdi-hc-2x"></i></a></center>
+				</td>
+	
+				<td>
+					<center><a href="#" class="button extra-small button-black mb-20"><i class="zmdi zmdi-block zmdi-hc-2x"></i></a></center>
+				</td>
+				';
+			}else
+			{
+				$botones = '
+				<td>
+					<center><a href="" class="button extra-small button-black mb-20" data-toggle="modal" data-target="#end'.$row[0].'"><i class="zmdi zmdi-badge-check zmdi-hc-2x"></i></a></center>
+				</td>
+
+				<td>
+					<center><a href="" class="button extra-small button-black mb-20" data-toggle="modal" data-target="#delete'.$row[0].'"><i class="zmdi zmdi-delete zmdi-hc-2x"></i></a></center>
+				</td>
+				';
+			}
+			
+
 			$body = $body.'
 			<tr>
 				<td class="item-des"><a href="/sale_finaly_report_cotizacion.php?folio_sale='.$row[1].'">'.$row[1].'</a></td>
@@ -10265,20 +10353,12 @@
 				
 				<td class="item-des" style="text-align: center;">'.$row[6].'</td>
 
-				<td class="item-des">
-					<center><a href="" class="button extra-small button-black mb-20" data-toggle="modal" data-target="#mail'.$row[0].'"><i class="zmdi zmdi-email zmdi-hc-2x"></i></a></center>
-				</td>
+				'.$botones.'
+				
 			</tr>
 			';
 		}
-		/*Opciones
-		<td class="item-des">
-		<div class="col-md-12">
-			<a class="button extra-small button-black mb-20" data-toggle="modal" data-target="#edit'.$row[0].'" ><span> Opciones</span></a>
-		</div>
 		
-		</td>
-		*/
 		$body = $body . '
 		</tbody>
 			</table>';
@@ -11040,6 +11120,92 @@
 		</tbody>
 			</table>
 		';
+
+		$body = $body . $pagination;
+		return $body;
+	}
+
+	function table_o_compra_search($txt)
+	{
+		$data = mysqli_query(db_conectar(),"SELECT o.id, o.folio, u.nombre, o.fecha, o.unidades, o.pagar, if (o.estatus = 1, 'FINALIZADO', 'EN PROCESO') as estatus FROM order_buy o, users u WHERE o.user = u.id and (o.folio like '%$txt%' or u.nombre like '%$txt%' or u.username like '%$txt%') ORDER BY o.estatus asc");
+		
+		$body = '<br>
+		<form class="header-search-box" action="ordens_compra.php">
+			<div>
+				<input type="text" placeholder="Buscar" name="search" autocomplete="off" style="
+				  width: 100%;
+                  padding: 24px 20px;
+                  margin: 8px 0;
+                  display: inline-block;
+                  border: 3px solid #4A4A4A;
+                  border-radius: 4px;
+                  box-sizing: border-box;
+              ">
+			</div>
+		</form>
+		<table class="cart table">
+					<thead>
+						<tr>
+							<th class="table-head th-name uppercase">FOLIO</th>
+							<th class="table-head th-name uppercase">USUARIO</th>
+							<th class="table-head th-name uppercase text-center">FECHA</th>
+							<th class="table-head th-name uppercase text-center">UNIDADES</th>
+							<th class="table-head th-name uppercase text-center">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;COSTO&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+							<th class="table-head th-name uppercase text-center">estatus&nbsp;de&nbsp;orden</th>
+							<th class="table-head th-name uppercase text-center">finalizar</th>
+							<th class="table-head th-name uppercase text-center">eliminar</th>
+						</tr>
+					</thead>
+					<tbody>';
+		$body = $body . $pagination;
+
+		while($row = mysqli_fetch_array($data))
+	    {
+			if ($row[6] == "FINALIZADO")
+			{
+				$botones = '
+				<td>
+					<center><a href="#" class="button extra-small button-black mb-20"><i class="zmdi zmdi-block zmdi-hc-2x"></i></a></center>
+				</td>
+	
+				<td>
+					<center><a href="#" class="button extra-small button-black mb-20"><i class="zmdi zmdi-block zmdi-hc-2x"></i></a></center>
+				</td>
+				';
+			}else
+			{
+				$botones = '
+				<td>
+					<center><a href="" class="button extra-small button-black mb-20" data-toggle="modal" data-target="#end'.$row[0].'"><i class="zmdi zmdi-badge-check zmdi-hc-2x"></i></a></center>
+				</td>
+
+				<td>
+					<center><a href="" class="button extra-small button-black mb-20" data-toggle="modal" data-target="#delete'.$row[0].'"><i class="zmdi zmdi-delete zmdi-hc-2x"></i></a></center>
+				</td>
+				';
+			}
+			
+
+			$body = $body.'
+			<tr>
+				<td class="item-des"><a href="/sale_finaly_report_cotizacion.php?folio_sale='.$row[1].'">'.$row[1].'</a></td>
+				<td class="item-des"><p>'.$row[2].'</p></td>
+				<td class="item-des"><center>'.GetFechaText($row[3]).'</center></td>
+				<td class="item-des"><center>'.$row[4].'</center></td>
+				
+				<td class="item-des" style="text-align: right;">$ '.number_format($row[5],GetNumberDecimales(),".",",").'</td>
+				
+				<td class="item-des" style="text-align: center;">'.$row[6].'</td>
+
+				'.$botones.'
+				
+			</tr>
+			';
+		}
+		
+		$body = $body . '
+		</tbody>
+			</table>';
 
 		$body = $body . $pagination;
 		return $body;
@@ -13856,7 +14022,7 @@
 					<td class="product-value">
 		
 						<input type="hidden" id="product_'.$cont.'" value="0">
-						<input type="hidden" id="hijo_'.$cont.'" value="'.$row[0].'">
+						<input type="hidden" id="hijo_'.$cont.'" value="'.$item[0].'">
 						<center><input type="number" id="pedir_'.$cont.'" value="'.$pedir0.'" onchange="generateArr()" style="text-align: center; border: 1px solid #d9534f;"></center>
 						<input type="hidden" id="almacen_'.$cont.'" value="'.$item[7].'">
 						<input type="hidden" id="costo_'.$cont.'" value="'.$row[12].'">
@@ -14067,7 +14233,7 @@
 					<td class="product-value">
 		
 						<input type="hidden" id="product_'.$cont.'" value="0">
-						<input type="hidden" id="hijo_'.$cont.'" value="'.$row[0].'">
+						<input type="hidden" id="hijo_'.$cont.'" value="'.$item[0].'">
 						<center><input type="number" id="pedir_'.$cont.'" value="'.$pedir0.'" onchange="generateArr()" style="text-align: center; border: 1px solid #d9534f;"></center>
 						<input type="hidden" id="almacen_'.$cont.'" value="'.$item[7].'">
 						<input type="hidden" id="costo_'.$cont.'" value="'.$row[12].'">
@@ -14082,7 +14248,7 @@
 		}
 
 		// Hijos que solo tienen almacen pero no padre
-		$data_hijos_only = mysqli_query($con,"SELECT p.id, p.`no. De parte`, p.nombre, pp.min, pp.max, pp.stock, p.proveedor, p.marca, a.nombre , pp.ubicacion, a.id, p.foto0, p.precio_costo FROM productos p, almacen a, productos_sub pp WHERE  pp.padre = p.id and pp.min >= pp.stock  and pp.max > pp.stock and pp.almacen = a.id and p.almacen != '$almacen0' and pp.almacen = '$almacen0'");
+		$data_hijos_only = mysqli_query($con,"SELECT pp.id, p.`no. De parte`, p.nombre, pp.min, pp.max, pp.stock, p.proveedor, p.marca, a.nombre , pp.ubicacion, a.id, p.foto0, p.precio_costo FROM productos p, almacen a, productos_sub pp WHERE  pp.padre = p.id and pp.min >= pp.stock  and pp.max > pp.stock and pp.almacen = a.id and p.almacen != '$almacen0' and pp.almacen = '$almacen0'");
 		
 		while($item = mysqli_fetch_array($data_hijos_only))
 		{
@@ -14338,7 +14504,7 @@
 					<td class="product-value">
 		
 						<input type="hidden" id="product_'.$cont.'" value="0">
-						<input type="hidden" id="hijo_'.$cont.'" value="'.$row[0].'">
+						<input type="hidden" id="hijo_'.$cont.'" value="'.$item[0].'">
 						<center><input type="number" id="pedir_'.$cont.'" value="'.$pedir0.'" onchange="generateArr()" style="text-align: center; border: 1px solid #d9534f;"></center>
 						<input type="hidden" id="almacen_'.$cont.'" value="'.$item[7].'">
 						<input type="hidden" id="costo_'.$cont.'" value="'.$row[12].'">
@@ -14548,7 +14714,7 @@
 					<td class="product-value">
 		
 						<input type="hidden" id="product_'.$cont.'" value="0">
-						<input type="hidden" id="hijo_'.$cont.'" value="'.$row[0].'">
+						<input type="hidden" id="hijo_'.$cont.'" value="'.$item[0].'">
 						<center><input type="number" id="pedir_'.$cont.'" value="'.$pedir0.'" onchange="generateArr()" style="text-align: center; border: 1px solid #d9534f;"></center>
 						<input type="hidden" id="almacen_'.$cont.'" value="'.$item[7].'">
 						<input type="hidden" id="costo_'.$cont.'" value="'.$row[12].'">
@@ -14760,7 +14926,7 @@
 					<td class="product-value">
 		
 						<input type="hidden" id="product_'.$cont.'" value="0">
-						<input type="hidden" id="hijo_'.$cont.'" value="'.$row[0].'">
+						<input type="hidden" id="hijo_'.$cont.'" value="'.$item[0].'">
 						<center><input type="number" id="pedir_'.$cont.'" value="'.$pedir0.'" onchange="generateArr()" style="text-align: center; border: 1px solid #d9534f;"></center>
 						<input type="hidden" id="almacen_'.$cont.'" value="'.$item[7].'">
 						<input type="hidden" id="costo_'.$cont.'" value="'.$row[12].'">
@@ -15033,7 +15199,7 @@
 					<td class="product-value">
 		
 						<input type="hidden" id="product_'.$cont.'" value="0">
-						<input type="hidden" id="hijo_'.$cont.'" value="'.$row[0].'">
+						<input type="hidden" id="hijo_'.$cont.'" value="'.$item[0].'">
 						<center><input type="number" id="pedir_'.$cont.'" value="'.$pedir0.'" onchange="generateArr()" style="text-align: center; border: 1px solid #d9534f;"></center>
 						<input type="hidden" id="almacen_'.$cont.'" value="'.$item[7].'">
 						<input type="hidden" id="costo_'.$cont.'" value="'.$row[12].'">
@@ -15306,7 +15472,7 @@
 					<td class="product-value">
 		
 						<input type="hidden" id="product_'.$cont.'" value="0">
-						<input type="hidden" id="hijo_'.$cont.'" value="'.$row[0].'">
+						<input type="hidden" id="hijo_'.$cont.'" value="'.$item[0].'">
 						<center><input type="number" id="pedir_'.$cont.'" value="'.$pedir0.'" onchange="generateArr()" style="text-align: center; border: 1px solid #d9534f;"></center>
 						<input type="hidden" id="almacen_'.$cont.'" value="'.$item[7].'">
 						<input type="hidden" id="costo_'.$cont.'" value="'.$row[12].'">
@@ -15579,7 +15745,7 @@
 					<td class="product-value">
 		
 						<input type="hidden" id="product_'.$cont.'" value="0">
-						<input type="hidden" id="hijo_'.$cont.'" value="'.$row[0].'">
+						<input type="hidden" id="hijo_'.$cont.'" value="'.$item[0].'">
 						<center><input type="number" id="pedir_'.$cont.'" value="'.$pedir0.'" onchange="generateArr()" style="text-align: center; border: 1px solid #d9534f;"></center>
 						<input type="hidden" id="almacen_'.$cont.'" value="'.$item[7].'">
 						<input type="hidden" id="costo_'.$cont.'" value="'.$row[12].'">
@@ -16582,222 +16748,69 @@
 
 	function table_cotizacion_modal ()
 	{
-		$data = mysqli_query(db_conectar(),"SELECT f.folio, u.nombre, c.nombre, f.descuento, f.fecha, f.cobrado, f.fecha_venta, s.nombre, f.iva, f.t_pago, c.id, c.correo FROM folio_venta f, users u, clients c, sucursales s WHERE f.open = 1 and f.cotizacion = 1 and f.vendedor = u.id and f.client = c.id and f.sucursal = s.id");
+		$data = mysqli_query(db_conectar(),"SELECT o.id, o.folio, u.nombre, o.fecha, o.unidades, o.pagar, if (o.estatus = 1, 'FINALIZADO', 'EN PROCESO') as estatus FROM order_buy o, users u WHERE o.user = u.id");
 		
-		$select_con = mysqli_query(db_conectar(),"SELECT id, nombre FROM clients ORDER by nombre asc");
-		$select = "<option value='0'>CLIENTE</option>";
-		while($row = mysqli_fetch_array($select_con))
-		{
-			$select = $select.'<option value='.$row[0].'>'.$row[1].'</option>';
-		}
-		$select_pago = Metodo_Pago_ListBox();
-
 		$body = "";
 		while($row = mysqli_fetch_array($data))
 	    {
 			
-			if ($_SESSION['super_pedidos'] == 1)
-			{
-				$eliminar = '<button type="sumbit" class="btn btn-danger">Eliminar</button>';
-			}else
-			{
-				$eliminar = '';
-			}
-			
-
 			$body = $body.'
-			<div class="modal fade" id="edit'.$row[0].'" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal fade" id="delete'.$row[0].'" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalLabel">COTIZACION ABIERTA</h5>
+					<h5 class="modal-title" id="exampleModalLabel">ELIMINAR ORDEN ?</h5>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
 				<div class="modal-body">
 					<div class="row">
-						
-						<form action="func/product_sale_update_descuento.php" method="post">
-							<input type="hidden" id="folio" name="folio" value="'.$row[0].'">
-							<input type="hidden" id="url" name="url" value="'.$_SERVER['REQUEST_URI'].'">
-							
-							<div class="col-md-12">
-							
-							<div class="col-md-3">
-								<p> % DESCUENTO:</p>
-							</div>
-							
-							<div class="col-md-3">
-								<input type="number" id="descuento" name="descuento" autocomplete="off" value="'.$row[3].'" min="0" max="100" style="text-align:center;">
-							</div>
-							
-							<div class="col-md-3">
-								
-							</div>
-							</div>
-
-
-							<div class="col-md-12">
-							
-							<div class="col-md-3">
-								<p>% IVA:</p>
-							</div>
-							
-							<div class="col-md-3">
-								<input type="number" id="iva" name="iva" autocomplete="off" value="'.$row[8].'" min="0" max="100" style="text-align:center;">
-							</div>
-							
-							<div class="col-md-3">
-								
-							</div>
-							</div>
-
-
-							<div class="col-md-12">
-							
-							<div class="col-md-3">
-								<p>CLIENTE:</p>
-							</div>
-							
-							<div class="col-md-9">
-								<select id="cliente'.$row[0].'" name="cliente'.$row[0].'">
-									'.$select.'
-								</select>
-							</div>
-							</div>
-							
-							<script>
-								document.getElementById("cliente'.$row[0].'").value = "'.$row[10].'";
-							</script>
-							
-							<div class="col-md-12">
-							
-							<div class="col-md-3">
-								<p>TIPO DE PAGO:</p>
-							</div>
-							
-							<div class="col-md-9">
-							<select id="t_pago'.$row[0].'" name="t_pago'.$row[0].'">
-									'.$select_pago.'
-								</select>
-							</div>
-							</div>
-							<script>
-								document.getElementById("t_pago'.$row[0].'").value = "'.$row[9].'";
-							</script>
-							
-							<div class="col-md-12">
-							
-							<div class="col-md-3">
-								<p></p>
-							</div>
-							
-							<div class="col-md-3">
-								<br><button class="submit-btn mt-2" type="submit">Actualizar</button>
-							</div>
-							
-							<div class="col-md-3">
-							</div>
-
-							<div class="col-md-3">
-								
-							</div>
-							</div>
-						</form>
+						<div class="col-md-12">
+							<p>Esta orden no esta finalizada, por lo tanto puede eliminarla sin problema alguno.</p>
+						</div>
 					</div>
 				</div>
 				<div class="modal-footer">
 					
-					<form action="func/delete_f_venta.php" autocomplete="off" method="post">
-						<input type="hidden" id="folio" name="folio" value="'.$row[0].'">
-						<input type="hidden" id="url" name="url" value="'.$_SERVER['REQUEST_URI'].'">
-						<a href="/change_client.php?folio='.$row[0].'&cotizacion=1"><button type="button" class="btn btn-primary">Cambiar cliente</button></a>
-						'.$eliminar.'
+					<form action="func/delete_orden_compra.php" autocomplete="off" method="post">
+						<input type="hidden" id="folio" name="folio" value="'.$row[1].'">
+						<button type="button" class="btn btn-success" data-dismiss="modal">Cerrar</button>
+						<button type="sumbit" class="btn btn-danger">Si ! Eliminar</button>
 					</form>
 				</div>
 				</div>
 			</div>
 			</div>
 
-
-
-
-
-
-			<div class="modal fade" id="credit'.$row[0].'" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal fade" id="end'.$row[0].'" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalLabel">CREDITO</h5>
+					<h5 class="modal-title" id="exampleModalLabel">FINALIZAR ORDEN ?</h5>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
 				<div class="modal-body">
 					<div class="row">
-						<center><span>Enviar esta cotizacion a credito para: <b>'.$row[2].'</b></span></center>
+						<div class="col-md-12">
+							<p>Al finalizar esta orden pasara a estado finalizado y el stock de productos se actualizara de acuerdo a los nuevos productos ingresados.</p>
+						</div>
 					</div>
 				</div>
 				<div class="modal-footer">
 					
-					<form action="func/create_credit_cotizacion.php" autocomplete="off" method="post">
-						<input type="hidden" id="folio" name="folio" value="'.$row[0].'">
-						<input type="hidden" id="url" name="url" value="'.$_SERVER['REQUEST_URI'].'">
-						<button type="button" class="btn btn-warning" data-dismiss="modal">Cancelar</button>
-						<button type="sumbit" class="btn btn-success">Aceptar</button>
+					<form action="func/end_orden_compra.php" autocomplete="off" method="post">
+						<input type="hidden" id="folio" name="folio" value="'.$row[1].'">
+						<button type="button" class="btn btn-success" data-dismiss="modal">Cerrar</button>
+						<button type="sumbit" class="btn btn-danger">Si ! Finalizar</button>
 					</form>
 				</div>
 				</div>
 			</div>
 			</div>
-			';
-			
-			//Se envia email
-			$body = $body.'
-			<div class="modal fade" id="mail'.$row[0].'" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-			<div class="modal-dialog" role="document">
-				<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalLabel">ENVIAR COTIZACION POR CORREO</h5>
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="modal-body">
-					<div class="row">
-						
-						<form action="func/cotizacion_sendmail.php" autocomplete="on" method="post">
-							<div class="col-md-12">
-								<label>Ingrese el correo del cliente</label>
-								<input type="text" name="mail" id="mail" placeholder="correo1,Correo2,..."  value="'.$row[11].'">
-							</div>
 
-							<div class="col-md-12">
-								<br>
-								<label>CABECERA</label>
-								<input type="text" name="header" id="header" placeholder="..."  value="'.static_empresa_nombre().'">
-							</div>
-							
-							<input id="body" name="body" type="hidden" value="APRECIABLE <b>'.$row[2].'</b>. SE ADJUNTA <b>COTIZACION VIGENTE </b>%cot_cot%">
-							
-							<div class="col-md-12">
-							<br>
-								<label>Mensaje</label>
-								<textarea placeholder="Escriba aqui un texto html si es necesario" name="txtxtra" id="txtxtra" class="custom-textarea"></textarea>
-							</div>
-					</div>
-				</div>
-				<div class="modal-footer">
-						<input type="hidden" id="folio" name="folio" value="'.$row[0].'">
-						<input type="hidden" id="url" name="url" value="'.$_SERVER['REQUEST_URI'].'">
-						<input type="hidden" id="url_web" name="url_web" value="'.$_SERVER['HTTP_HOST'].'">
-						<button type="sumbit" class="btn btn-success" onclick="javascript:this.form.submit(); this.disabled= true;">Enviar</button>
-					</form>
-				</div>
-				</div>
-			</div>
-			</div>
 			';
 		}
 		
