@@ -13722,7 +13722,7 @@
 	
 		$body = '
 		<div class="section-title-2 text-uppercase mb-40 text-center">
-				<h4>ORDEN DE COMPRA: '. $_SESSION['empresa_nombre'] .' | '. date("d-m-Y") .'</h4>
+				<h4>ORDEN DE COMPRA: '. $_SESSION['empresa_nombre'] .' | '. str_replace(" 0:00:00"," ",GetFechaText(date("d-m-Y"))) .'</h4>
 				'.$val.'
 		</div>
 		
@@ -13937,7 +13937,7 @@
 	
 		$body = '
 		<div class="section-title-2 text-uppercase mb-40 text-center">
-				<h4>ORDEN DE COMPRA: '. $_SESSION['empresa_nombre'] .' | '. date("d-m-Y") .'</h4>
+				<h4>ORDEN DE COMPRA: '. $_SESSION['empresa_nombre'] .' | '. str_replace(" 0:00:00"," ",GetFechaText(date("d-m-Y"))) .'</h4>
 				'.$val.'
 		</div>
 		<div class="wishlist-area" style="background-color: #f5f5f5;">
@@ -14208,7 +14208,7 @@
 	
 		$body = '
 		<div class="section-title-2 text-uppercase mb-40 text-center">
-				<h4>ORDEN DE COMPRA: '. $_SESSION['empresa_nombre'] .' | '. date("d-m-Y") .'</h4>
+				<h4>ORDEN DE COMPRA: '. $_SESSION['empresa_nombre'] .' | '. str_replace(" 0:00:00"," ",GetFechaText(date("d-m-Y"))) .'</h4>
 				'.$val.'
 		</div>
 		<div class="wishlist-area" style="background-color: #f5f5f5;">
@@ -14418,7 +14418,7 @@
 	
 		$body = '
 		<div class="section-title-2 text-uppercase mb-40 text-center">
-				<h4>ORDEN DE COMPRA: '. $_SESSION['empresa_nombre'] .' | '. date("d-m-Y") .'</h4>
+				<h4>ORDEN DE COMPRA: '. $_SESSION['empresa_nombre'] .' | '. str_replace(" 0:00:00"," ",GetFechaText(date("d-m-Y"))) .'</h4>
 				'.$val.'
 		</div>
 		<div class="wishlist-area" style="background-color: #f5f5f5;">
@@ -14630,7 +14630,7 @@
 	
 		$body = '
 		<div class="section-title-2 text-uppercase mb-40 text-center">
-				<h4>ORDEN DE COMPRA: '. $_SESSION['empresa_nombre'] .' | '. date("d-m-Y") .'</h4>
+				<h4>ORDEN DE COMPRA: '. $_SESSION['empresa_nombre'] .' | '. str_replace(" 0:00:00"," ",GetFechaText(date("d-m-Y"))) .'</h4>
 				'.$val.'
 		</div>
 		<div class="wishlist-area" style="background-color: #f5f5f5;">
@@ -14903,7 +14903,7 @@
 	
 		$body = '
 		<div class="section-title-2 text-uppercase mb-40 text-center">
-				<h4>ORDEN DE COMPRA: '. $_SESSION['empresa_nombre'] .' | '. date("d-m-Y") .'</h4>
+				<h4>ORDEN DE COMPRA: '. $_SESSION['empresa_nombre'] .' | '. str_replace(" 0:00:00"," ",GetFechaText(date("d-m-Y"))) .'</h4>
 				'.$val.'
 		</div>
 		<div class="wishlist-area" style="background-color: #f5f5f5;">
@@ -15176,7 +15176,7 @@
 	
 		$body = '
 		<div class="section-title-2 text-uppercase mb-40 text-center">
-				<h4>ORDEN DE COMPRA: '. $_SESSION['empresa_nombre'] .' | '. date("d-m-Y") .'</h4>
+				<h4>ORDEN DE COMPRA: '. $_SESSION['empresa_nombre'] .' | '. str_replace(" 0:00:00"," ",GetFechaText(date("d-m-Y"))) .'</h4>
 				'.$val.'
 		</div>
 		<div class="wishlist-area" style="background-color: #f5f5f5;">
@@ -15449,7 +15449,7 @@
 	
 		$body = '
 		<div class="section-title-2 text-uppercase mb-40 text-center">
-				<h4>ORDEN DE COMPRA: '. $_SESSION['empresa_nombre'] .' | '. date("d-m-Y") .'</h4>
+				<h4>ORDEN DE COMPRA: '. $_SESSION['empresa_nombre'] .' | '. str_replace(" 0:00:00"," ",GetFechaText(date("d-m-Y"))) .'</h4>
 				'.$val.'
 		</div>
 		<div class="wishlist-area" style="background-color: #f5f5f5;">

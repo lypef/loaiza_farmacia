@@ -27,6 +27,7 @@
 
             <div class="col-md-3 text-left">
                 <button type="submit" style="
+                width: 100%;
                 background-color: #58ACFA;
                 border: none;
                 color: white;
@@ -79,18 +80,43 @@
         ?>
 </div>  
 
+
 <div class="col-md-12">
+
+        <button style="width: 100%; height: 45px; " type="submit" data-toggle="modal" data-target="#create" class="btn btn-warning">Crear orden</button>	
+</div>
+
+<?php
+    include 'func/footer.php';
+?>
+        
+<div class="modal fade" id="create" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">CREAR ORDEN DE COMPRA ?</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Se realizara la orden de compra de acuerdo a las unidades indicadas.</p>
+        
         <form action="func/g_compra_create.php" autocomplete="off" method="post">
 
             <input type="hidden" id="arreglo_products" name="arreglo_products">
             <input type="hidden" id="_productos_total" name="_productos_total" value="0">
             <input type="hidden" id="_productos_pagar" name="_productos_pagar" value="0">
-
-            <button style="width: 100%; height: 45px; " type="submit" class="btn btn-warning">Crear orden</button>	
-
+        
+      </div>
+      <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">NO</button>
+            <button type="submit" class="btn btn-warning" onclick="javascript:this.form.submit(); this.disabled= true;">CONFIRMAR</button>
         </form>
+      </div>
+    </div>
+  </div>
 </div>
-
 
 <script>
 
@@ -157,7 +183,3 @@ return amount_parts.join('.');
 generateArr();
 
 </script>
-<?php
-    include 'func/footer.php';
-?>
-        
