@@ -435,7 +435,14 @@
 	
 	function Select_Almacen ()
 	{
-		$data = mysqli_query(db_conectar(),"SELECT id, nombre FROM almacen ORDER by nombre asc");
+		if ($_SESSION['change_suc'] == 1) 
+		{ 
+			$data = mysqli_query(db_conectar(),"SELECT id, nombre FROM almacen ORDER by nombre asc");	
+		}else
+		{
+			$data = mysqli_query(db_conectar(),"SELECT a.id, a.nombre FROM sucursal_almacen sa, almacen a WHERE sa.almacen = a.id and sa.sucursal = $_SESSION[sucursal] ORDER by a.nombre asc");	
+		}
+		
 		$body = "<option value='0'>LISTA DE ALMACENES</option>";
 		while($row = mysqli_fetch_array($data))
 	    {
@@ -991,6 +998,149 @@
 		
 		';
 		}
+		$body = $body . $pagination;
+		return $body;
+	}
+
+	function _getProductsFinanceProducts ($pagina)
+	{
+		$TAMANO_PAGINA = 16;
+
+		if (!$pagina) {
+			$inicio = 0;
+			$pagina = 1;
+		}
+		else {
+			$inicio = ($pagina - 1) * $TAMANO_PAGINA;
+		}
+		
+		$data = mysqli_query(db_conectar(),"SELECT nombre, stock, oferta, precio_normal, precio_oferta, foto0, foto1, foto2, foto3, id, `no. De parte` FROM productos order by id asc LIMIT $inicio, $TAMANO_PAGINA");
+		$datatmp = mysqli_query(db_conectar(),"SELECT id FROM productos");
+		
+
+		$pagination = '<div class="row">
+						<div class="col-md-12">
+						<div class="shop-pagination p-10 text-center">
+							<ul>';
+
+		
+		$num_total_registros = mysqli_num_rows($datatmp);
+		$total_paginas = ceil($num_total_registros / $TAMANO_PAGINA);
+
+		if ($pagina > 1)
+		{
+			$pagination = $pagination . '<li><a href="?pagina='.($pagina - 1 ).'" ><i class="zmdi zmdi-chevron-left"></i></a></li>';
+		}
+		
+		
+		if ($total_paginas > 1) {
+
+			if ($pagina <= 8)
+			{
+				for ($i=1; $i<$pagina; $i++) {
+				
+					$pagination = $pagination . '<li><a href="?pagina='.$i.'">'.$i.'</a></li>';	
+				}
+			}else
+			{
+				for ($i= ($pagina - 7); $i < $pagina; $i++) {
+				
+					$pagination = $pagination . '<li><a href="?pagina='.$i.'">'.$i.'</a></li>';	
+				}
+			}
+			
+		}
+		
+		$Pag_Max = $pagina + 8;
+		
+		if ($total_paginas > 1) {
+
+			for ($i=$pagina;$i<=$total_paginas;$i++) {
+				
+				if ( $i == $pagina)
+					$pagination = $pagination . '<li><a href="?pagina='.$i.'"><b>'.$i.'</b></a></li>';
+				elseif ( $i < $Pag_Max)
+					$pagination = $pagination . '<li><a href="?pagina='.$i.'">'.$i.'</a></li>';
+			}
+		}
+
+		if ($pagina < $total_paginas)
+		{
+			$pagination = $pagination . '<li><a href="?pagina='.($pagina + 1 ).'" ><i class="zmdi zmdi-chevron-right"></i></a></li>';
+		}
+		
+		$pagination = $pagination . '</ul>
+									</div>
+									</div>
+									</div><p>';
+		$body = '<div class="row">
+					<div class="col-md-12">
+						<div class="section-title-2 text-uppercase mb-40 text-center">
+							<h4>SELECCIONE UN PRODUCTO</h4>
+						</div>
+					</div>
+				</div>
+			
+			<div class="row">
+					<div class="col-md-10">
+						<form class="header-search-box" action="productSelect_finance_product.php">
+						
+							<input type="text" placeholder="Buscar" name="search" autocomplete="off">
+							<input type="hidden" id="pagina" name="pagina" value="1">
+						
+					</div>
+					
+					<div class="col-md-2">
+						<button class="submit-btn" type="submit" style="width:100%">Buscar</button>	
+						</form>
+					</div>
+			</div>
+			<br>
+			';
+		$body = $body . $pagination;
+
+		while($row = mysqli_fetch_array($data))
+	    {
+		    $precio = $row[3];
+			$msg_oferta = "";
+			$_stock = '<p>PN: '.$row[10].'</p>';
+
+			if ($row[2] == 1)
+			{
+				$precio = $row[4];
+				$msg_oferta = '<span class="new-label red-color text-uppercase">off</span>';
+				$_stock = '<p>PN: '.$row[10].'  | Antes $ '.$row[3].' MXN</p>';
+			}
+
+	        $body = $body.'<div class="col-md-3">
+                                    
+			<div class="single-product mb-40">
+				<div class="product-img-content mb-20">
+					<div class="product-img">
+						<a href="/finance_product.php?inicio=2013-05-29&finaliza='.date("Y-m-d").'&product='.$row[9].'">
+							<img src="../images/'.$row[5].'" alt="" style="max-height: 180px; min-height: 180px;">
+						</a>
+					</div>
+					'.$msg_oferta.'
+					<div class="product-action text-center">
+						<a href="/finance_product.php?inicio=2013-05-29&finaliza='.date("Y-m-d").'&product='.$row[9].'" title="Seleccionar">
+							<i class="zmdi zmdi-badge-check"></i>
+						</a>
+					</div>
+				</div>
+				<div class="product-content text-center text-uppercase">
+				<a href="/finance_product.php?inicio=2013-05-29&finaliza='.date("Y-m-d").'&product='.$row[9].'" title="'.$row[0].'">'.substr($row[0], 0, 25).'.</a>
+					<div class="rating-icon">
+						'.$_stock.'
+					</div>
+					<div class="product-price">
+						<span class="new-price">$ '.$precio.' MXN</span>
+					</div>
+				</div>
+			</div>
+		</div>';
+		}
+
 		$body = $body . $pagination;
 		return $body;
 	}
@@ -3389,6 +3539,113 @@
 			</div>
 		</div>
 		
+		';
+		}
+		$body = $body . $pagination;
+
+		if ($contador <= 0)
+		{
+			$body = '<center><p>
+				<h3>NO CONTAMOS POR EL MOMENTO CON ESTE PRODUCTO</h3>
+				<br>
+				<h4>
+				'.$_SESSION["empresa_nombre"].'
+				<br>
+				TELEFONOS: '.$_SESSION["empresa_telefono"].'
+				<br>
+				<br>
+				'.$_SESSION["empresa_correo"].'
+				</h3>
+				<br>
+				<br>
+			</p></center>';
+		}
+
+		return $body;
+	}
+
+	function _getProductsFinanceProductsSearch ($txt, $pagina)
+	{
+		$contador = 0;
+		
+		$TAMANO_PAGINA = 16;
+
+		if (!$pagina) {
+			$inicio = 0;
+			$pagina = 1;
+		}
+		else {
+			$inicio = ($pagina - 1) * $TAMANO_PAGINA;
+		}
+		
+		$data = mysqli_query(db_conectar(),"SELECT nombre, stock, oferta, precio_normal, precio_oferta, foto0, foto1, foto2, foto3, id, `no. De parte` FROM productos where nombre like '%$txt%' or descripcion like '%$txt%' or marca like '%$txt%' or proveedor like '%$txt%' order by id asc");
+		
+		$body = '<div class="row">
+				<div class="col-md-12">
+							<div class="section-title-2 text-uppercase mb-40 text-center">
+								<h4>SELECCIONE UN PRODUCTO</h4>
+							</div>
+						</div>
+					</div>
+
+				<div class="row">
+						<div class="col-md-10">
+							<form class="header-search-box" action="productSelect_finance_product.php">
+							
+								<input type="text" placeholder="Buscar" name="search" autocomplete="off">
+								<input type="hidden" id="pagina" name="pagina" value="1">
+							
+						</div>
+						
+						<div class="col-md-2">
+							<button class="submit-btn" type="submit" style="width:100%">Buscar</button>	
+							</form>
+						</div>
+				</div>
+				<br>';
+		
+
+		while($row = mysqli_fetch_array($data))
+	    {
+		  $contador += 1;
+		  $precio = $row[3];
+			$msg_oferta = "";
+			$_stock = '<p>PN: '.$row[10].'</p>';
+
+			if ($row[2] == 1)
+			{
+				$precio = $row[4];
+				$msg_oferta = '<span class="new-label red-color text-uppercase">off</span>';
+				$_stock = '<p>PN: '.$row[10].'  | Antes $ '.$row[3].' MXN</p>';
+			}
+
+	        $body = $body.'<div class="col-md-3">
+                                    
+			<div class="single-product mb-40">
+				<div class="product-img-content mb-20">
+					<div class="product-img">
+						<a href="/finance_product.php?inicio=2013-05-29&finaliza='.date("Y-m-d").'&product='.$row[9].'">
+							<img src="../images/'.$row[5].'" alt="" style="max-height: 180px; min-height: 180px;">
+						</a>
+					</div>
+					'.$msg_oferta.'
+					<div class="product-action text-center">
+						<a href="/finance_product.php?inicio=2013-05-29&finaliza='.date("Y-m-d").'&product='.$row[9].'" title="Seleccionar">
+							<i class="zmdi zmdi-badge-check"></i>
+						</a>
+					</div>
+				</div>
+				<div class="product-content text-center text-uppercase">
+				<a href="/finance_product.php?inicio=2013-05-29&finaliza='.date("Y-m-d").'&product='.$row[9].'" title="'.$row[0].'">'.substr($row[0], 0, 25).'.</a>
+					<div class="rating-icon">
+						'.$_stock.'
+					</div>
+					<div class="product-price">
+						<span class="new-price">$ '.$precio.' MXN</span>
+					</div>
+				</div>
+			</div>
+		</div>
 		';
 		}
 		$body = $body . $pagination;
@@ -12493,7 +12750,7 @@
 							<th class="table-head th-name uppercase">FOLIO</th>
 							<th class="table-head th-name uppercase">VENDEDOR</th>
 							<th class="table-head th-name uppercase">CLIENTE</th>
-							<th class="table-head th-name uppercase">F.VENTA</th>
+							<th class="table-head th-name uppercase">fecha</th>
 							<th class="table-head th-name uppercase">UNIDADES</th>
 							<th class="table-head th-name uppercase"><center>PRODUCTO</center></th>
 							<th class="table-head th-name uppercase">COBRADO</th>
@@ -12544,7 +12801,7 @@
 					'.$folio_.'
 					<td class="item-des"><p>'.$row[1].'</p></td>
 					<td class="item-des"><p>'.$row[2].'</p></td>
-					<td class="item-des"><p>'.$row[6].'</p></td>
+					<td class="item-des"><p>'.GetFechaText($row[6]).'</p></td>
 					<td class="item-des"><center>'.$row0[2].'</center></td>
 					<td class="item-des"><center><p><a target="_blank" href="/products_detail.php?id='.$row0[3].'">'.$row0[0].'</a></p></center></td>
 					<td class="item-des"><center><p>$ '.$row0[2] * $row0[1].' MXN</p></center></td>

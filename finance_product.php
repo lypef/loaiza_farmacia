@@ -1,47 +1,42 @@
 <?php
     include 'func/header.php';
 ?>
-    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.2.620/styles/kendo.common.min.css"/>
-    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.2.620/styles/kendo.rtl.min.css"/>
-    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.2.620/styles/kendo.silver.min.css"/>
-    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.2.620/styles/kendo.mobile.all.min.css"/>
-
-    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-    <script src="/kendo/kendo.all.min.js"></script>
-  
-    <div class="section-title-2 text-uppercase mb-40 text-center">
-        <h4>SELECCIONE UNA FECHA ESPECIFICA O UN PRODUCTO</h4>
-    </div>
-    <form action="finance_product.php">
-
-    <div class="row" style="padding: 20px;">
+    <div class="row">
             
-        <div class="col-md-2 text-center">
-            <label>Fecha de inicio</label><br>
-            <input id="datepicker0" name="inicio">
+        <div class="col-md-3 text-center">
+        <center>
+        <a href="report_products_gen_xls.php?inicio=<?php echo $_GET["inicio"]?>&finaliza=<?php echo $_GET["finaliza"]?>&product=<?php echo $_GET["product"]?>"style="
+        width: 100%;
+        background-color: #58ACFA;
+        border: none;
+        color: white;
+        padding: 18px 10px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 20px;
+        margin: 4px 2px;
+        cursor: pointer;
+        ">Generar XLS</a>
+        </center>        
         </div>
+        
+        <div class="col-md-3 text-center">
+            <label>Fecha de inicio</label><br>
+            <input type="date" id="inicio" name="inicio" value="<?php echo $_GET["inicio"]; ?>" style="text-align: center; height:40px; border: 2px solid #D9D7D7;" onchange="change_date();">
+        </div>
+        
+        
 
         <div class="col-md-3 text-center">
             <label>Fecha de finalizacion</label><br>
-            <input id="datepicker1" name="finaliza">
+            <input type="date" id="finaliza" name="finaliza" value="<?php echo $_GET["finaliza"]; ?>" style="text-align: center; height:40px; border: 2px solid #D9D7D7;" onchange="change_date();">
         </div>
-        
+
         <div class="col-md-3 text-center">
-            <label>Buscar producto</label><br>
-            <form action="finance_product.php" autocomplete="off">
-                <input type="text" placeholder="No. parte" name="search" autocomplete="off" style="height:45px">
-            </form>
-        </div>
-            
-        <div class="col-md-2 text-center">
-            <label>Seleccione producto</label><br>
-            <select id="product" name="product">
-                    <?php echo Select_productsFinance_Products($_GET["search"]) ?>
-            </select>                                       
-        </div>
-        
-        <div class="col-md-2 text-left">
-            <button type="submit" style="
+        <center>
+            <a href="report_products_gen.php?inicio=<?php echo $_GET["inicio"]?>&finaliza=<?php echo $_GET["finaliza"]?>&product=<?php echo $_GET["product"]?>"style="
+            width: 100%;
             background-color: #58ACFA;
             border: none;
             color: white;
@@ -52,54 +47,21 @@
             font-size: 20px;
             margin: 4px 2px;
             cursor: pointer;
-            ">Consultar</button>
+            ">Generar PDF</a>
+        </center>
         </div>
-        
-    </form>
+
     </div>
     
-<script id="cell-template" type="text/x-kendo-template">
-    <span class="#= isInArray(data.date, data.dates) ? 'party' : '' #">#= data.value #</span>
-</script>
-
 <script>
-  var fecha = new Date();
-
-  $("#datepicker0").kendoDatePicker({
-    value: new Date(),
-    month: {
-      content: $("#cell-template").html()
-    }
-  });
-
-  $("#datepicker1").kendoDatePicker({
-    value: new Date(),
-    month: {
-      content: $("#cell-template").html()
-    },
-    dates: [
-      new Date(2000, 10, 10),
-      new Date(2000, 10, 30)
-    ] //can manipulate month template depending on this array.
-  });
-
-  function isInArray(date, dates) {
-    for(var idx = 0, length = dates.length; idx < length; idx++) {
-      var d = dates[idx];
-      if (date.getFullYear() == d.getFullYear() &&
-          date.getMonth() == d.getMonth() &&
-          date.getDate() == d.getDate()) {
-        return true;
-      }
-    }
-
-    return false;
+function change_date ()
+  {
+    var product = <?php echo $_GET["product"]; ?>;
+    var inicio = document.getElementById("inicio").value;
+    var finaliza = document.getElementById("finaliza").value;
+    
+    window.location.href = "/finance_product.php?inicio="+inicio+"&finaliza="+finaliza+"&product="+product;
   }
-
-    if (getUrlVars()["product"])
-    {
-        document.getElementById("product").value = getUrlVars()["product"];
-    }
 </script>
 
 <!-- Start page content -->
@@ -117,32 +79,6 @@
                                     echo table_finance_product($_GET["inicio"],$_GET["finaliza"],$_GET["product"]);
                                 ?>
                                 </div>
-                                <center>
-                                <a href="report_products_gen.php?inicio=<?php echo $_GET["inicio"]?>&finaliza=<?php echo $_GET["finaliza"]?>&product=<?php echo $_GET["product"]?>"style="
-                                background-color: #58ACFA;
-                                border: none;
-                                color: white;
-                                padding: 18px 10px;
-                                text-align: center;
-                                text-decoration: none;
-                                display: inline-block;
-                                font-size: 20px;
-                                margin: 4px 2px;
-                                cursor: pointer;
-                                ">Generar Pdf</a>
-                                <a href="report_products_gen_xls.php?inicio=<?php echo $_GET["inicio"]?>&finaliza=<?php echo $_GET["finaliza"]?>&product=<?php echo $_GET["product"]?>"style="
-                                background-color: #58ACFA;
-                                border: none;
-                                color: white;
-                                padding: 18px 10px;
-                                text-align: center;
-                                text-decoration: none;
-                                display: inline-block;
-                                font-size: 20px;
-                                margin: 4px 2px;
-                                cursor: pointer;
-                                ">Generar Xls</a>
-                                </center>
                             </div>
                         </div>
                 </div>

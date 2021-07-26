@@ -475,7 +475,7 @@
                                                                 <li><h2 class="mega-menu-title mb-15">Reporte de ventas</h2></li>
                                                                 <li><a href="finance.php?inicio='.$hoy.'&finaliza='.$hoy.'&folio=&usuario=0&sucursal=0">Generar</a></li>
                                                                 <li><a href="gpc_finance.php">Generar por cliente</a></li>
-                                                                <li><a href="finance_product.php?inicio='.$hoy.'&finaliza='.$hoy.'&product=">Generar por productos</a></li>
+                                                                <li><a href="productSelect_finance_product.php?pagina=1">Generar por productos</a></li>
                                                             </ul>';
                                                         }
                                                     ?>

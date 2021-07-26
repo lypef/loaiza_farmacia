@@ -57,9 +57,53 @@
         $ruta_img = 'product/product_img1'.$name_img;
         $img_access = '../images/'.$ruta_img;
 
-        if ( copy($_FILES["imagen0"]["tmp_name"], $img_access ) )
+        $medidasimagen = getimagesize($_FILES['imagen0']['tmp_name']);
+        
+        if($medidasimagen[0] > 1028 && $_FILES['imagen0']['size'] > 100000)
         {
+            // Se comprime Imagen
+            $max_ancho = 1280;
+            $max_alto = 900;
+
+            $rtOriginal=$_FILES['imagen0']['tmp_name'];
+
+            if($_FILES['imagen0']['type']=='image/jpeg'){
+                $original = imagecreatefromjpeg($rtOriginal);
+            }
+            
+
+            list($ancho,$alto)=getimagesize($rtOriginal);
+
+            $x_ratio = $max_ancho / $ancho;
+            $y_ratio = $max_alto / $alto;
+
+
+            if( ($ancho <= $max_ancho) && ($alto <= $max_alto) ){
+                $ancho_final = $ancho;
+                $alto_final = $alto;
+            }
+            elseif (($x_ratio * $alto) < $max_alto){
+                $alto_final = ceil($x_ratio * $alto);
+                $ancho_final = $max_ancho;
+            }
+            else{
+                $ancho_final = ceil($y_ratio * $ancho);
+                $alto_final = $max_alto;
+            }
+
+            $lienzo=imagecreatetruecolor($ancho_final,$alto_final); 
+            imagecopyresampled($lienzo,$original,0,0,0,0,$ancho_final, $alto_final,$ancho,$alto);
+            imagedestroy($original);
+            imagejpeg($lienzo,$img_access);
+            
             $img0 = $ruta_img;
+            // Finaliza comprime Imagen
+        }else
+        {
+            if ( copy($_FILES["imagen0"]["tmp_name"], $img_access ) )
+            {
+                $img0 = $ruta_img;
+            }
         }
     }
 
@@ -68,9 +112,53 @@
         $ruta_img = 'product/product_img2'.$name_img;
         $img_access = '../images/'.$ruta_img;
 
-        if ( copy($_FILES["imagen1"]["tmp_name"], $img_access ) )
+        $medidasimagen = getimagesize($_FILES['imagen1']['tmp_name']);
+        
+        if($medidasimagen[0] > 1028 && $_FILES['imagen1']['size'] > 100000)
         {
+            // Se comprime Imagen
+            $max_ancho = 1280;
+            $max_alto = 900;
+
+            $rtOriginal=$_FILES['imagen1']['tmp_name'];
+
+            if($_FILES['imagen1']['type']=='image/jpeg'){
+                $original = imagecreatefromjpeg($rtOriginal);
+            }
+            
+
+            list($ancho,$alto)=getimagesize($rtOriginal);
+
+            $x_ratio = $max_ancho / $ancho;
+            $y_ratio = $max_alto / $alto;
+
+
+            if( ($ancho <= $max_ancho) && ($alto <= $max_alto) ){
+                $ancho_final = $ancho;
+                $alto_final = $alto;
+            }
+            elseif (($x_ratio * $alto) < $max_alto){
+                $alto_final = ceil($x_ratio * $alto);
+                $ancho_final = $max_ancho;
+            }
+            else{
+                $ancho_final = ceil($y_ratio * $ancho);
+                $alto_final = $max_alto;
+            }
+
+            $lienzo=imagecreatetruecolor($ancho_final,$alto_final); 
+            imagecopyresampled($lienzo,$original,0,0,0,0,$ancho_final, $alto_final,$ancho,$alto);
+            imagedestroy($original);
+            imagejpeg($lienzo,$img_access);
+            
             $img1 = $ruta_img;
+            // Finaliza comprime Imagen
+        }else
+        {
+            if ( copy($_FILES["imagen1"]["tmp_name"], $img_access ) )
+            {
+                $img1 = $ruta_img;
+            }
         }
     }
 
@@ -79,9 +167,53 @@
         $ruta_img = 'product/product_img3'.$name_img;
         $img_access = '../images/'.$ruta_img;
 
-        if ( copy($_FILES["imagen2"]["tmp_name"], $img_access ) )
+        $medidasimagen = getimagesize($_FILES['imagen2']['tmp_name']);
+        
+        if($medidasimagen[0] > 1028 && $_FILES['imagen2']['size'] > 100000)
         {
+            // Se comprime Imagen
+            $max_ancho = 1280;
+            $max_alto = 900;
+
+            $rtOriginal=$_FILES['imagen2']['tmp_name'];
+
+            if($_FILES['imagen2']['type']=='image/jpeg'){
+                $original = imagecreatefromjpeg($rtOriginal);
+            }
+            
+
+            list($ancho,$alto)=getimagesize($rtOriginal);
+
+            $x_ratio = $max_ancho / $ancho;
+            $y_ratio = $max_alto / $alto;
+
+
+            if( ($ancho <= $max_ancho) && ($alto <= $max_alto) ){
+                $ancho_final = $ancho;
+                $alto_final = $alto;
+            }
+            elseif (($x_ratio * $alto) < $max_alto){
+                $alto_final = ceil($x_ratio * $alto);
+                $ancho_final = $max_ancho;
+            }
+            else{
+                $ancho_final = ceil($y_ratio * $ancho);
+                $alto_final = $max_alto;
+            }
+
+            $lienzo=imagecreatetruecolor($ancho_final,$alto_final); 
+            imagecopyresampled($lienzo,$original,0,0,0,0,$ancho_final, $alto_final,$ancho,$alto);
+            imagedestroy($original);
+            imagejpeg($lienzo,$img_access);
+            
             $img2 = $ruta_img;
+            // Finaliza comprime Imagen
+        }else
+        {
+            if ( copy($_FILES["imagen2"]["tmp_name"], $img_access ) )
+            {
+                $img2 = $ruta_img;
+            }
         }
     }
 
@@ -90,9 +222,53 @@
         $ruta_img = 'product/product_img4'.$name_img;
         $img_access = '../images/'.$ruta_img;
 
-        if ( copy($_FILES["imagen3"]["tmp_name"], $img_access ) )
+        $medidasimagen = getimagesize($_FILES['imagen3']['tmp_name']);
+        
+        if($medidasimagen[0] > 1028 && $_FILES['imagen3']['size'] > 100000)
         {
+            // Se comprime Imagen
+            $max_ancho = 1280;
+            $max_alto = 900;
+
+            $rtOriginal=$_FILES['imagen3']['tmp_name'];
+
+            if($_FILES['imagen0']['type']=='image/jpeg'){
+                $original = imagecreatefromjpeg($rtOriginal);
+            }
+            
+
+            list($ancho,$alto)=getimagesize($rtOriginal);
+
+            $x_ratio = $max_ancho / $ancho;
+            $y_ratio = $max_alto / $alto;
+
+
+            if( ($ancho <= $max_ancho) && ($alto <= $max_alto) ){
+                $ancho_final = $ancho;
+                $alto_final = $alto;
+            }
+            elseif (($x_ratio * $alto) < $max_alto){
+                $alto_final = ceil($x_ratio * $alto);
+                $ancho_final = $max_ancho;
+            }
+            else{
+                $ancho_final = ceil($y_ratio * $ancho);
+                $alto_final = $max_alto;
+            }
+
+            $lienzo=imagecreatetruecolor($ancho_final,$alto_final); 
+            imagecopyresampled($lienzo,$original,0,0,0,0,$ancho_final, $alto_final,$ancho,$alto);
+            imagedestroy($original);
+            imagejpeg($lienzo,$img_access);
+            
             $img3 = $ruta_img;
+            // Finaliza comprime Imagen
+        }else
+        {
+            if ( copy($_FILES["imagen3"]["tmp_name"], $img_access ) )
+            {
+                $img3 = $ruta_img;
+            }
         }
     }
 

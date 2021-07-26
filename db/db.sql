@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 25-07-2021 a las 21:09:30
+-- Tiempo de generación: 26-07-2021 a las 08:29:01
 -- Versión del servidor: 10.4.8-MariaDB
 -- Versión de PHP: 7.1.32
 
@@ -266,7 +266,11 @@ CREATE TABLE `folio_venta` (
 INSERT INTO `folio_venta` (`folio`, `vendedor`, `client`, `descuento`, `fecha`, `open`, `cobrado`, `fecha_venta`, `cut`, `sucursal`, `cut_global`, `iva`, `t_pago`, `pedido`, `folio_venta_ini`, `cotizacion`, `concepto`, `comision_pagada`, `oxxo_pay`, `titulo`, `f_entrega`, `estrategia`, `facturar`, `f_instalacion`, `schedule`, `schedule_end`) VALUES
 ('120210722215208', 1, 1, 0, '2021-07-22 21:52:08', 0, 430, '2021-07-22 21:53:29', 0, 10, 0, 16, 'transferencia', 0, '120210722215208', 0, NULL, 0, '0', '', NULL, 2, 0, NULL, 0, 0),
 ('120210723055927', 1, 1, 0, '2021-07-23 05:59:27', 1, 0, NULL, 0, 10, 0, 16, 'transferencia', 0, '120210723055927', 1, NULL, 0, '0', '', NULL, NULL, 0, NULL, 0, 0),
-('120210723055933', 1, 1, 0, '2021-07-23 05:59:33', 1, NULL, NULL, 0, 10, 0, 16, 'efectivo', 0, NULL, 0, NULL, 0, '0', '', NULL, NULL, 0, NULL, 0, 0),
+('120210723055933', 1, 1, 0, '2021-07-23 05:59:33', 0, 38805, '2021-07-26 06:09:38', 0, 10, 0, 16, 'efectivo', 0, NULL, 0, NULL, 0, '0', '', NULL, 1, 0, NULL, 0, 0),
+('120210726061059', 1, 1, 0, '2021-07-26 06:10:59', 0, 30796, '2021-07-26 06:11:18', 0, 10, 0, 16, 'efectivo', 0, NULL, 0, NULL, 0, '0', '', NULL, 1, 0, NULL, 0, 0),
+('120210726071552', 1, 315, 0, '2021-07-26 07:15:52', 1, NULL, NULL, 0, 12, 0, 16, 'efectivo', 0, NULL, 0, NULL, 0, '0', '', NULL, NULL, 0, NULL, 0, 0),
+('120210726071609', 1, 315, 0, '2021-07-26 07:16:09', 1, 0, NULL, 0, 12, 0, 16, 'efectivo', 0, '120210726071609', 1, NULL, 0, '0', '', NULL, NULL, 0, NULL, 0, 0),
+('120210726071627', 1, 315, 0, '2021-07-26 07:16:27', 1, 0, NULL, 0, 12, 0, 16, 'efectivo', 1, '120210726071627', 0, NULL, 0, '0', 'dwdwdw', '2021-07-27', NULL, 0, NULL, 0, 0),
 ('4020210323140002', 40, 310, 10, '2021-03-23 14:00:02', 0, 323.1, '2021-03-23 14:04:35', 0, 10, 1, 16, 'efectivo', 0, NULL, 0, NULL, 0, '0', '', '2021-04-28', 1, 0, '2021-04-28 22:29:47', 0, 0),
 ('4220201226190608', 42, 310, 10, '2020-12-26 19:06:08', 0, 538.2, '2020-12-26 19:07:32', 0, 10, 1, 16, 'efectivo', 0, NULL, 0, NULL, 0, '0', '', '2021-04-28', 1, 0, '2021-04-28 22:29:47', 0, 0),
 ('4220210103155928', 42, 310, 10, '2021-01-03 15:59:28', 0, 342, '2021-01-03 16:00:17', 0, 10, 1, 16, 'tarjeta', 0, NULL, 0, NULL, 0, '0', '', '2021-04-28', 1, 0, '2021-04-28 22:29:47', 0, 0),
@@ -339,9 +343,9 @@ CREATE TABLE `order_buy` (
 
 INSERT INTO `order_buy` (`id`, `folio`, `user`, `fecha`, `unidades`, `pagar`, `estatus`) VALUES
 (26, '20210725201052', 1, '2021-07-25 20:10:52', 15, '420.00', 1),
-(27, '20210725202428', 1, '2021-07-25 20:24:28', 140, '3792.00', 0),
+(27, '20210725202428', 1, '2021-07-25 20:24:28', 140, '3792.00', 1),
 (28, '20210725204738', 1, '2021-07-25 20:47:38', 140, '3792.00', 0),
-(29, '20210725204742', 1, '2021-07-25 20:47:42', 140, '3792.00', 0),
+(29, '20210725204742', 1, '2021-07-25 20:47:42', 140, '3792.00', 1),
 (30, '20210725204745', 1, '2021-07-25 20:47:45', 140, '3792.00', 0),
 (31, '20210725204749', 1, '2021-07-25 20:47:49', 140, '3792.00', 0),
 (32, '20210725204753', 1, '2021-07-25 20:47:53', 140, '3792.00', 0),
@@ -514,7 +518,7 @@ INSERT INTO `productos` (`id`, `no. De parte`, `nombre`, `descripcion`, `almacen
 (148, 'EMTAZNEGRA-01', 'TAZA NEGRA EMTAZNEGRA-01', '', 14, 47, '', 'EL MINERITO', 'GRUPO ALPARIED SA DE CV ', 'product/product_img120210417171024.jpg', '', '', '', 0, 165, 1, 8, '', 21, 210, 45, '01010101', 'H87', 'NA', 0),
 (149, 'EMMARIA-01', 'MUÑECA MARIA EMMARIA-01', '', 14, 51, '', 'EL MINERITO', 'GRUPO ALPARIED SA DE CV', 'product/product_img120210417170613.jpg', '', '', '', 0, 190, 1, 4, '', 10, 100, 85, '01010101', 'H87', 'NA', 0),
 (150, 'EM-', 'DULCE CHAMOY EM- CHAMOY 01', '', 14, 52, '', '', '', 'product/product_img120210608185207.jpg', '', '', '', 0, 35, 1, 11, '', 28, 280, 18, '01010101', 'H87', 'NA', 0),
-(151, 'EM-', 'PROMO DULCE DE CHAMOY EM- CHAMOY 01', '', 14, 52, '', '', '', 'product/product_img120210608185419.jpg', '', '', '', 1, 60, 60, 3, '', 28, 280, 36, '01010101', 'H87', 'NA', 0),
+(151, 'EM-', 'PROMO DULCE DE CHAMOY EM- CHAMOY 01', '', 14, 52, '', '', '', 'product/product_img120210608185419.jpg', '', '', '', 1, 60, 60, 2, '', 28, 280, 36, '01010101', 'H87', 'NA', 0),
 (152, 'EMCAFE-01', 'CAFE XILITLA EMCAFE-01', '', 14, 52, '', 'EL MINERITO', 'GRUPO ALPARIED SA DE CV ', 'product/product_img120210608185646.jpg', '', '', '', 0, 75, 1, 3, '', 22, 220, 25, '01010101', 'H87', 'NA', 0),
 (153, 'EMFOCO-01', 'VASO FOCO EMFOCO-01', '', 14, 47, '', 'EL MINERITO', 'GRUPO ALPARIED SA DE CV ', 'product/product_img120210609142214.jpg', '', '', '', 0, 160, 1, 26, '', 16, 160, 50, '01010101', 'H87', 'NA', 0),
 (154, 'EMLIBGRA-01', 'LIBRETA GRANDE EMLIBGRA-01', '', 14, 49, '', 'EL MINERITO', 'GRUPO ALPARIED SA DE CV', 'product/product_img120210615145817.jpg', '', '', '', 0, 150, 1, 24, '', 25, 250, 28, '01010101', 'H87', 'NA', 0),
@@ -527,9 +531,9 @@ INSERT INTO `productos` (`id`, `no. De parte`, `nombre`, `descripcion`, `almacen
 (163, 'EMBUSTOS-01', 'ARTESANÍA BUSTOS DE ANIMALES EMBUSTOS-01', '', 14, 50, '', '', '', 'product/product_img120210616171018.jpg', '', '', '', 0, 799, 1, 2, '', 3, 30, 350, '01010101', 'H87', 'NA', 0),
 (164, 'EMARTGIG-01', 'ARTESANÍA GIGANTE EMARTGIG-01', '', 14, 50, '', 'EL MINERITO', 'GRUPO ALPARIED SA DE CV', 'product/product_img120210616171216.jpg', '', '', '', 0, 3869, 1, 1, '', 1, 10, 1500, '01010101', 'H87', 'NA', 0),
 (165, 'EMCAN-01', 'CANASTA DULCE COMPLETA EMCAN-01', '', 14, 50, '', 'EL MINERITO', 'GRUPO ALPARIED SA DE CV', 'product/product_img120210616171851.jpg', '', '', '', 0, 99, 1, 27, '', 40, 400, 28, '01010101', 'H87', 'NA', 0),
-(166, 'EMARTGIG-03', 'PROMO 3 CANASTAS', '', 14, 52, '', 'EL MINERITO', 'GRUPO ALPARIED SA DE CV', 'product/product_img120210616172112.jpg', '', '', '', 1, 250, 250, -4, '', 0, 0, 60, '01010101', 'H87', 'NA', 0),
-(167, 'EMCABEZA-01', 'ARTESANIA BUSTO GRANDE EMCABEZA-01', '', 14, 50, '', 'EL MINERITO', 'GRUPO ALPARIED SA DE CV', 'product/product_img120210616172703.jpg', '', '', '', 0, 7699, 1, -1, '', 1, 10, 4000, '01010101', 'H87', 'NA', 0),
-(168, 'EMTARUGO-01', 'TARUGOS 3X50 EMTARUGO-01', '', 15, 52, '', 'EL MINERITO', 'GRUPO ALPARIED SA DE CV', '', '', '', '', 0, 50, 1, 16, '', 24, 120, 24, '01010101', 'H87', 'NA', 0),
+(166, 'EMARTGIG-03', 'PROMO 3 CANASTAS', '', 14, 52, '', 'EL MINERITO', 'GRUPO ALPARIED SA DE CV', 'product/product_img120210616172112.jpg', '', '', '', 1, 250, 250, -5, '', 0, 0, 60, '01010101', 'H87', 'NA', 0),
+(167, 'EMCABEZA-01', 'ARTESANIA BUSTO GRANDE EMCABEZA-01', '', 14, 50, '', 'EL MINERITO', 'GRUPO ALPARIED SA DE CV', 'product/product_img120210616172703.jpg', '', '', '', 0, 7699, 1, -6, '', 1, 10, 4000, '01010101', 'H87', 'NA', 0),
+(168, 'EMTARUGO-01', 'TARUGOS 3X50 EMTARUGO-01', '', 15, 52, '', 'EL MINERITO', 'GRUPO ALPARIED SA DE CV', '', '', '', '', 0, 50, 1, 224, '', 24, 120, 24, '01010101', 'H87', 'NA', 0),
 (169, 'EMCHUPO-01', 'CHUPON DULCE', '', 14, 52, '', 'EL MINERITO', 'GRUPO ALPARIED SA DE CV', '', '', '', '', 0, 50, 1, 3, '', 4, 40, 20, '01010101', 'H87', 'NA', 0),
 (170, 'EMJAMOCILLO-01', 'JAMONCILLOS DE DULCE EMJAMOCILLO-01', '', 14, 52, '', 'EL MINERITO', 'GRUPO ALPARIED SA DE CV', '', '', '', '', 0, 40, 1, 2, '', 4, 40, 20, '01010101', 'H87', 'NA', 0),
 (171, 'EMSETCORCHO-01', 'SET DESTAPACORCHO EMSETCORCHO-01', '', 14, 47, '', 'EL MINERITO', 'GRUPO ALPARIED SA DE CV', 'product/product_img120210620185043.jpg', '', '', '', 0, 580, 1, -2, '', 1, 10, 250, '01010101', 'H87', 'NA', 0),
@@ -559,10 +563,10 @@ CREATE TABLE `productos_sub` (
 INSERT INTO `productos_sub` (`id`, `padre`, `almacen`, `stock`, `ubicacion`, `max`, `min`) VALUES
 (1, 85, 14, -15, '', 1, 1),
 (2, 171, 14, -3, '', 1, 1),
-(3, 167, 14, 13, '', 1, 1),
-(4, 167, 15, 100, '', 1, 1),
+(3, 167, 14, 11, '', 1, 1),
+(4, 167, 15, 98, '', 1, 1),
 (5, 172, 15, 12, '', 25, 10),
-(6, 79, 15, 14, '1', 50, 20);
+(6, 79, 15, 86, '1', 50, 20);
 
 -- --------------------------------------------------------
 
@@ -808,7 +812,11 @@ INSERT INTO `product_venta` (`id`, `folio_venta`, `product`, `unidades`, `precio
 (3832, '120210722215208', 166, 1, 250, NULL, NULL, '0.00', '0.00', '0.00', '0.00'),
 (3833, '120210722215208', 151, 1, 60, NULL, NULL, '0.00', '0.00', '0.00', '0.00'),
 (3834, '120210722215208', 130, 1, 120, NULL, NULL, '0.00', '0.00', '0.00', '0.00'),
-(3841, '120210723055933', 151, 1, 60, NULL, NULL, '0.00', '0.00', '0.00', '0.00');
+(3841, '120210723055933', 151, 1, 60, NULL, NULL, '0.00', '0.00', '0.00', '0.00'),
+(3842, '120210723055933', 167, 5, 7699, NULL, NULL, '0.00', '0.00', '0.00', '0.00'),
+(3843, '120210723055933', 166, 1, 250, NULL, NULL, '0.00', '0.00', '0.00', '0.00'),
+(3844, '120210726061059', 167, 2, 7699, 3, NULL, '0.00', '0.00', '0.00', '0.00'),
+(3845, '120210726061059', 167, 2, 7699, 4, NULL, '0.00', '0.00', '0.00', '0.00');
 
 -- --------------------------------------------------------
 
@@ -959,7 +967,8 @@ CREATE TABLE `sucursal_almacen` (
 
 INSERT INTO `sucursal_almacen` (`id`, `sucursal`, `almacen`) VALUES
 (14, 10, 14),
-(15, 10, 15);
+(15, 10, 15),
+(16, 12, 15);
 
 -- --------------------------------------------------------
 
@@ -1340,7 +1349,7 @@ ALTER TABLE `order_buy_products`
 -- AUTO_INCREMENT de la tabla `productos`
 --
 ALTER TABLE `productos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=175;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=178;
 
 --
 -- AUTO_INCREMENT de la tabla `productos_sub`
@@ -1364,7 +1373,7 @@ ALTER TABLE `product_trasnfer`
 -- AUTO_INCREMENT de la tabla `product_venta`
 --
 ALTER TABLE `product_venta`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3842;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3846;
 
 --
 -- AUTO_INCREMENT de la tabla `prospecto_acciones`
@@ -1394,7 +1403,7 @@ ALTER TABLE `sucursales`
 -- AUTO_INCREMENT de la tabla `sucursal_almacen`
 --
 ALTER TABLE `sucursal_almacen`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT de la tabla `survey`
