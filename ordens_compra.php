@@ -44,4 +44,9 @@
 <?php
     include 'func/footer.php';
     echo table_cotizacion_modal();
+
+    if ($_GET["folio"])
+    {
+        echo '<meta http-equiv="refresh" content="0; url=orden_compra_products.php?folio='.$_GET["folio"].'">';
+    }
 ?>

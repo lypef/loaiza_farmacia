@@ -4293,6 +4293,22 @@
 			if ($row[17] == 1)
 			{
 				// Medidas exactas
+				if ($row[2] == 1)
+				{
+					$precio_select = '
+						<center>
+							<select id="costo" name="costo" style="text-align: center; border: 1px solid #d9534f; width: 200px;">
+									<option value='.$row[3].'>Precio: $ '.number_format($row[3],GetNumberDecimales(),".",",").'</option>
+									<option selected value='.$row[4].'>Oferta: $ '.number_format($row[4],GetNumberDecimales(),".",",").'</option>
+							</select>
+						</center>
+					';
+				}else
+				{
+					$precio_select = '
+						<input type="hidden" id="costo" name="costo" value="'.$precio_.'">
+					';	
+				}
 				$exist = '
 				<tr>
 					<td class="item-des"><p>'.$row[16].'</p></td>
@@ -4302,7 +4318,7 @@
 							<form action="func/producst_add_sale.php" autocomplete="off" method="post">
 								<input type="hidden" id="url" name="url" value="'.$_SERVER['REQUEST_URI'].'">
 								<input type="hidden" id="product" name="product" value="'.$row[9].'">
-								<input type="hidden" id="costo" name="costo" value="'.$precio_.'">
+								'.$precio_select.'
 								<input type="hidden" id="folio" name="folio" value="'.$folio.'">
 								<input type="hidden" id="hijo" name="hijo" value="0">
 								
@@ -4337,6 +4353,24 @@
 			else
 			{
 				// Normal
+
+				if ($row[2] == 1)
+				{
+					$precio_select = '
+						<center>
+							<select id="costo" name="costo" style="text-align: center; border: 1px solid #d9534f; width: 200px;">
+									<option value='.$row[3].'>Precio: $ '.number_format($row[3],GetNumberDecimales(),".",",").'</option>
+									<option selected value='.$row[4].'>Oferta: $ '.number_format($row[4],GetNumberDecimales(),".",",").'</option>
+							</select>
+						</center>
+					';
+				}else
+				{
+					$precio_select = '
+						<input type="hidden" id="costo" name="costo" value="'.$precio_.'">
+					';	
+				}
+
 				$exist = '
 				<tr>
 					<td class="item-des"><p>'.$row[16].'</p></td>
@@ -4346,7 +4380,7 @@
 							<form action="func/producst_add_sale.php" autocomplete="off" method="post">
 								<input type="hidden" id="url" name="url" value="'.$_SERVER['REQUEST_URI'].'">
 								<input type="hidden" id="product" name="product" value="'.$row[9].'">
-								<input type="hidden" id="costo" name="costo" value="'.$precio_.'">
+								'.$precio_select.'
 								<input type="hidden" id="folio" name="folio" value="'.$folio.'">
 								<input type="hidden" id="hijo" name="hijo" value="0">
 								
@@ -4372,6 +4406,22 @@
 				if ($row[17] == 1)
 				{
 					//Con medidas con hijos
+					if ($row[2] == 1)
+					{
+						$precio_select = '
+							<center>
+								<select id="costo" name="costo" style="text-align: center; border: 1px solid #d9534f; width: 200px;">
+										<option value='.$row[3].'>Precio: $ '.number_format($row[3],GetNumberDecimales(),".",",").'</option>
+										<option selected value='.$row[4].'>Oferta: $ '.number_format($row[4],GetNumberDecimales(),".",",").'</option>
+								</select>
+							</center>
+						';
+					}else
+					{
+						$precio_select = '
+							<input type="hidden" id="costo" name="costo" value="'.$precio_.'">
+						';	
+					}
 					$exist .= '
 					<tr>
 						<td class="item-des"><p>'.$item[2].'</p></td>
@@ -4381,7 +4431,7 @@
 							<form action="func/producst_add_sale.php" autocomplete="off" method="post">
 								<input type="hidden" id="url" name="url" value="'.$_SERVER['REQUEST_URI'].'">
 								<input type="hidden" id="product" name="product" value="'.$row[9].'">
-								<input type="hidden" id="costo" name="costo" value="'.$precio_.'">
+								'.$precio_select.'
 								<input type="hidden" id="folio" name="folio" value="'.$folio.'">
 								<input type="hidden" id="hijo" name="hijo" value="'.$item[0].'">
 								
@@ -4414,6 +4464,22 @@
 					';
 				}else{
 					//Normal hijos
+					if ($row[2] == 1)
+					{
+						$precio_select = '
+							<center>
+								<select id="costo" name="costo" style="text-align: center; border: 1px solid #d9534f; width: 200px;">
+										<option value='.$row[3].'>Precio: $ '.number_format($row[3],GetNumberDecimales(),".",",").'</option>
+										<option selected value='.$row[4].'>Oferta: $ '.number_format($row[4],GetNumberDecimales(),".",",").'</option>
+								</select>
+							</center>
+						';
+					}else
+					{
+						$precio_select = '
+							<input type="hidden" id="costo" name="costo" value="'.$precio_.'">
+						';	
+					}
 					$exist .= '
 					<tr>
 						<td class="item-des"><p>'.$item[2].'</p></td>
@@ -4423,7 +4489,7 @@
 							<form action="func/producst_add_sale.php" autocomplete="off" method="post">
 								<input type="hidden" id="url" name="url" value="'.$_SERVER['REQUEST_URI'].'">
 								<input type="hidden" id="product" name="product" value="'.$row[9].'">
-								<input type="hidden" id="costo" name="costo" value="'.$precio_.'">
+								'.$precio_select.'
 								<input type="hidden" id="folio" name="folio" value="'.$folio.'">
 								<input type="hidden" id="hijo" name="hijo" value="'.$item[0].'">
 								
@@ -5177,11 +5243,30 @@
 			
 			if ($row[17] == 1)
 			{
+				if ($row[2] == 1)
+				{
+					$precio_select = '
+						<div class="col-md-12">						
+							<center>
+								<select id="costo" name="costo" style="text-align: center; border: 1px solid #d9534f; width: 100%">
+										<option value='.$row[3].'>Precio: $ '.number_format($row[3],GetNumberDecimales(),".",",").'</option>
+										<option selected value='.$row[4].'>Oferta: $ '.number_format($row[4],GetNumberDecimales(),".",",").'</option>
+								</select><br><br>
+							</center>
+						</div>
+					';
+				}else
+				{
+					$precio_select = '
+						<input type="hidden" id="costo" name="costo" value="'.$precio_.'">
+					';	
+				}
+
 				$form_agregar = '
 				<form action="func/producst_add_sale_order.php" autocomplete="off" method="post">
 					<input type="hidden" id="url" name="url" value="'.$_SERVER['REQUEST_URI'].'">
 					<input type="hidden" id="product" name="product" value="'.$row[9].'">
-					<input type="hidden" id="costo" name="costo" value="'.$precio_.'">
+					'.$precio_select.'
 					<input type="hidden" id="folio" name="folio" value="'.$folio.'">
 					
 					<div class="col-md-12">
@@ -5209,11 +5294,31 @@
 				</form>
 				';
 			}else{
+
+				if ($row[2] == 1)
+				{
+					$precio_select = '
+						<div class="col-md-12">						
+							<center>
+								<select id="costo" name="costo" style="text-align: center; border: 1px solid #d9534f; width: 100%">
+										<option value='.$row[3].'>Precio: $ '.number_format($row[3],GetNumberDecimales(),".",",").'</option>
+										<option selected value='.$row[4].'>Oferta: $ '.number_format($row[4],GetNumberDecimales(),".",",").'</option>
+								</select><br><br>
+							</center>
+						</div>
+					';
+				}else
+				{
+					$precio_select = '
+						<input type="hidden" id="costo" name="costo" value="'.$precio_.'">
+					';	
+				}
+
 				$form_agregar = '
 				<form action="func/producst_add_sale_order.php" autocomplete="off" method="post">
 					<input type="hidden" id="url" name="url" value="'.$_SERVER['REQUEST_URI'].'">
 					<input type="hidden" id="product" name="product" value="'.$row[9].'">
-					<input type="hidden" id="costo" name="costo" value="'.$precio_.'">
+					'.$precio_select.'
 					<input type="hidden" id="folio" name="folio" value="'.$folio.'">
 					
 					<div class="col-md-12">
@@ -5299,11 +5404,30 @@
 			
 			if ($row[17] == 1)
 			{
+				if ($row[2] == 1)
+				{
+					$precio_select = '
+						<div class="col-md-12">						
+							<center>
+								<select id="costo" name="costo" style="text-align: center; border: 1px solid #d9534f; width: 100%">
+										<option value='.$row[3].'>Precio: $ '.number_format($row[3],GetNumberDecimales(),".",",").'</option>
+										<option selected value='.$row[4].'>Oferta: $ '.number_format($row[4],GetNumberDecimales(),".",",").'</option>
+								</select><br><br>
+							</center>
+						</div>
+					';
+				}else
+				{
+					$precio_select = '
+						<input type="hidden" id="costo" name="costo" value="'.$precio_.'">
+					';	
+				}
+
 				$form_agregar = '
 				<form action="func/producst_add_sale_order.php" autocomplete="off" method="post">
 					<input type="hidden" id="url" name="url" value="'.$_SERVER['REQUEST_URI'].'">
 					<input type="hidden" id="product" name="product" value="'.$row[9].'">
-					<input type="hidden" id="costo" name="costo" value="'.$precio_.'">
+					'.$precio_select.'
 					<input type="hidden" id="folio" name="folio" value="'.$folio.'">
 					
 					<div class="col-md-12">
@@ -5331,11 +5455,31 @@
 				</form>
 				';
 			}else{
+				
+				if ($row[2] == 1)
+				{
+					$precio_select = '
+						<div class="col-md-12">						
+							<center>
+								<select id="costo" name="costo" style="text-align: center; border: 1px solid #d9534f; width: 100%">
+										<option value='.$row[3].'>Precio: $ '.number_format($row[3],GetNumberDecimales(),".",",").'</option>
+										<option selected value='.$row[4].'>Oferta: $ '.number_format($row[4],GetNumberDecimales(),".",",").'</option>
+								</select><br><br>
+							</center>
+						</div>
+					';
+				}else
+				{
+					$precio_select = '
+						<input type="hidden" id="costo" name="costo" value="'.$precio_.'">
+					';	
+				}
+
 				$form_agregar = '
 				<form action="func/producst_add_sale_order.php" autocomplete="off" method="post">
 					<input type="hidden" id="url" name="url" value="'.$_SERVER['REQUEST_URI'].'">
 					<input type="hidden" id="product" name="product" value="'.$row[9].'">
-					<input type="hidden" id="costo" name="costo" value="'.$precio_.'">
+					'.$precio_select.'
 					<input type="hidden" id="folio" name="folio" value="'.$folio.'">
 					
 					<div class="col-md-12">
@@ -5532,6 +5676,23 @@
 			if ($row[17] == 1)
 			{
 				// Medidas exactas
+				if ($row[2] == 1)
+				{
+					$precio_select = '
+						<center>
+							<select id="costo" name="costo" style="text-align: center; border: 1px solid #d9534f; width: 200px;">
+									<option value='.$row[3].'>Precio: $ '.number_format($row[3],GetNumberDecimales(),".",",").'</option>
+									<option selected value='.$row[4].'>Oferta: $ '.number_format($row[4],GetNumberDecimales(),".",",").'</option>
+							</select>
+						</center>
+					';
+				}else
+				{
+					$precio_select = '
+						<input type="hidden" id="costo" name="costo" value="'.$precio_.'">
+					';	
+				}
+
 				$exist = '
 				<tr>
 					<td class="item-des"><p>'.$row[16].'</p></td>
@@ -5541,7 +5702,7 @@
 							<form action="func/producst_add_sale.php" autocomplete="off" method="post">
 								<input type="hidden" id="url" name="url" value="'.$_SERVER['REQUEST_URI'].'">
 								<input type="hidden" id="product" name="product" value="'.$row[9].'">
-								<input type="hidden" id="costo" name="costo" value="'.$precio_.'">
+								'.$precio_select.'
 								<input type="hidden" id="folio" name="folio" value="'.$folio.'">
 								<input type="hidden" id="hijo" name="hijo" value="0">
 								
@@ -5576,6 +5737,23 @@
 			else
 			{
 				// Normal
+				if ($row[2] == 1)
+				{
+					$precio_select = '
+						<center>
+							<select id="costo" name="costo" style="text-align: center; border: 1px solid #d9534f; width: 200px;">
+									<option value='.$row[3].'>Precio: $ '.number_format($row[3],GetNumberDecimales(),".",",").'</option>
+									<option selected value='.$row[4].'>Oferta: $ '.number_format($row[4],GetNumberDecimales(),".",",").'</option>
+							</select>
+						</center>
+					';
+				}else
+				{
+					$precio_select = '
+						<input type="hidden" id="costo" name="costo" value="'.$precio_.'">
+					';	
+				}
+
 				$exist = '
 				<tr>
 					<td class="item-des"><p>'.$row[16].'</p></td>
@@ -5585,7 +5763,7 @@
 							<form action="func/producst_add_sale.php" autocomplete="off" method="post">
 								<input type="hidden" id="url" name="url" value="'.$_SERVER['REQUEST_URI'].'">
 								<input type="hidden" id="product" name="product" value="'.$row[9].'">
-								<input type="hidden" id="costo" name="costo" value="'.$precio_.'">
+								'.$precio_select.'
 								<input type="hidden" id="folio" name="folio" value="'.$folio.'">
 								<input type="hidden" id="hijo" name="hijo" value="0">
 								
@@ -5611,6 +5789,23 @@
 				if ($row[17] == 1)
 				{
 					//Con medidas con hijos
+
+					if ($row[2] == 1)
+					{
+						$precio_select = '
+							<center>
+								<select id="costo" name="costo" style="text-align: center; border: 1px solid #d9534f; width: 200px;">
+										<option value='.$row[3].'>Precio: $ '.number_format($row[3],GetNumberDecimales(),".",",").'</option>
+										<option selected value='.$row[4].'>Oferta: $ '.number_format($row[4],GetNumberDecimales(),".",",").'</option>
+								</select>
+							</center>
+						';
+					}else
+					{
+						$precio_select = '
+							<input type="hidden" id="costo" name="costo" value="'.$precio_.'">
+						';	
+					}
 					$exist .= '
 					<tr>
 						<td class="item-des"><p>'.$item[2].'</p></td>
@@ -5620,7 +5815,7 @@
 							<form action="func/producst_add_sale.php" autocomplete="off" method="post">
 								<input type="hidden" id="url" name="url" value="'.$_SERVER['REQUEST_URI'].'">
 								<input type="hidden" id="product" name="product" value="'.$row[9].'">
-								<input type="hidden" id="costo" name="costo" value="'.$precio_.'">
+								'.$precio_select.'
 								<input type="hidden" id="folio" name="folio" value="'.$folio.'">
 								<input type="hidden" id="hijo" name="hijo" value="'.$item[0].'">
 								
@@ -5653,6 +5848,23 @@
 					';
 				}else{
 					//Normal hijos
+					if ($row[2] == 1)
+					{
+						$precio_select = '
+							<center>
+								<select id="costo" name="costo" style="text-align: center; border: 1px solid #d9534f; width: 200px;">
+										<option value='.$row[3].'>Precio: $ '.number_format($row[3],GetNumberDecimales(),".",",").'</option>
+										<option selected value='.$row[4].'>Oferta: $ '.number_format($row[4],GetNumberDecimales(),".",",").'</option>
+								</select>
+							</center>
+						';
+					}else
+					{
+						$precio_select = '
+							<input type="hidden" id="costo" name="costo" value="'.$precio_.'">
+						';	
+					}
+
 					$exist .= '
 					<tr>
 						<td class="item-des"><p>'.$item[2].'</p></td>
@@ -5662,7 +5874,7 @@
 							<form action="func/producst_add_sale.php" autocomplete="off" method="post">
 								<input type="hidden" id="url" name="url" value="'.$_SERVER['REQUEST_URI'].'">
 								<input type="hidden" id="product" name="product" value="'.$row[9].'">
-								<input type="hidden" id="costo" name="costo" value="'.$precio_.'">
+								'.$precio_select.'
 								<input type="hidden" id="folio" name="folio" value="'.$folio.'">
 								<input type="hidden" id="hijo" name="hijo" value="'.$item[0].'">
 								
@@ -6508,11 +6720,30 @@
 			
 			if ($row[17] == 1)
 			{
+				if ($row[2] == 1)
+				{
+					$precio_select = '
+						<div class="col-md-12">						
+							<center>
+								<select id="costo" name="costo" style="text-align: center; border: 1px solid #d9534f; width: 100%">
+										<option value='.$row[3].'>Precio: $ '.number_format($row[3],GetNumberDecimales(),".",",").'</option>
+										<option selected value='.$row[4].'>Oferta: $ '.number_format($row[4],GetNumberDecimales(),".",",").'</option>
+								</select><br><br>
+							</center>
+						</div>
+					';
+				}else
+				{
+					$precio_select = '
+						<input type="hidden" id="costo" name="costo" value="'.$precio_.'">
+					';	
+				}
+
 				$form_agregar = '
 				<form action="func/producst_add_sale_order.php" autocomplete="off" method="post">
 					<input type="hidden" id="url" name="url" value="'.$_SERVER['REQUEST_URI'].'">
 					<input type="hidden" id="product" name="product" value="'.$row[9].'">
-					<input type="hidden" id="costo" name="costo" value="'.$precio_.'">
+					'.$precio_select.'
 					<input type="hidden" id="folio" name="folio" value="'.$folio.'">
 					
 					<div class="col-md-12">
@@ -6540,11 +6771,31 @@
 				</form>
 				';
 			}else{
+				
+				if ($row[2] == 1)
+				{
+					$precio_select = '
+						<div class="col-md-12">						
+							<center>
+								<select id="costo" name="costo" style="text-align: center; border: 1px solid #d9534f; width: 100%">
+										<option value='.$row[3].'>Precio: $ '.number_format($row[3],GetNumberDecimales(),".",",").'</option>
+										<option selected value='.$row[4].'>Oferta: $ '.number_format($row[4],GetNumberDecimales(),".",",").'</option>
+								</select><br><br>
+							</center>
+						</div>
+					';
+				}else
+				{
+					$precio_select = '
+						<input type="hidden" id="costo" name="costo" value="'.$precio_.'">
+					';	
+				}
+
 				$form_agregar = '
 				<form action="func/producst_add_sale_order.php" autocomplete="off" method="post">
 					<input type="hidden" id="url" name="url" value="'.$_SERVER['REQUEST_URI'].'">
 					<input type="hidden" id="product" name="product" value="'.$row[9].'">
-					<input type="hidden" id="costo" name="costo" value="'.$precio_.'">
+					'.$precio_select.'
 					<input type="hidden" id="folio" name="folio" value="'.$folio.'">
 					
 					<div class="col-md-12">
@@ -10601,7 +10852,7 @@
 
 			$body = $body.'
 			<tr>
-				<td class="item-des"><a href="/sale_finaly_report_cotizacion.php?folio_sale='.$row[1].'">'.$row[1].'</a></td>
+				<td class="item-des"><a href="/orden_compra_products.php?folio='.$row[1].'">'.$row[1].'</a></td>
 				<td class="item-des"><p>'.$row[2].'</p></td>
 				<td class="item-des"><center>'.GetFechaText($row[3]).'</center></td>
 				<td class="item-des"><center>'.$row[4].'</center></td>
@@ -11445,7 +11696,7 @@
 
 			$body = $body.'
 			<tr>
-				<td class="item-des"><a href="/sale_finaly_report_cotizacion.php?folio_sale='.$row[1].'">'.$row[1].'</a></td>
+				<td class="item-des"><a href="/orden_compra_products.php?folio='.$row[1].'">'.$row[1].'</a></td>
 				<td class="item-des"><p>'.$row[2].'</p></td>
 				<td class="item-des"><center>'.GetFechaText($row[3]).'</center></td>
 				<td class="item-des"><center>'.$row[4].'</center></td>
@@ -21977,7 +22228,7 @@
 					$body .= '
 					<div class="item active">
 						<div class="col-md-2 col-sm-6 col-xs-12">
-							<center>'.substr($row[4],0,32).'</center>
+							<center>'.substr($row[4],0,18).'</center>
 							<a href="#" data-toggle="modal" data-target="#add_car_promo'.$row[0].'"><img style="max-height: 180px; min-height: 180px; max-width: 180px; min-width: 180px;" src="images/'.$row[1].'" class="img-responsive"></a>
 							<center>
 							<b>Precio: $ '.number_format($row[2],GetNumberDecimales(),".",",").'</b> <br> <strike>$ '.number_format($row[3],GetNumberDecimales(),".",",").'</strike>
@@ -21990,7 +22241,7 @@
 					$body .= '
 					<div class="item">
 						<div class="col-md-2 col-sm-6 col-xs-12">
-							<center>'.substr($row[4],0,32).'</center>
+							<center>'.substr($row[4],0,18).'</center>
 							<a href="#" data-toggle="modal" data-target="#add_car_promo'.$row[0].'"><img style="max-height: 180px; min-height: 180px; max-width: 180px; min-width: 180px;" src="images/'.$row[1].'" class="img-responsive"></a>
 							<center>
 							<b>Precio: $ '.number_format($row[2],GetNumberDecimales(),".",",").'</b> <br> <strike>$ '.number_format($row[3],GetNumberDecimales(),".",",").'</strike>
@@ -22073,7 +22324,14 @@
 							<form action="func/producst_add_sale.php" autocomplete="off" method="post">
 								<input type="hidden" id="url" name="url" value="'.$_SERVER['REQUEST_URI'].'">
 								<input type="hidden" id="product" name="product" value="'.$row[9].'">
-								<input type="hidden" id="costo" name="costo" value="'.$precio_.'">
+								<div class="col-md-12">						
+									<center>
+										<select id="costo" name="costo" style="text-align: center; border: 1px solid #d9534f; width: 100%">
+												<option value='.$row[3].'>Precio: $ '.number_format($row[3],GetNumberDecimales(),".",",").'</option>
+												<option selected value='.$row[4].'>Oferta: $ '.number_format($row[4],GetNumberDecimales(),".",",").'</option>
+										</select><br><br>
+									</center>
+								</div>
 								<input type="hidden" id="folio" name="folio" value="'.$folio.'">
 								<input type="hidden" id="hijo" name="hijo" value="0">
 								
@@ -22117,7 +22375,14 @@
 							<form action="func/producst_add_sale.php" autocomplete="off" method="post">
 								<input type="hidden" id="url" name="url" value="'.$_SERVER['REQUEST_URI'].'">
 								<input type="hidden" id="product" name="product" value="'.$row[9].'">
-								<input type="hidden" id="costo" name="costo" value="'.$precio_.'">
+								<div class="col-md-12">						
+									<center>
+										<select id="costo" name="costo" style="text-align: center; border: 1px solid #d9534f; width: 100%">
+												<option value='.$row[3].'>Precio: $ '.number_format($row[3],GetNumberDecimales(),".",",").'</option>
+												<option selected value='.$row[4].'>Oferta: $ '.number_format($row[4],GetNumberDecimales(),".",",").'</option>
+										</select><br><br>
+									</center>
+								</div>
 								<input type="hidden" id="folio" name="folio" value="'.$folio.'">
 								<input type="hidden" id="hijo" name="hijo" value="0">
 								
@@ -22152,7 +22417,14 @@
 							<form action="func/producst_add_sale.php" autocomplete="off" method="post">
 								<input type="hidden" id="url" name="url" value="'.$_SERVER['REQUEST_URI'].'">
 								<input type="hidden" id="product" name="product" value="'.$row[9].'">
-								<input type="hidden" id="costo" name="costo" value="'.$precio_.'">
+								<div class="col-md-12">						
+									<center>
+										<select id="costo" name="costo" style="text-align: center; border: 1px solid #d9534f; width: 100%">
+												<option value='.$row[3].'>Precio: $ '.number_format($row[3],GetNumberDecimales(),".",",").'</option>
+												<option selected value='.$row[4].'>Oferta: $ '.number_format($row[4],GetNumberDecimales(),".",",").'</option>
+										</select><br><br>
+									</center>
+								</div>
 								<input type="hidden" id="folio" name="folio" value="'.$folio.'">
 								<input type="hidden" id="hijo" name="hijo" value="'.$item[0].'">
 								
@@ -22194,7 +22466,14 @@
 							<form action="func/producst_add_sale.php" autocomplete="off" method="post">
 								<input type="hidden" id="url" name="url" value="'.$_SERVER['REQUEST_URI'].'">
 								<input type="hidden" id="product" name="product" value="'.$row[9].'">
-								<input type="hidden" id="costo" name="costo" value="'.$precio_.'">
+								<div class="col-md-12">						
+									<center>
+										<select id="costo" name="costo" style="text-align: center; border: 1px solid #d9534f; width: 100%">
+												<option value='.$row[3].'>Precio: $ '.number_format($row[3],GetNumberDecimales(),".",",").'</option>
+												<option selected value='.$row[4].'>Oferta: $ '.number_format($row[4],GetNumberDecimales(),".",",").'</option>
+										</select><br><br>
+									</center>
+								</div>
 								<input type="hidden" id="folio" name="folio" value="'.$folio.'">
 								<input type="hidden" id="hijo" name="hijo" value="'.$item[0].'">
 								
