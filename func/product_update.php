@@ -3,7 +3,7 @@
     $url = str_replace("&update_producto=true", "", $url);
     $url = str_replace("&noupdate_producto=true", "", $url);
     
-    if ($_POST['precio'] > 0 && $_POST['p_oferta'] > 0)
+    if ($_POST['precio'] > -1 && $_POST['p_oferta'] > -1)
     {
         include 'db.php';
         db_sessionValidarNO();

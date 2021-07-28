@@ -141,7 +141,7 @@
 
         if ($first)
         {
-            if ($cont == 26)
+            if ($cont == 30)
             {
                 $cont = -1;
                 $first = false;
@@ -348,11 +348,14 @@
         
         $codigoHTML .= FooterPageReport();
 
+        //echo $codigoHTML;
+        
         $codigoHTML = mb_convert_encoding($codigoHTML, 'HTML-ENTITIES', 'UTF-8');
         $dompdf=new DOMPDF();
         $dompdf->set_paper('letter');
         $dompdf->load_html($codigoHTML);
-        ini_set("memory_limit","128M");
+        ini_set("memory_limit","515M");
+        set_time_limit(200);
         $dompdf->render();
         $dompdf->stream("orden_compra".$_GET["folio"].".pdf");
         // Finaliza reporte <normal></normal>

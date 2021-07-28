@@ -74,7 +74,8 @@
     $dompdf= new DOMPDF();
     $dompdf->set_paper('letter');
     $dompdf->load_html($codigoHTML);
-    ini_set("memory_limit","128M");
+    ini_set("memory_limit","515M");
+    set_time_limit(200);
     $dompdf->render();
     $dompdf->stream("codebar.pdf");
 ?>
