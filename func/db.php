@@ -3360,6 +3360,11 @@
 			( 
 				 $c_p or ( SELECT COUNT(s.id) as id  FROM productos_sub s WHERE s.padre = p.id and $c_s ) > 0  
 			)
+			or
+			p.almacen = a.id and p.departamento = d.id and p.`no. De parte` like '%$txt%' and 
+			( 
+				 $c_p or ( SELECT COUNT(s.id) as id  FROM productos_sub s WHERE s.padre = p.id and $c_s ) > 0  
+			)
 			LIMIT $inicio, $TAMANO_PAGINA");
 
 
@@ -3384,7 +3389,13 @@
 			p.almacen = a.id and p.departamento = d.id and p.proveedor like '%$txt%' and 
 			( 
 				 $c_p or ( SELECT COUNT(s.id) as id  FROM productos_sub s WHERE s.padre = p.id and $c_s ) > 0  
-			)");
+			)
+			or
+			p.almacen = a.id and p.departamento = d.id and p.`no. De parte` like '%$txt%' and 
+			( 
+				 $c_p or ( SELECT COUNT(s.id) as id  FROM productos_sub s WHERE s.padre = p.id and $c_s ) > 0  
+			)
+			");
 		}else 
 		{
 			$data = mysqli_query(db_conectar(),"
@@ -3397,6 +3408,8 @@
 			p.almacen = a.id and p.departamento = d.id and p.marca like '%$txt%' 
 			or
 			p.almacen = a.id and p.departamento = d.id and p.proveedor like '%$txt%'
+			or
+			p.almacen = a.id and p.departamento = d.id and p.`no. De parte` like '%$txt%'
 			LIMIT $inicio, $TAMANO_PAGINA");
 
 
@@ -3409,7 +3422,10 @@
 			or
 			p.almacen = a.id and p.departamento = d.id and p.marca like '%$txt%' 
 			or
-			p.almacen = a.id and p.departamento = d.id and p.proveedor like '%$txt%' ");
+			p.almacen = a.id and p.departamento = d.id and p.proveedor like '%$txt%' 
+			or
+			p.almacen = a.id and p.departamento = d.id and p.`no. De parte` like '%$txt%' 
+			");
 		}
 
 		
@@ -7198,6 +7214,11 @@
 			( 
 				 $c_p or ( SELECT COUNT(s.id) as id  FROM productos_sub s WHERE s.padre = p.id and $c_s ) > 0  
 			)
+			or
+			p.almacen = a.id and p.departamento = d.id and p.`no. De parte` like '%$txt%' and 
+			( 
+				 $c_p or ( SELECT COUNT(s.id) as id  FROM productos_sub s WHERE s.padre = p.id and $c_s ) > 0  
+			)
 			LIMIT $inicio, $TAMANO_PAGINA");
 			
 			$datatmp = mysqli_query(db_conectar(),"
@@ -7221,7 +7242,12 @@
 			p.almacen = a.id and p.departamento = d.id and p.proveedor like '%$txt%' and 
 			( 
 				 $c_p or ( SELECT COUNT(s.id) as id  FROM productos_sub s WHERE s.padre = p.id and $c_s ) > 0  
-			) ");
+			)
+			p.almacen = a.id and p.departamento = d.id and p.`no. De parte` like '%$txt%' and 
+			( 
+				 $c_p or ( SELECT COUNT(s.id) as id  FROM productos_sub s WHERE s.padre = p.id and $c_s ) > 0  
+			)
+			 ");
 		}else 
 		{
 			$data = mysqli_query(db_conectar(),"
@@ -7234,6 +7260,9 @@
 			p.almacen = a.id and p.departamento = d.id and p.marca like '%$txt%' 
 			or
 			p.almacen = a.id and p.departamento = d.id and p.proveedor like '%$txt%' 
+			or
+			p.almacen = a.id and p.departamento = d.id and p.`no. De parte` like '%$txt%' 
+
 			LIMIT $inicio, $TAMANO_PAGINA");
 			
 			$datatmp = mysqli_query(db_conectar(),"
@@ -7245,7 +7274,10 @@
 			or
 			p.almacen = a.id and p.departamento = d.id and p.marca like '%$txt%' 
 			or
-			p.almacen = a.id and p.departamento = d.id and p.proveedor like '%$txt%' ");
+			p.almacen = a.id and p.departamento = d.id and p.proveedor like '%$txt%'
+			or
+			p.almacen = a.id and p.departamento = d.id and p.`no. De parte` like '%$txt%'
+			");
 		}
 
 		$con_hijos  = db_conectar();
@@ -22213,333 +22245,11 @@
 
 	function GetProductsOfetsGalery ()
 	{
-		$products = mysqli_query(db_conectar(),"SELECT id, foto0, precio_oferta, precio_normal, nombre FROM productos WHERE oferta = 1 ORDER by id desc");
-		
-		$first = true;
-
-		$body = "";
-
-		while($row = mysqli_fetch_array($products))
-		{
-			if (file_exists('images/'.$row[1].'') && !empty($row[1]))
-			{
-				if ($first)
-				{
-					$body .= '
-					<div class="item active">
-						<div class="col-md-2 col-sm-6 col-xs-12">
-							<center>'.substr($row[4],0,18).'</center>
-							<a href="#" data-toggle="modal" data-target="#add_car_promo'.$row[0].'"><img style="max-height: 180px; min-height: 180px; max-width: 180px; min-width: 180px;" src="images/'.$row[1].'" class="img-responsive"></a>
-							<center>
-							<b>Precio: $ '.number_format($row[2],GetNumberDecimales(),".",",").'</b> <br> <strike>$ '.number_format($row[3],GetNumberDecimales(),".",",").'</strike>
-							</center>
-						</div>
-					</div>
-					';
-				}else
-				{
-					$body .= '
-					<div class="item">
-						<div class="col-md-2 col-sm-6 col-xs-12">
-							<center>'.substr($row[4],0,18).'</center>
-							<a href="#" data-toggle="modal" data-target="#add_car_promo'.$row[0].'"><img style="max-height: 180px; min-height: 180px; max-width: 180px; min-width: 180px;" src="images/'.$row[1].'" class="img-responsive"></a>
-							<center>
-							<b>Precio: $ '.number_format($row[2],GetNumberDecimales(),".",",").'</b> <br> <strike>$ '.number_format($row[3],GetNumberDecimales(),".",",").'</strike>
-							</center>
-						</div>
-					</div>
-					';
-				}
-				$first = false;
-			}
-		}
-
-		
-		
-		$r = '
-		<div class="col-md-12">
-		<div class="section-title-2 text-uppercase mb-40 text-center">
-		<h4>PRODUCTOS PROMOCION / OFERTAS</h4>
-		</div>
-		
-		<div class="row">
-                
-                    <div class="col-md-12">
-                    <div class="carousel slide" data-ride="carousel" data-type="multi" data-interval="3000" id="myCarousel">
-                    <div class="carousel-inner">
-                        '.$body.'
-                    </div>
-                    </div>
-                    </div>
-                </div>
-			
-			<br>
-            <center>
-            <a href="#myCarousel" data-slide="prev"><i class="zmdi zmdi-chevron-left zmdi-hc-3x"></i></a>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <a href="#myCarousel" data-slide="next"><i class="zmdi zmdi-chevron-right zmdi-hc-3x"></i></a>
-            </center>
-			<br>
-		';
-
-		return $r;
+		return "";
 	}
 
 	function GetProductsOfetsGalery_modal ($folio)
 	{
-		$c = substr(GetFilterAlmacen($_SESSION['sucursal']), 0, -2);
-		$c_s = str_replace("almacen","s.almacen",$c);
-		$c_p = str_replace("almacen","p.almacen",$c);
-		$data = mysqli_query(db_conectar(),"SELECT p.nombre, p.stock, p.oferta, p.precio_normal, p.precio_oferta, p.foto0, p.foto1, p.foto2, p.foto3, p.id, p.`no. De parte`, p.descripcion, d.nombre, p.marca, p.loc_almacen, p.`tiempo de entrega`, a.nombre, p.pedir_medidas FROM productos p, departamentos d, almacen a where p.oferta = 1 and p.departamento = d.id and p.almacen = a.id AND (SELECT COUNT(s.id) as id  FROM productos_sub s WHERE s.padre = p.id and ( $c_s ) ) > 0 or p.departamento = d.id and p.almacen = a.id AND ( $c_p ) order by p.id desc");
-		$datatmp = mysqli_query(db_conectar(),"SELECT p.nombre, p.stock, p.oferta, p.precio_normal, p.precio_oferta, p.foto0, p.foto1, p.foto2, p.foto3, p.id, p.`no. De parte`, p.descripcion, d.nombre, p.marca, p.loc_almacen, p.`tiempo de entrega`, a.nombre, p.pedir_medidas FROM productos p, departamentos d, almacen a where p.oferta = 1 and p.departamento = d.id and p.almacen = a.id AND (SELECT COUNT(s.id) as id  FROM productos_sub s WHERE s.padre = p.id and ( $c_s ) ) > 0 or p.departamento = d.id and p.almacen = a.id AND ( $c_p )");
-
-		$con_hijos  = db_conectar();
-
-		$body = "";
-		while($row = mysqli_fetch_array($data))
-	    {
-			$precio = '<span class="new-price">$ '.$row[3].' MXN</span>';
-			$precio_ = $row[3];
-
-			if ($row[2] == 1)
-			{
-				$precio = '<span class="new-price">$ '.$row[4].' MXN</span>';
-				$precio = $precio . ' <span class="old-price">$ '.$row[3].' MXN</span>';
-				$precio_ = $row[4];
-			}
-			
-			// Add hijos
-			$stock = $row[1];
-			$almacen = '<option value='.$row[9].'>'.$row[16].' | '.$row[1].' UDS</option>';
-
-			if ($row[17] == 1)
-			{
-				// Medidas exactas
-				$exist = '
-				<tr>
-					<td class="item-des"><p>'.$row[16].'</p></td>
-					<td class="item-des"><p>'.$row[1].' UDS</p></td>
-					<td class="item-des"><p>
-						<div class="col-md-12">
-							<form action="func/producst_add_sale.php" autocomplete="off" method="post">
-								<input type="hidden" id="url" name="url" value="'.$_SERVER['REQUEST_URI'].'">
-								<input type="hidden" id="product" name="product" value="'.$row[9].'">
-								<div class="col-md-12">						
-									<center>
-										<select id="costo" name="costo" style="text-align: center; border: 1px solid #d9534f; width: 100%">
-												<option value='.$row[3].'>Precio: $ '.number_format($row[3],GetNumberDecimales(),".",",").'</option>
-												<option selected value='.$row[4].'>Oferta: $ '.number_format($row[4],GetNumberDecimales(),".",",").'</option>
-										</select><br><br>
-									</center>
-								</div>
-								<input type="hidden" id="folio" name="folio" value="'.$folio.'">
-								<input type="hidden" id="hijo" name="hijo" value="0">
-								
-								<div class="col-md-12">
-									<label> Unidades</label>
-									<input style="width: 200px;" type="number" step="1" id="unidades" name="unidades" placeholder="0" value ="1" min="1" /></p>		
-
-									<label> Precio</label>
-									<input style="width: 200px;" type="number" step="0.01" id="_precio" name="_precio" placeholder="0" value ="1" min="1" /></p>		
-
-									<label> Ancho CM</label>
-									<input style="width: 200px;" type="number" step="1" id="ancho" name="ancho" placeholder="0" value ="1" min="1" /></p>		
-
-									<label> Alto CM</label>
-									<input style="width: 200px;" type="number" step="1" id="alto" name="alto" placeholder="0" value ="1" min="1" /></p>		
-
-									<label> Largo CM</label>
-									<input style="width: 200px;" type="number" step="1" id="largo" name="largo" placeholder="0" value ="1" min="1" /></p>		
-
-									<label> Peso KG</label>
-									<input style="width: 200px;" type="number" step="0.01" id="peso" name="peso" placeholder="0" value ="1" min="1" /></p>		
-
-									<button style="width: 200px;" type="submit" class="btn btn-primary">Agregar</button>
-								</div>
-	
-							</form>
-						</div>
-					</td>
-				</tr>
-				';
-			}
-			else
-			{
-				// Normal
-				$exist = '
-				<tr>
-					<td class="item-des"><p>'.$row[16].'</p></td>
-					<td class="item-des"><p>'.$row[1].' UDS</p></td>
-					<td class="item-des"><p>
-						<div class="col-md-12">
-							<form action="func/producst_add_sale.php" autocomplete="off" method="post">
-								<input type="hidden" id="url" name="url" value="'.$_SERVER['REQUEST_URI'].'">
-								<input type="hidden" id="product" name="product" value="'.$row[9].'">
-								<div class="col-md-12">						
-									<center>
-										<select id="costo" name="costo" style="text-align: center; border: 1px solid #d9534f; width: 100%">
-												<option value='.$row[3].'>Precio: $ '.number_format($row[3],GetNumberDecimales(),".",",").'</option>
-												<option selected value='.$row[4].'>Oferta: $ '.number_format($row[4],GetNumberDecimales(),".",",").'</option>
-										</select><br><br>
-									</center>
-								</div>
-								<input type="hidden" id="folio" name="folio" value="'.$folio.'">
-								<input type="hidden" id="hijo" name="hijo" value="0">
-								
-								<div class="col-md-12">
-									<input style="width: 200px;" type="number" step="1" id="unidades" name="unidades" placeholder="0" value ="1" min="1" /></p>		
-									<button style="width: 200px;" type="submit" class="btn btn-primary">Agregar</button>	
-								</div>
-							</form>
-						</div>
-					</td>
-				</tr>
-				';
-			}
-			
-
-			$hijos = mysqli_query($con_hijos,"SELECT s.id, s.padre, a.nombre, s.stock FROM productos_sub s, almacen a where s.almacen = a.id and padre = '$row[9]' ");
-			
-			while($item = mysqli_fetch_array($hijos))
-			{
-				$stock = $stock + $item[3];
-				$almacen .= '<option value='.$item[0].'>'.$item[2].' | '.$item[3].' UDS</option>';
-
-				if ($row[17] == 1)
-				{
-					//Con medidas con hijos
-					$exist .= '
-					<tr>
-						<td class="item-des"><p>'.$item[2].'</p></td>
-						<td class="item-des"><p>'.$item[3].' UDS</p></td>
-						<td class="item-des">
-						<div class="col-md-12">
-							<form action="func/producst_add_sale.php" autocomplete="off" method="post">
-								<input type="hidden" id="url" name="url" value="'.$_SERVER['REQUEST_URI'].'">
-								<input type="hidden" id="product" name="product" value="'.$row[9].'">
-								<div class="col-md-12">						
-									<center>
-										<select id="costo" name="costo" style="text-align: center; border: 1px solid #d9534f; width: 100%">
-												<option value='.$row[3].'>Precio: $ '.number_format($row[3],GetNumberDecimales(),".",",").'</option>
-												<option selected value='.$row[4].'>Oferta: $ '.number_format($row[4],GetNumberDecimales(),".",",").'</option>
-										</select><br><br>
-									</center>
-								</div>
-								<input type="hidden" id="folio" name="folio" value="'.$folio.'">
-								<input type="hidden" id="hijo" name="hijo" value="'.$item[0].'">
-								
-								<div class="col-md-12">
-									<label> Unidades</label>
-									<input style="width: 200px;" type="number" step="1" id="unidades" name="unidades" placeholder="0" value ="1" min="1" /></p>		
-
-									<label> Precio</label>
-									<input style="width: 200px;" type="number" step="0.01" id="_precio" name="_precio" placeholder="0" value ="1" min="1" /></p>		
-
-									<label> Ancho CM</label>
-									<input style="width: 200px;" type="number" step="1" id="ancho" name="ancho" placeholder="0" value ="1" min="1" /></p>		
-
-									<label> Alto CM</label>
-									<input style="width: 200px;" type="number" step="1" id="alto" name="alto" placeholder="0" value ="1" min="1" /></p>		
-
-									<label> Largo CM</label>
-									<input style="width: 200px;" type="number" step="1" id="largo" name="largo" placeholder="0" value ="1" min="1" /></p>		
-
-									<label> Peso KG</label>
-									<input style="width: 200px;" type="number" step="0.01" id="peso" name="peso" placeholder="0" value ="1" min="1" /></p>		
-
-									<button style="width: 200px;" type="submit" class="btn btn-primary">Agregar</button>
-								</div>
-
-							</form>
-						</div>
-						</td>
-					</tr>
-					';
-				}else{
-					//Normal hijos
-					$exist .= '
-					<tr>
-						<td class="item-des"><p>'.$item[2].'</p></td>
-						<td class="item-des"><p>'.$item[3].' UDS</p></td>
-						<td class="item-des">
-						<div class="col-md-12">
-							<form action="func/producst_add_sale.php" autocomplete="off" method="post">
-								<input type="hidden" id="url" name="url" value="'.$_SERVER['REQUEST_URI'].'">
-								<input type="hidden" id="product" name="product" value="'.$row[9].'">
-								<div class="col-md-12">						
-									<center>
-										<select id="costo" name="costo" style="text-align: center; border: 1px solid #d9534f; width: 100%">
-												<option value='.$row[3].'>Precio: $ '.number_format($row[3],GetNumberDecimales(),".",",").'</option>
-												<option selected value='.$row[4].'>Oferta: $ '.number_format($row[4],GetNumberDecimales(),".",",").'</option>
-										</select><br><br>
-									</center>
-								</div>
-								<input type="hidden" id="folio" name="folio" value="'.$folio.'">
-								<input type="hidden" id="hijo" name="hijo" value="'.$item[0].'">
-								
-								<div class="col-md-12">
-									<input style="width: 200px;" type="number" step="1" id="unidades" name="unidades" placeholder="0" value ="1" min="1" /></p>		
-									<button style="width: 200px;" type="submit" class="btn btn-primary">Agregar</button>	
-								</div>
-
-							</form>
-						</div>
-						</td>
-					</tr>
-					';
-				}
-
-			} //Finaliza hijos
-			
-			
-			$body = $body.'
-					
-					<!--Agragar producto a venta-->
-					<div class="modal fade" id="add_car_promo'.$row[9].'" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-						<div class="modal-dialog modal-dialog-centered" role="document">
-				    <div class="modal-content">
-				      <div class="modal-header">
-				        <h5 class="modal-title" id="exampleModalLongTitle">AGREGAR: '.$row[0].'</h5>
-				        </button>
-				      </div>
-				      <div class="modal-body">
-					  	<div class="row">
-						<div class="col-md-12">
-							<div class="country-select shop-select col-md-6">
-								<p>Precio: '.$precio.'</p>
-							</div>
-							
-							<div class="country-select shop-select col-md-6">
-							<p>Unidades disponibles: '.$stock.' UDS</>
-							</div>
-								<div class="col-md-12">
-									<div class="section-title-2 text-uppercase mb-40 text-center">
-										<h4>EXISTENCIAS</h4>
-									</div>
-								</div>
-								
-								<table class="cart table">
-								<tr>
-										<th class="table-head th-name uppercase">ALMACEN</th>
-										<th class="table-head th-name uppercase">STOCK</th>
-										<th class="table-head th-name uppercase">AGREGAR</th>
-									</tr>
-								<tbody>
-									'.$exist.'
-								</tbody>
-								</table>
-								
-						</div>
-					</div>
-					</div>
-					<div class="modal-footer">
-							<button type="button" class="btn btn-secondary" data-dismiss="modal">X</button>
-					</div>
-					</div>
-				</div>
-				</div>';
-		}
-		
-		return $body;
+		return "";
 	}
 ?>
